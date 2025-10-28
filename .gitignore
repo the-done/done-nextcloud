@@ -1,0 +1,23 @@
+node_modules
+js
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+
+# Build artifacts
+build/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+/vendor/
+/vendor-bin/

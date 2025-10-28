@@ -1,0 +1,25 @@
+{
+  "translations": {
+    "User management": "Управление пользователями",
+    "Add user": "Добавить пользователя",
+    "Edit user": "Редактировать пользователя",
+    "Delete user": "Удалить пользователя",
+    "User settings": "Настройки пользователя",
+    "User permissions": "Права пользователя",
+    "User roles": "Роли пользователя",
+    "User profile": "Профиль пользователя",
+    "User list": "Список пользователей",
+    "User search": "Поиск пользователей",
+    "User creation": "Создание пользователя",
+    "User editing": "Редактирование пользователя",
+    "User deletion": "Удаление пользователя",
+    "Do you really want to delete the user?": "Вы действительно хотите удалить пользователя?",
+    "User created successfully": "Пользователь успешно создан",
+    "User updated successfully": "Пользователь успешно обновлен",
+    "User deleted successfully": "Пользователь успешно удален",
+    "Save": "Сохранить",
+    "Users": "Пользователи",
+    "Name": "Имя"
+  },
+  "pluralForm": "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
+} 

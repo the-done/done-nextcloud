@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+  - SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-FileCopyrightText: 2014-2016 ownCloud, Inc.
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>done</id>
+	<name>Done</name>
+	<summary>Application for tracking the working hours of company employees</summary>
+	<description>Application for tracking the working hours of company employees</description>
+	<version>1.0.0</version>
+	<licence>agpl</licence>
+	<author mail="hello@softmus.ru" homepage="https://softmus.ru">Vadim Kunitsyn</author>
+	<namespace>Done</namespace>
+	<category>monitoring</category>
+	<bugs>https://github.com/devSoftmus/done</bugs>
+	<dependencies>
+		<nextcloud min-version="30" max-version="32"/>
+	</dependencies>
+	<navigations>
+		<navigation>
+			<id>done</id>
+			<name>Done</name>
+			<route>done.common.index</route>
+			<icon>/apps/done/task-done.png</icon>
+			<type>link</type>
+		</navigation>
+	</navigations>
+</info>

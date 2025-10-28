@@ -1,0 +1,10 @@
+:root {
+  --light-border: #dddddd;
+  --scrollbar-track: #dddddd;
+  --scrollbar-thumb: #a0a0a0;
+  --scrollbar-thumb-hover: #888888;
+  --scrollbar-track-dark: #3a3a3a;
+  --scrollbar-thumb-dark: #222222;
+  --scrollbar-thumb-hover-dark: #000000;
+  --time-tracking-row-height: 38px;
+}

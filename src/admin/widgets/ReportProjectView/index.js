@@ -1,0 +1,1 @@
+export { default as ReportProjectView } from './ReportProjectView.vue'

@@ -1,0 +1,1 @@
+export { default as EntityPreview } from './EntityPreview.vue'

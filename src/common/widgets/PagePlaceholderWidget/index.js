@@ -1,0 +1,1 @@
+export { default as PagePlaceholderWidget } from './PagePlaceholderWidget.vue'
