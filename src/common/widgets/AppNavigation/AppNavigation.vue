@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <NcAppNavigation class="app-navigation">
     <template v-if="hasHeaderSlot" #search>

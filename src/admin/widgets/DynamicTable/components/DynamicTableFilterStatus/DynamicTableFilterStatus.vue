@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div class="relative" v-click-outside="handleCloseDropdown">
     <DynamicTableBadge :active="isActive" @click="handleToggleDropdown">

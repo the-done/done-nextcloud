@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import DefaultLayout from "@/admin/layouts/DefaultLayout.vue";
 
 import SimpleRouterPage from "@/common/pages/SimpleRouterPage.vue";

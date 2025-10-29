@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { getCustomTranslation } from '@/common/shared/lib/customTranslations';
 
 export const customTranslationsMixin = {

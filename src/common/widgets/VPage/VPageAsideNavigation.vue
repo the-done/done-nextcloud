@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div
     class="v-page-aside-navigation flex-[0_0_auto] overflow-auto shadow-md z-100 md:shadow-none md:border-b-0 md:border-r md:border-(--color-border) md:w-[300px] md:h-full"

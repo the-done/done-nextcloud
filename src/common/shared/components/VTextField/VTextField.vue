@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div
     :class="['v-text-field', error || invalid ? 'v-text-field--invalid' : null]"

@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { mapState } from "pinia";
 import { required, integer, decimal } from "vuelidate/lib/validators";
 import { format } from "date-fns";

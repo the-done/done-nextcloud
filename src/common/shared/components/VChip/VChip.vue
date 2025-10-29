@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div :style="style" :class="['v-chip', variant && `v-chip--${variant}`]">
     <slot />

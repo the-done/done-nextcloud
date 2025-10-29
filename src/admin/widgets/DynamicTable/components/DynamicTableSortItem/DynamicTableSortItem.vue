@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div class="dynamic-table-sort-item">
     <DragVertical :size="20" class="dynamic-table-sort-item__handle" />

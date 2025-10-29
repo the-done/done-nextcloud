@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { mapState } from "pinia";
 
 import { usePermissionStore } from "@/admin/app/store/permission";

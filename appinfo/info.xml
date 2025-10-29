@@ -1,31 +1,51 @@
 <?xml version="1.0"?>
 <!--
-  - SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
-  - SPDX-FileCopyrightText: 2014-2016 ownCloud, Inc.
-  - SPDX-License-Identifier: AGPL-3.0-or-later
+  - SPDX-FileCopyrightText: 2025 The Done contributors
+  - SPDX-License-Identifier: MIT
 -->
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>done</id>
 	<name>Done</name>
-	<summary>Application for tracking the working hours of company employees</summary>
-	<description>Application for tracking the working hours of company employees</description>
-	<version>1.0.0</version>
-	<licence>agpl</licence>
-	<author mail="hello@softmus.ru" homepage="https://softmus.ru">Vadim Kunitsyn</author>
-	<namespace>Done</namespace>
-	<category>monitoring</category>
-	<bugs>https://github.com/devSoftmus/done</bugs>
-	<dependencies>
-		<nextcloud min-version="30" max-version="32"/>
-	</dependencies>
-	<navigations>
-		<navigation>
-			<id>done</id>
-			<name>Done</name>
-			<route>done.common.index</route>
-			<icon>/apps/done/task-done.png</icon>
-			<type>link</type>
-		</navigation>
-	</navigations>
+    <summary><![CDATA[Time & project management for teams.]]></summary>
+	<description><![CDATA[
+        Done is a Nextcloud app for managing employees, projects, and time reports in distributed teams.
+        It provides flexible data structures, powerful analytics, and a fully customizable interface — built to make team utilization and workload tracking effortless.
+
+👥 Employees
+
+📁 Projects
+
+🕒 Time Reports
+
+👩‍💻 Teams
+
+🧭 Directions
+
+⚙️ Customization & Access Control
+        ]]>
+    </description>
+    <version>1.0.0</version>
+    <licence>mit</licence>
+    <author mail="hello@softmus.ru" homepage="https://softmus.ru">The Done</author>
+    <namespace>Done</namespace>
+    <category>organization</category>
+    <category>integration</category>
+    <bugs>https://github.com/the-done/nextcloud-done/issues</bugs>
+    <homepage>https://github.com/the-done/nextcloud-done</homepage>
+    <repository type="git">https://github.com/the-done/nextloud-done.git</repository>
+    <documentation>https://github.com/the-done/nextcloud-done/wiki</documentation>
+    <dependencies>
+        <nextcloud min-version="28" max-version="32"/>
+        <php min-version="8.0"/>
+    </dependencies>
+    <navigations>
+        <navigation>
+            <id>done</id>
+            <name>Done</name>
+            <route>done.common.index</route>
+            <icon>done.svg</icon>
+            <type>link</type>
+        </navigation>
+    </navigations>
 </info>

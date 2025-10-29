@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div class="md:flex" data-component-id="TimeTrackingEditForm">
     <form ref="form" class="md:max-w-[425px]" @submit.prevent="handleSubmit">

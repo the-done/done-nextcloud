@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
@@ -8,6 +14,7 @@ use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\DynamicFields_Model;
 use OCA\Done\Models\PermissionsEntities_Model;
 use OCA\Done\Models\RolesPermissions_Model;
+use OCA\Done\Modules\BaseModuleService;
 use OCA\Done\Service\BaseService;
 use OCP\AppFramework\Http;
 use OCP\IRequest;

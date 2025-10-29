@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { MAP_ENTITY_SOURCE } from "@/common/shared/lib/constants";
 
 export const MAP_ACTION_TITLE = {

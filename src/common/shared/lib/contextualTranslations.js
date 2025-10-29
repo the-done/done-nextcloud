@@ -1,4 +1,9 @@
 /**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+/**
  * Utility for working with contextual translations in Vue components
  * Loads translations from l10n/contexts/ files
  */

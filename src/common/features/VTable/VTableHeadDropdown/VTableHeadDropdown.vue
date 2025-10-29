@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div v-if="value" class="v-table-dropdown v-table-dropdown--top">
     <VTableHeadSort :item="item" @on-sort="handleSort" />

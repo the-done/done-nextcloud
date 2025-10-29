@@ -81,12 +81,6 @@ npm-init: check-node
 # Build release archive for Nextcloud App Store
 appstore: dev-setup build-js-production
 	mkdir -p $(sign_dir)
-	# mkdir -p build
-	# Install production dependencies
-	# composer install --no-dev --optimize-autoloader
-	# Build frontend
-	# npm ci
-	# npm run build
 	# Create archive
 	rsync -a \
 		--exclude=/.git \

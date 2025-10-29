@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { fetchUserProjectsForReport } from "@/common/entities/users/api";
 import { fetchUserCustomSettings } from "@/common/entities/settings/api";
 import { minutesToHours } from "@/common/shared/lib/helpers";

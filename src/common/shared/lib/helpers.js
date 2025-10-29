@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import Vue from "vue";
 import { ru } from "date-fns/locale";
 import { t } from "@nextcloud/l10n";

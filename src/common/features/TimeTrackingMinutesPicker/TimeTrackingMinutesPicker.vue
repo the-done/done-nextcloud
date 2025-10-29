@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div>
     <div v-for="item in [15, 30, 45]" :key="item" :class="buttonWrapperClass">

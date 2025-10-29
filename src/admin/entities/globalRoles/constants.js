@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 const GLOBAL_ROLES = {
   admin: { id: 1, name: "Administrator" },
   officer: { id: 2, name: "Director" },

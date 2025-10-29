@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuelidate from "vuelidate";

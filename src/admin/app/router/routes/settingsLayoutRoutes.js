@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import DirectionsFork from "vue-material-design-icons/DirectionsFork.vue";
 import Book from "vue-material-design-icons/Book.vue";

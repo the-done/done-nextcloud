@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import axios from "@nextcloud/axios";
 
 export const fetchUserStatistics = async ({ date_from, date_to, projects }) => {

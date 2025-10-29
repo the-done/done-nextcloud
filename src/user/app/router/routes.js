@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import Error404 from "@/common/pages/Error404.vue";
 
 import SimpleRouterPage from "@/common/pages/SimpleRouterPage.vue";

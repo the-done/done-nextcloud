@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div :class="['v-text-area', error && 'v-text-area--invalid']">
     <div v-if="label" class="v-label">

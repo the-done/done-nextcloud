@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { getContextualTranslation, getContextualTranslationWithParams, preloadContextualTranslations } from '@/common/shared/lib/contextualTranslations';
 import { t } from '@nextcloud/l10n';
 

@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div
     class="flex flex-col h-full border-t border-(--color-border) overflow-hidden md:flex-row"

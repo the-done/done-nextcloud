@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <VChip v-if="value" :variant="variant" :square="square" class="v-text-nowrap">
     {{ value }}

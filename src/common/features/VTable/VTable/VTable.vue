@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div :class="['v-table-wrap', isDarkTheme && 'v-table-wrap--dark']">
     <VScrollArea v-if="value && value.length > 0">

@@ -1,4 +1,9 @@
 /**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+/**
  * Setting type constants
  * Correspond to constants in CustomSettings_Model
  */

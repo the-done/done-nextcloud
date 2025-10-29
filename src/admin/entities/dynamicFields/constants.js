@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 export const DYNAMIC_FIELD_TYPES = {
   1: "integer",
   2: "decimal",

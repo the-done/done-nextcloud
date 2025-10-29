@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 export const clickOutside = {
   bind(el, binding, vnode) {
     el.clickOutsideEvent = function (event) {

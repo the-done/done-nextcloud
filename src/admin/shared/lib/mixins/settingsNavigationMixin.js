@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { mapState } from "pinia";
 
 import AccountCog from "vue-material-design-icons/AccountCog.vue";

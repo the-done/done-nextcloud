@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <NcActions>
     <NcActionButton :disabled="isLoading" @click="handleExport('excel')">

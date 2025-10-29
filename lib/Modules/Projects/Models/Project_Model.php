@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+
 namespace OCA\Done\Modules\Projects\Models;
 
 use OCA\Done\Models\Base_Model;

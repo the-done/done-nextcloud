@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div
     class="v-toolbar flex-[0_0_auto] min-h-[52px] py-1 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pr-4 pl-13"

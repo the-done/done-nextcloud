@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div
     class="v-flex v-flex--column h-full v-flex--align-center v-flex--justify-center"

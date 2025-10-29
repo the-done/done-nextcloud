@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div class="report-actions-item">
     <div v-if="hasActionsSlot === true" class="report-actions-item__actions">

@@ -21,3 +21,7 @@ Thumbs.db
 
 /vendor/
 /vendor-bin/
+/tests/
+
+# Scripts
+add-license-headers.sh

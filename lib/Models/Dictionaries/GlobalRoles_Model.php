@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+
 namespace OCA\Done\Models\Dictionaries;
 
 use OCA\Done\Models\Base_Model;
+use OCA\Done\Modules\BaseModuleService;
 use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -281,6 +288,10 @@ class GlobalRoles_Model extends Base_Model
         array $additionalOrderBy = [],
         bool $needDeleted = false,
     ): array {
+        if (!BaseModuleService::moduleExists('finances')) {
+            $filter['id'] = ['!=', self::FINANCE];
+        }
+
         $data = parent::getListByFilter($filter, $fields, $orderBy, $additionalOrderBy, $needDeleted);
 
         return array_map(function ($item) {

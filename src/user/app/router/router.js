@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import VueRouter from "vue-router";
 import { generateUrl } from "@nextcloud/router";
 

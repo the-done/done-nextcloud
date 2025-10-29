@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div data-component-id="EntityPreview" class="flex flex-col gap-8">
     <div v-if="enableAppearancePreview" class="relative">

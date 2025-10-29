@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import {
   LOCALSTORAGE_LAST_REPORT_PROJECT_ID,
   LOCALSTORAGE_LAST_REPORT_MINUTES,

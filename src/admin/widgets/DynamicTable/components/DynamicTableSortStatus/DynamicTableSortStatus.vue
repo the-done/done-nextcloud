@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 <template>
   <div class="flex gap-2 items-center">
     <div class="relative" v-click-outside="handleCloseDropdown">
