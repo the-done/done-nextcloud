@@ -1,9 +1,9 @@
 # ✅ Done — Smart Team & Project Management for Nextcloud
 
 [![Nextcloud](https://img.shields.io/badge/Nextcloud-blue?logo=nextcloud)](https://nextcloud.com)
-[![License: AGPL v3](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/MIT-3.0)
-[![GitHub release](https://img.shields.io/github/v/release/the-done/nextcloud-done)](https://github.com/the-done/done-nextcloud/releases)
-[![Issues](https://img.shields.io/github/issues/the-done/nextcloud-done)](https://github.com/the-done/done-nextcloud/issues)
+[![License: AGPL v3](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit)
+[![GitHub release](https://img.shields.io/github/v/release/the-done/done-nextcloud)](https://github.com/the-done/done-nextcloud/releases)
+[![Issues](https://img.shields.io/github/issues/the-done/done-nextcloud)](https://github.com/the-done/done-nextcloud/issues)
 
 ---
 
