@@ -4,6 +4,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit)
 [![GitHub release](https://img.shields.io/github/v/release/the-done/done-nextcloud)](https://github.com/the-done/done-nextcloud/releases)
 [![Issues](https://img.shields.io/github/issues/the-done/done-nextcloud)](https://github.com/the-done/done-nextcloud/issues)
+![GitHub all releases](https://img.shields.io/github/downloads/the-done/done-nextcloud/total?style=for-the-badge&color=blue) 
 
 ---
 
