@@ -11,6 +11,9 @@ jobs:
   build_and_publish:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     # Uncomment if your repository is in Nextcloud organization
     # environment: release
 
