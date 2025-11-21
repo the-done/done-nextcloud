@@ -540,7 +540,7 @@ export const pageFormCreatorMixin = {
         ...result,
       };
     },
-    async initFormWithDynamicFields({ itemId, data: staticFieldValues }) {
+    async initFormWithDynamicFields({ itemId, data: staticFieldValues } = {}) {
       this.isInitLoading = true;
 
       try {
