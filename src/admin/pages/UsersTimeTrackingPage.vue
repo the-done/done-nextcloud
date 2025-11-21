@@ -39,7 +39,8 @@
          * handleUpdateFilter
          * */
       }}
-      <VPageContent :style="{ scrollPaddingTop: '42px' }">
+      <VPageContent :style="{ scrollPaddingTop: '42px' }" class="relative">
+        <VLoader v-if="isLoading" absolute />
         <div class="flex-[1_1_auto] p-4">
           <TimeTrackingView
             :model-data="modelData"
@@ -73,6 +74,7 @@ import { TimeTrackingAside } from "@/common/widgets/TimeTrackingAside";
 import { TimeTrackingFilter } from "@/common/widgets/TimeTrackingFilter";
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
+import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
 
@@ -98,10 +100,12 @@ export default {
     TimeTrackingAside,
     TimeTrackingFilter,
     VToolbar,
+    VLoader,
   },
   mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
   data: () => ({
     context: "user/time-tracking",
+    isLoading: false,
     modelData: [],
     totals: {},
     userData: null,
@@ -146,6 +150,8 @@ export default {
   methods: {
     t,
     async handleFetchData(payload) {
+      this.isLoading = true;
+
       try {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
@@ -161,6 +167,8 @@ export default {
         this.totals = totals;
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
     async fetchUserData() {

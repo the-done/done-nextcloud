@@ -39,6 +39,7 @@
             :enable-appearance-preview="true"
             @onClickBlock="handleClickBlock"
             @onFileUpload="handleFileUpload"
+            @onColorSubmit="handleColorSubmit"
           />
         </VPagePadding>
       </VPageContent>
@@ -53,15 +54,11 @@ import {
   NcActions,
   NcActionButton,
 } from "@nextcloud/vue";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 import Flag from "vue-material-design-icons/Flag.vue";
 import Pencil from "vue-material-design-icons/Pencil.vue";
 
-import {
-  getDataToViewEntity,
-  saveEntityImage,
-} from "@/admin/entities/common/api";
+import { getDataToViewEntity } from "@/admin/entities/common/api";
 import { fetchTeamPublicDataBySlug } from "@/admin/entities/teams/api";
 
 import { EntityPreview } from "@/admin/widgets/EntityPreview";
@@ -75,11 +72,14 @@ import {
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { entityPreviewMixin } from "@/admin/shared/lib/mixins/entityPreviewMixin";
+
 import { MAP_ENTITY_SOURCE } from "@/common/shared/lib/constants";
 
 export default {
   name: "TeamsPreviewPage",
-  mixins: [contextualTranslationsMixin],
+  mixins: [contextualTranslationsMixin, entityPreviewMixin],
   components: {
     NcBreadcrumbs,
     NcBreadcrumb,
@@ -95,6 +95,7 @@ export default {
     EntityPreview,
   },
   data: () => ({
+    source: MAP_ENTITY_SOURCE["team"],
     isLoading: false,
     publicData: null,
     entityData: null,
@@ -151,7 +152,7 @@ export default {
           fetchTeamPublicDataBySlug({ slug: this.slug }),
           getDataToViewEntity({
             slug: this.slug,
-            source: MAP_ENTITY_SOURCE["team"],
+            source: this.source,
           }),
         ];
 
@@ -165,20 +166,6 @@ export default {
         console.log(e);
       } finally {
         this.isLoading = false;
-      }
-    },
-    async handleFileUpload({ fieldName, image }) {
-      try {
-        await saveEntityImage({
-          slug: this.slug,
-          fieldName,
-          image,
-          source: MAP_ENTITY_SOURCE["team"],
-        });
-
-        this.handleFetchData();
-      } catch (error) {
-        console.error("Error uploading file:", error);
       }
     },
     init() {

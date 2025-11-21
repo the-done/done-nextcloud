@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
- * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2025 The Done contributors
+ * SPDX-License-Identifier: MIT
  */
 
 namespace OCA\Done\Migration;
@@ -1529,8 +1529,9 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
     {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
+        $globalRolesModel = new GlobalRoles_Model();
 
-        if ($this->connection->tableExists('done_global_roles')) {
+        if ($this->connection->tableExists('done_global_roles') && empty($globalRolesModel->getList())) {
             $query = $this->connection->getQueryBuilder();
             $query->insert('done_global_roles');
             $query->values([

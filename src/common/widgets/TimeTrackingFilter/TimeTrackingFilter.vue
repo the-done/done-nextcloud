@@ -9,7 +9,7 @@
     :class="[
       'fixed top-[50px] right-0',
       'flex flex-col w-[300px] max-w-full h-full overflow-auto',
-      'bg-(--color-main-background) shadow-xl z-9999 transition-transform transition-shadow',
+      'bg-(--color-main-background) shadow-xl z-500 transition-transform transition-shadow',
       'md:relative md:top-0 md:w-full md:h-auto md:p-0 md:shadow-none md:transform-[translateX(0)]',
       active === true
         ? 'shadow-xl transform-[translateX(0)]'
@@ -78,11 +78,14 @@ export default {
     },
     handleUpdateFilter(value) {
       // Ignore the separator selection
-      if (value && (value === 'separator' || (typeof value === 'object' && value.id === 'separator'))) {
-
+      if (
+        value &&
+        (value === "separator" ||
+          (typeof value === "object" && value.id === "separator"))
+      ) {
         return;
       }
-      
+
       this.$emit("update:filter");
     },
     fetchDictionaries({ items }) {
@@ -91,7 +94,7 @@ export default {
           const { value, multiple } = item;
 
           // Filter the separator from the options
-          item.options = data.filter(option => option.id !== 'separator');
+          item.options = data.filter((option) => option.id !== "separator");
 
           if (value) {
             if (multiple === true && Array.isArray(value) === true) {

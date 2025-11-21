@@ -50,17 +50,18 @@ class AppearanceService
     /**
      * Save project color
      *
-     * @param string $entityId
+     * @param string $entitySlug
      * @param string $color Color in hex format (#RRGGBB or #RGB)
-     * @param int    $source
+     * @param int $source
      * @return array Operation result
      */
-    public function saveEntityColor(string $entityId, string $color, int $source): array
+    public function saveEntityColor(string $entitySlug, string $color, int $source): array
     {
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model = new $sourceData[$source]['model']();
-        $entityKey =$sourceData[$source]['foreign_key'];
+        $sourceData      = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model           = new $sourceData[$source]['model']();
+        $entityKey       = $sourceData[$source]['foreign_key'];
         $appearanceModel = new $model->appearanceModel();
+        $entityId        = $model->getItemIdBySlug($entitySlug);
 
         if (!$this->validateColor($color)) {
             return [
@@ -71,7 +72,7 @@ class AppearanceService
 
         $data = [
             $entityKey => $entityId,
-            'color'      => $color,
+            'color'    => $color,
         ];
 
         try {
@@ -101,10 +102,10 @@ class AppearanceService
      */
     public function saveEntityImage(string $slug, array $uploadedFile, string $imageField, int $source): array
     {
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model = new $sourceData[$source]['model']();
-        $entityKey =$sourceData[$source]['foreign_key'];
-        $entityId = $model->getItemIdBySlug($slug);
+        $sourceData      = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model           = new $sourceData[$source]['model']();
+        $entityKey       = $sourceData[$source]['foreign_key'];
+        $entityId        = $model->getItemIdBySlug($slug);
         $appearanceModel = new $model->appearanceModel();
 
         // 1. File validation (only images)
@@ -137,8 +138,8 @@ class AppearanceService
 
         // 4. Upsert record in DB (create or update)
         $data = [
-            $entityKey => $entityId,
-            $imageField  => $fileName,
+            $entityKey  => $entityId,
+            $imageField => $fileName,
         ];
 
         try {

@@ -4,7 +4,7 @@
  */
 
 <template>
-  <VAside :value="active" @input="handleClose">
+  <VAside :value="active" class="z-1500" @input="handleClose">
     <TimeTrackingEditForm
       v-model="formValues"
       :project-options="projectOptions"

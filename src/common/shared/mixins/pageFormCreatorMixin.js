@@ -42,6 +42,7 @@ export const pageFormCreatorMixin = {
   },
   data() {
     return {
+      isInitLoading: true,
       formValues: {},
       dynamicFieldsRawData: [],
       dynamicFieldRawValues: [],
@@ -539,7 +540,9 @@ export const pageFormCreatorMixin = {
         ...result,
       };
     },
-    async initFormWithDynamicFields({ itemId, data: staticFieldValues }) {
+    async initFormWithDynamicFields({ itemId, data: staticFieldValues } = {}) {
+      this.isInitLoading = true;
+
       try {
         if (!this.source) {
           throw new Error(t("done", "Source not found"));
@@ -582,6 +585,8 @@ export const pageFormCreatorMixin = {
         }
       } catch (e) {
         handleRestErrors(e);
+      } finally {
+        this.isInitLoading = false;
       }
     },
   },

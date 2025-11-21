@@ -4,8 +4,9 @@
  */
 
 <template>
-  <VPageContent>
-    <VPagePadding>
+  <VPageContent class="relative">
+    <VLoader v-if="isInitLoading || isLoading" absolute />
+    <VPagePadding v-if="isInitLoading === false">
       <div
         v-if="hasWarnings === true"
         class="v-flex v-flex--column v-flex--gap-1 mb-4"
@@ -104,8 +105,6 @@ import { t } from "@nextcloud/l10n";
 
 import Account from "vue-material-design-icons/Account.vue";
 import BookOpenVariant from "vue-material-design-icons/BookOpenVariant.vue";
-/* import { format } from "date-fns"; */
-import { minValue } from "vuelidate/lib/validators";
 
 import { fetchUsers } from "@/common/entities/users/api";
 import {
@@ -121,16 +120,16 @@ import {
   fetchCustomersDictionary,
 } from "@/admin/entities/dictionaries/api";
 
-import { pageFormCreatorMixin } from "@/common/shared/mixins/pageFormCreatorMixin";
-
 import { VPageContent, VPagePadding } from "@/common/widgets/VPage";
 import { FormCreator } from "@/common/widgets/FormCreator";
 
+import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
+
+import { pageFormCreatorMixin } from "@/common/shared/mixins/pageFormCreatorMixin";
 import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 import { getJoinString, handleRestErrors } from "@/common/shared/lib/helpers";
 
-import { FIELD_WRONG_VALUE_ERROR } from "@/common/shared/lib/constants";
 import { MAP_ENTITY_SOURCE } from "@/common/shared/lib/constants";
 
 export default {
@@ -142,6 +141,7 @@ export default {
     VPageContent,
     VPagePadding,
     FormCreator,
+    VLoader,
     Account,
     BookOpenVariant,
   },
@@ -153,6 +153,7 @@ export default {
     customerOptions: [],
     userOptions: [],
     entityModel: {},
+    isLoading: false,
     isDictionaryLoading: true,
     isSortable: true,
     source: MAP_ENTITY_SOURCE["project"],
@@ -270,6 +271,8 @@ export default {
   methods: {
     t,
     async handleCreate() {
+      this.isLoading = true;
+
       try {
         const { staticFields, dynamicFields } = this.transformDataForRest(); // pageFormCreatorMixin
 
@@ -285,9 +288,13 @@ export default {
         this.$router.push({ name: "project-table" });
       } catch (e) {
         handleRestErrors(e);
+
+        this.isLoading = false;
       }
     },
     async handleUpdate() {
+      this.isLoading = true;
+
       try {
         const { staticFields, dynamicFields } = this.transformDataForRest(); // pageFormCreatorMixin
 
@@ -307,6 +314,8 @@ export default {
         this.$router.push({ name: "project-table" });
       } catch (e) {
         handleRestErrors(e);
+
+        this.isLoading = false;
       }
     },
     handleSubmit() {

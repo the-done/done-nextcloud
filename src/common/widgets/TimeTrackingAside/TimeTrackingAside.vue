@@ -8,7 +8,7 @@
     data-component-id="TimeTrackingAside"
     :class="[
       'flex-[0_0_auto] flex flex-col w-full',
-      'overflow-auto shadow-md z-9999',
+      'overflow-auto shadow-md z-500',
       'md:w-auto md:max-w-[340px] md:min-w-[300px] md:border-r md:border-(--color-border) md:shadow-none',
     ]"
   >

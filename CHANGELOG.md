@@ -19,5 +19,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - File attachments support
 - Field comments and history tracking
 
+## 1.1.0 – 2025-11-21
 
+### Added
+- Selecting a color in an entity preview
+- Preloaders for the Statistics and Reports sections
+- Loaders in entity forms
 
+### Changed
+- Formatting headers in the Statistics section

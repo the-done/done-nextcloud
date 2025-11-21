@@ -4,8 +4,9 @@
  */
 
 <template>
-  <VPageContent>
-    <VPagePadding>
+  <VPageContent class="relative">
+    <VLoader v-if="isInitLoading || isLoading" absolute />
+    <VPagePadding v-if="isInitLoading === false">
       <div
         v-if="hasWarnings === true"
         class="v-flex v-flex--column v-flex--gap-1 mb-4"
@@ -101,6 +102,7 @@ import { VPageContent, VPagePadding } from "@/common/widgets/VPage";
 import { FormCreator } from "@/common/widgets/FormCreator";
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
+import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import {
   fetchPositionsDictionary,
@@ -117,11 +119,12 @@ export default {
   mixins: [pageFormCreatorMixin, contextualTranslationsMixin],
   components: {
     NcButton,
+    NcNoteCard,
     VPageContent,
     VPagePadding,
     FormCreator,
     VToolbar,
-    NcNoteCard,
+    VLoader,
     Account,
     BookOpenVariant,
   },
@@ -132,6 +135,7 @@ export default {
     positionOptions: [],
     contractTypeOptions: [],
     entityModel: {},
+    isLoading: false,
     isDictionaryLoading: true,
     isSortable: true,
     source: MAP_ENTITY_SOURCE["user"],
@@ -234,6 +238,8 @@ export default {
       return value === null || value === undefined || value === "";
     },
     async handleCreate(callback) {
+      this.isLoading = true;
+
       try {
         const { staticFields, dynamicFields } = this.transformDataForRest(); // pageFormCreatorMixin
 
@@ -259,9 +265,13 @@ export default {
         this.$router.push({ name: "staff-table" });
       } catch (e) {
         handleRestErrors(e);
+
+        this.isLoading = false;
       }
     },
     async handleUpdate() {
+      this.isLoading = true;
+
       try {
         const { staticFields, dynamicFields } = this.transformDataForRest(); // pageFormCreatorMixin
 
@@ -281,6 +291,8 @@ export default {
         this.$router.push({ name: "staff-table" });
       } catch (e) {
         handleRestErrors(e);
+
+        this.isLoading = false;
       }
     },
     handleSubmit(callback) {

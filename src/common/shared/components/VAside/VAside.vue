@@ -7,7 +7,7 @@
   <div
     data-component-id="VAside"
     :class="[
-      'absolute top-0 right-0 flex flex-col w-[768px] max-w-full h-full bg-(--color-main-background) z-9999 transition-transform transition-shadow',
+      'absolute top-0 right-0 flex flex-col w-[768px] max-w-full h-full bg-(--color-main-background) z-500 transition-transform transition-shadow',
       value === true
         ? 'shadow-xl transform-[translateX(0)]'
         : 'shadow-none transform-[translateX(100%)]',

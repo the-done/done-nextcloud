@@ -35,16 +35,16 @@
          * handleUpdateFilter
          * */
       }}
-      <VPageContent class="p-4">
-        <VLoader v-if="isInitLoading === true" />
-        <template v-else>
+      <VPageContent class="relative">
+        <VLoader v-if="isLoading" absolute />
+        <template v-if="isInitLoading === false">
           <VEmptyState
             v-if="modelData && modelData.length === 0"
             :caption="
               contextTranslate('No data found for the selected period', context)
             "
           />
-          <div class="flex flex-col gap-2" v-else>
+          <div class="flex flex-col gap-2 p-4" v-else>
             <div v-for="user in modelData" :key="user.user_slug">
               <ReportActionsUserItem
                 :model-data="user"
@@ -181,7 +181,8 @@ export default {
   data() {
     return {
       context: "admin/users",
-      isInitLoading: false,
+      isLoading: false,
+      isInitLoading: true,
       modelData: [],
       localStorageActiveRangeTypeKey: LOCALSTORAGE_REPORT_STAFF_RANGE_TYPE,
       filterDescriptor: initFilterDescriptor([
@@ -264,6 +265,8 @@ export default {
       row.expanded = !row.expanded;
     },
     async handleFetchData(payload) {
+      this.isLoading = true;
+
       try {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
@@ -277,11 +280,11 @@ export default {
         this.modelData = this.transformDataForFront(data);
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
     async init() {
-      this.isInitLoading = true;
-
       try {
         const localActiveRangeType = localStorage.getItem(
           this.localStorageActiveRangeTypeKey
@@ -291,7 +294,7 @@ export default {
           this.activeRangeType = localActiveRangeType;
         }
 
-        this.initFetchDataWithFilters();
+        await this.initFetchDataWithFilters();
       } catch (e) {
         console.log(e);
       } finally {
