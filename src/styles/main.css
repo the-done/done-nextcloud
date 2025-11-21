@@ -216,74 +216,6 @@
   margin-bottom: var(--default-grid-baseline);
 }
 
-/* TimeTracking */
-
-.time-tracking-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  height: var(--time-tracking-row-height);
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.time-tracking-row--lg .time-tracking-title {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.time-tracking-row--md .time-tracking-title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.time-tracking-row--bold .time-tracking-title {
-  font-weight: 600;
-}
-
-.time-tracking-row--sticky {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--color-main-background);
-  z-index: 100;
-}
-
-.time-tracking-row--sticky-2 {
-  top: var(--time-tracking-row-height);
-  z-index: 50;
-}
-
-.time-tracking-row--sticky-3 {
-  top: calc(var(--time-tracking-row-height) * 2);
-  z-index: 30;
-}
-
-.time-tracking-title {
-  font-size: 14px;
-  font-weight: 400;
-  margin: 0;
-}
-
-.time-tracking-title--hover:not(.time-tracking-title--disabled) {
-  cursor: pointer;
-}
-
-.time-tracking-title--hover:not(.time-tracking-title--disabled):hover {
-  color: var(--color-primary-element);
-}
-
-.time-tracking-title--muted {
-  color: var(--color-placeholder-dark);
-}
-
-.time-tracking-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 /* --- Helpers --- */
 .v-flex {
   display: flex;
@@ -450,5 +382,9 @@
 }
 
 .v-cursor--pointer {
+  cursor: pointer;
+}
+
+.v-cursor--pointer input::file-selector-button {
   cursor: pointer;
 }

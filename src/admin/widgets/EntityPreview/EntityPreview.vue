@@ -5,7 +5,7 @@
 
 <template>
   <div data-component-id="EntityPreview" class="flex flex-col gap-8">
-    <div v-if="enableAppearancePreview" class="relative">
+    <div v-if="enableAppearancePreview" class="flex flex-col gap-4">
       <div
         :style="{
           backgroundImage: backgroundImage?.file_url
@@ -40,51 +40,80 @@
           "
         />
       </div>
-      <div
-        class="flex absolute left-4 overflow-hidden"
-        :style="{ top: '16px' }"
-      >
-        <NcAvatar
-          :is-no-user="true"
-          :size="48"
-          :url="avatarImage?.file_url || ''"
-          display-name="Avatar"
-        />
-        <input
-          :style="{ height: '100%' }"
-          type="file"
-          class="absolute inset-0 opacity-0"
-          @change="
-            (e) =>
-              handleFileUpload({
-                fieldName: 'avatar',
-                image: e.target.files[0],
-              })
-          "
-        />
-      </div>
-      <div
-        class="flex absolute left-4 overflow-hidden"
-        :style="{ top: 'calc(16px + 48px + 16px)' }"
-      >
-        <NcAvatar
-          :is-no-user="true"
-          :size="48"
-          :url="symbolImage?.file_url || ''"
-          display-name="Symbol"
-        />
-        <input
-          :style="{ height: '100%' }"
-          type="file"
-          class="absolute inset-0 opacity-0"
-          @change="
-            (e) =>
-              handleFileUpload({
-                fieldName: 'symbol',
-                image: e.target.files[0],
-              })
-          "
-        />
+      <div class="flex gap-4">
+        <NcPopover :triggers="['hover']" class="v-cursor v-cursor--pointer">
+          <template #trigger="{ attrs }">
+            <div v-bind="attrs" class="relative overflow-hidden">
+              <NcAvatar
+                :is-no-user="true"
+                :size="48"
+                :url="avatarImage?.file_url || ''"
+                :display-name="contextTranslate('Avatar', context)"
+              />
+              <input
+                :style="{ height: '100%' }"
+                type="file"
+                class="absolute inset-0 opacity-0 m-0! p-0! z-100"
+                @change="
+                  (e) =>
+                    handleFileUpload({
+                      fieldName: 'avatar',
+                      image: e.target.files[0],
+                    })
+                "
+              />
+            </div>
+          </template>
+          <div class="p-4">{{ contextTranslate("Avatar", context) }}</div>
+        </NcPopover>
+        <NcPopover :triggers="['hover']" class="v-cursor v-cursor--pointer">
+          <template #trigger="{ attrs }">
+            <div v-bind="attrs" class="relative overflow-hidden">
+              <NcAvatar
+                :is-no-user="true"
+                :size="48"
+                :url="symbolImage?.file_url || ''"
+                :display-name="contextTranslate('Symbol', context)"
+              />
+              <input
+                :style="{ height: '100%' }"
+                type="file"
+                class="absolute inset-0 opacity-0 m-0! p-0! z-100"
+                @change="
+                  (e) =>
+                    handleFileUpload({
+                      fieldName: 'symbol',
+                      image: e.target.files[0],
+                    })
+                "
+              />
+            </div>
+          </template>
+          <div class="p-4">{{ contextTranslate("Symbol", context) }}</div>
+        </NcPopover>
+        <NcPopover :triggers="['hover']" class="v-cursor v-cursor--pointer">
+          <template #trigger="{ attrs }">
+            <div
+              v-bind="attrs"
+              :style="{
+                backgroundColor: entityColor?.value || 'transparent',
+              }"
+              :class="[
+                'relative overflow-hidden size-[48px] rounded-full',
+                !entityColor?.value &&
+                  'border-2 border-(--color-border-dark) hover:border-(--color-border-maxcontrast)',
+              ]"
+            >
+              <input
+                :style="{ width: '100%', height: '100%' }"
+                type="color"
+                class="absolute inset-0 opacity-0 m-0! p-0! z-100"
+                @change="handleColorSubmit"
+              />
+            </div>
+          </template>
+          <div class="p-4">{{ contextTranslate("Color", context) }}</div>
+        </NcPopover>
       </div>
     </div>
     <div
@@ -172,6 +201,7 @@ import {
   NcUserBubble,
   NcAvatar,
   NcEmptyContent,
+  NcPopover,
 } from "@nextcloud/vue";
 
 import Pencil from "vue-material-design-icons/Pencil.vue";
@@ -183,13 +213,14 @@ import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTr
 export default {
   name: "EntityPreview",
   mixins: [contextualTranslationsMixin],
-  emits: ["onClickBlock"],
+  emits: ["onClickBlock", "onFileUpload", "onColorSubmit"],
   components: {
     NcActions,
     NcActionButton,
     NcUserBubble,
     NcAvatar,
     NcEmptyContent,
+    NcPopover,
     Pencil,
     Cancel,
     ImageEditOutline,
@@ -247,13 +278,25 @@ export default {
 
       return this.appearanceData.find((item) => item.field_name === "symbol");
     },
+    entityColor() {
+      if (!this.appearanceData) {
+        return null;
+      }
+
+      return this.appearanceData.find((item) => item.field_name === "color");
+    },
   },
   methods: {
     handleClickBlock(key) {
       this.$emit("onClickBlock", key);
     },
-    async handleFileUpload({ fieldName, image }) {
+    handleFileUpload({ fieldName, image }) {
       this.$emit("onFileUpload", { fieldName, image });
+    },
+    handleColorSubmit(e) {
+      const { value } = e.target;
+
+      this.$emit("onColorSubmit", value);
     },
   },
 };

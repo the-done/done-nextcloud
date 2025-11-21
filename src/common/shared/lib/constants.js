@@ -48,3 +48,5 @@ export const LOCALSTORAGE_REPORT_PROJECT_RANGE_TYPE =
 
 export const FIELD_IS_REQUIRED_ERROR = "Required field";
 export const FIELD_WRONG_VALUE_ERROR = "Invalid value";
+
+export const LOADER_SIZE = 40;

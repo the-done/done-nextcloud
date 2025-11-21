@@ -4,16 +4,23 @@
  */
 
 <template>
-  <div class="report-project-view">
+  <div>
     <div
-      v-for="project in modelData"
+      v-for="(project, index) in modelData"
       :key="project.id"
-      class="report-project-view__project-block"
+      :class="{
+        'p-4': true,
+        'border-t border-(--color-border)': index > 0,
+      }"
     >
       <!-- PROJECT -->
       <div
         v-if="isTitleVisible('project')"
-        class="time-tracking-row time-tracking-row--lg time-tracking-row--sticky"
+        :class="{
+          [classNames.row]: true,
+          [classNames.sticky]: true,
+          'top-0 z-100': true,
+        }"
       >
         <ReportActionsProjectItem
           :model-data="{
@@ -43,19 +50,20 @@
         <div v-for="year in project.children" :key="year.id">
           <div
             v-if="isTitleVisible('year')"
-            :class="[
-              'time-tracking-row time-tracking-row--md',
-              activeRangeType === 'year' &&
-                'time-tracking-row--sticky time-tracking-row--sticky-2',
-            ]"
+            :class="{
+              [classNames.row]: true,
+              [classNames.sticky]: activeRangeType === 'year',
+              'top-(--time-tracking-row-height) z-50':
+                activeRangeType === 'year',
+            }"
           >
             <VExpandIconButton
               :expanded="year.expanded"
               @on-click="() => handleExpandRow(year)"
             />
-            <h2 class="time-tracking-title">
+            <div class="text-base font-medium">
               {{ year.id }}
-            </h2>
+            </div>
             <VTimeChip :value="getTimeById(project.id, year.id)" />
           </div>
 
@@ -70,19 +78,20 @@
             <div v-for="quarter in year.children" :key="quarter.id">
               <div
                 v-if="isTitleVisible('quarter')"
-                :class="[
-                  'time-tracking-row time-tracking-row--md',
-                  activeRangeType === 'quarter' &&
-                    'time-tracking-row--sticky time-tracking-row--sticky-2',
-                ]"
+                :class="{
+                  [classNames.row]: true,
+                  [classNames.sticky]: activeRangeType === 'quarter',
+                  'top-(--time-tracking-row-height) z-50':
+                    activeRangeType === 'quarter',
+                }"
               >
                 <VExpandIconButton
                   :expanded="quarter.expanded"
                   @on-click="() => handleExpandRow(quarter)"
                 />
-                <h3 class="time-tracking-title">
+                <div class="text-base font-medium">
                   {{ getQuarterTitle(quarter.id) }}
-                </h3>
+                </div>
                 <VTimeChip
                   :value="getTimeById(project.id, year.id, quarter.id)"
                 />
@@ -99,22 +108,28 @@
                 <div v-for="month in quarter.children" :key="month.id">
                   <div
                     v-if="isTitleVisible('month')"
-                    :class="[
-                      'time-tracking-row time-tracking-row--md',
-                      ['year', 'quarter', 'month'].includes(activeRangeType) ===
-                        true &&
-                        'time-tracking-row--sticky time-tracking-row--sticky-2',
-                      ['year', 'quarter'].includes(activeRangeType) === true &&
-                        'time-tracking-row--sticky-3',
-                    ]"
+                    :class="{
+                      [classNames.row]: true,
+                      [classNames.sticky]: [
+                        'year',
+                        'quarter',
+                        'month',
+                      ].includes(activeRangeType),
+                      'top-(--time-tracking-row-height) z-50':
+                        activeRangeType === 'month',
+                      'top-[calc(var(--time-tracking-row-height)*2)] z-30': [
+                        'year',
+                        'quarter',
+                      ].includes(activeRangeType),
+                    }"
                   >
                     <VExpandIconButton
                       :expanded="month.expanded"
                       @on-click="() => handleExpandRow(month)"
                     />
-                    <h4 class="time-tracking-title">
+                    <div class="text-base font-medium">
                       {{ getMonthTitle(month.id) }}
-                    </h4>
+                    </div>
                     <VTimeChip
                       :value="
                         getTimeById(project.id, year.id, quarter.id, month.id)
@@ -133,23 +148,24 @@
                     <div
                       v-for="week in month.children"
                       :key="week.id"
-                      class="report-project-view__sub"
+                      class="pl-12"
                     >
                       <div
                         v-if="isTitleVisible('week', week.isHiddenTitle)"
-                        :class="[
-                          'time-tracking-row time-tracking-row--bold',
-                          activeRangeType === 'week' &&
-                            'time-tracking-row--sticky time-tracking-row--sticky-2',
-                        ]"
+                        :class="{
+                          [classNames.row]: true,
+                          [classNames.sticky]: activeRangeType === 'week',
+                          'top-(--time-tracking-row-height) z-50':
+                            activeRangeType === 'week',
+                        }"
                       >
                         <VExpandIconButton
                           :expanded="week.expanded"
                           @on-click="() => handleExpandRow(week)"
                         />
-                        <h4 class="time-tracking-title">
+                        <div class="text-base font-medium">
                           {{ getWeekTitle(week.id) }}
-                        </h4>
+                        </div>
                         <VTimeChip
                           :value="
                             getTimeById(project.id, year.id, 'week', week.id)
@@ -168,14 +184,14 @@
                         <div
                           v-for="day in week.children"
                           :key="day.id"
-                          class="report-project-view__sub"
+                          class="pl-12"
                         >
                           <div
                             v-if="isTitleVisible('day')"
                             :id="getDayId(day.id, month.id, year.id)"
-                            class="time-tracking-row"
+                            :class="classNames.row"
                           >
-                            <div class="report-project-view-expand">
+                            <div class="w-[34px]">
                               <VExpandIconButton
                                 v-if="day.children && day.children.length > 0"
                                 :expanded="day.expanded"
@@ -183,11 +199,12 @@
                               />
                             </div>
                             <div
-                              :class="[
-                                'time-tracking-title',
-                                isWeekend(day.day_name) &&
-                                  'time-tracking-title--muted',
-                              ]"
+                              :class="{
+                                'text-base': true,
+                                'text-(--color-placeholder-dark)': isWeekend(
+                                  day.day_name
+                                ),
+                              }"
                             >
                               {{
                                 getDayTitle(
@@ -223,7 +240,7 @@
                             <div
                               v-for="user in day.children"
                               :key="user.user_id"
-                              class="report-project-view__sub"
+                              class="pl-12"
                             >
                               <ReportActionsUserItem
                                 :model-data="user"
@@ -245,7 +262,7 @@
                                   user.reports &&
                                   user.reports.length > 0
                                 "
-                                class="time-tracking-list"
+                                class="flex flex-col gap-2"
                               >
                                 <TimeTrackingItem
                                   v-for="report in user.reports"
@@ -299,8 +316,8 @@ import VExpandIconButton from "@/common/shared/components/VExpandIconButton/VExp
 import { getJoinString, isEmptyValue } from "@/common/shared/lib/helpers";
 
 import { MONTHS } from "@/common/shared/lib/constants";
-import { t } from '@nextcloud/l10n';
-import { contextualTranslationsMixin } from '@/common/shared/mixins/contextualTranslationsMixin';
+import { t } from "@nextcloud/l10n";
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "ReportProjectView",
@@ -318,7 +335,11 @@ export default {
   },
   mixins: [contextualTranslationsMixin],
   data: () => ({
-    context: 'admin/projects',
+    context: "admin/projects",
+    classNames: {
+      row: "flex gap-4 items-center h-(--time-tracking-row-height) nowrap",
+      sticky: "sticky left-0 w-full bg-(--color-main-background)",
+    },
   }),
   props: {
     modelData: {
@@ -359,30 +380,34 @@ export default {
     },
     isWeekend(value) {
       const lowerCaseValue = value.toLowerCase();
-      
-      return [t('done', 'Saturday'), t('done', 'Sunday')].includes(lowerCaseValue) === true;
+
+      return (
+        [t("done", "Saturday"), t("done", "Sunday")].includes(
+          lowerCaseValue
+        ) === true
+      );
     },
     getQuarterTitle(value) {
       switch (value) {
         case "1":
-          return t('done', 'Q1');
+          return t("done", "Q1");
         case "2":
-          return t('done', 'Q2');
+          return t("done", "Q2");
         case "3":
-          return t('done', 'Q3');
+          return t("done", "Q3");
         case "4":
-          return t('done', 'Q4');
+          return t("done", "Q4");
       }
     },
     getMonthTitle(monthId) {
       const index = Number(monthId) - 1;
 
-      return t('done', MONTHS[index]);
+      return t("done", MONTHS[index]);
     },
     getWeekTitle(weekId) {
       const [_year, weekNumber] = weekId.split("_");
-      
-      return t('done', '{n} week').replace('{n}', weekNumber);
+
+      return t("done", "{n} week").replace("{n}", weekNumber);
     },
     getDayTitle(dayId, monthId, yearId, day_name) {
       const dayName = day_name.toLowerCase();
@@ -410,36 +435,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.report-project-view__project-block {
-  padding: 16px;
-}
-
-.report-project-view__project-block + .report-project-view__project-block {
-  border-top: 1px solid var(--color-border);
-}
-
-.report-project-view__sub {
-  padding-left: 50px;
-}
-
-.report-project-view-expand {
-  width: 34px;
-}
-
-.report-project-view-user {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.report-project-view-user__time {
-  margin-top: 4px;
-  align-self: flex-start;
-}
-
-.report-project-view-user-list {
-  padding-left: 50px;
-}
-</style>

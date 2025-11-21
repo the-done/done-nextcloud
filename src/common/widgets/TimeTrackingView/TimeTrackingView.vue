@@ -4,19 +4,20 @@
  */
 
 <template>
-  <div class="time-tracking-view">
+  <div>
     <!-- YEAR -->
     <div v-for="{ id: yearId, children: quarters } in modelData" :key="yearId">
       <div
         v-if="isTitleVisible('year')"
-        :class="[
-          'time-tracking-row time-tracking-row--lg',
-          activeRangeType === 'year' && 'time-tracking-row--sticky',
-        ]"
+        :class="{
+          [classNames.row]: true,
+          [classNames.sticky]: activeRangeType === 'year',
+          'top-0': activeRangeType === 'year',
+        }"
       >
-        <h2 class="time-tracking-title">
+        <div class="text-3xl font-semibold">
           {{ yearId }}
-        </h2>
+        </div>
         <VTimeChip
           :value="getHoursById(yearId)"
           :variant="activeRangeType === 'year' ? 'primary' : ''"
@@ -31,14 +32,15 @@
         >
           <div
             v-if="isTitleVisible('quarter')"
-            :class="[
-              'time-tracking-row time-tracking-row--md',
-              activeRangeType === 'quarter' && 'time-tracking-row--sticky',
-            ]"
+            :class="{
+              [classNames.row]: true,
+              [classNames.sticky]: activeRangeType === 'quarter',
+              'top-0': activeRangeType === 'quarter',
+            }"
           >
-            <h3 class="time-tracking-title">
+            <div class="text-2xl font-semibold">
               {{ getQuarterTitle(quarterId) }}
-            </h3>
+            </div>
             <VTimeChip
               :value="getHoursById(yearId, quarterId)"
               :variant="activeRangeType === 'quarter' ? 'primary' : ''"
@@ -53,17 +55,21 @@
             >
               <div
                 v-if="isTitleVisible('month')"
-                :class="[
-                  'time-tracking-row time-tracking-row--md',
-                  ['year', 'quarter', 'month'].includes(activeRangeType) ===
-                    true && 'time-tracking-row--sticky',
-                  ['year', 'quarter'].includes(activeRangeType) === true &&
-                    'time-tracking-row--sticky-2',
-                ]"
+                :class="{
+                  [classNames.row]: true,
+                  [classNames.sticky]: ['year', 'quarter', 'month'].includes(
+                    activeRangeType
+                  ),
+                  'top-0': activeRangeType === 'month',
+                  'top-(--time-tracking-row-height)': [
+                    'year',
+                    'quarter',
+                  ].includes(activeRangeType),
+                }"
               >
-                <h4 class="time-tracking-title">
+                <div class="text-xl font-semibold">
                   {{ getMonthTitle(monthId) }}
-                </h4>
+                </div>
                 <VTimeChip
                   :value="getHoursById(yearId, quarterId, monthId)"
                   :variant="activeRangeType === 'month' ? 'primary' : ''"
@@ -78,14 +84,15 @@
                 >
                   <div
                     v-if="isTitleVisible('week', isHiddenTitle)"
-                    :class="[
-                      'time-tracking-row time-tracking-row--bold',
-                      activeRangeType === 'week' && 'time-tracking-row--sticky',
-                    ]"
+                    :class="{
+                      [classNames.row]: true,
+                      [classNames.sticky]: activeRangeType === 'week',
+                      'top-0': activeRangeType === 'week',
+                    }"
                   >
-                    <h4 class="time-tracking-title">
+                    <div class="text-lg font-semibold">
                       {{ getWeekTitle(weekId) }}
-                    </h4>
+                    </div>
                     <VTimeChip
                       :value="getHoursById(yearId, 'week', weekId)"
                       :variant="activeRangeType === 'week' ? 'primary' : ''"
@@ -97,17 +104,18 @@
                     <div v-for="day in days" :key="day.id">
                       <div
                         :id="getDayId(day.id, monthId, yearId)"
-                        class="time-tracking-row"
+                        :class="classNames.row"
                       >
                         <div
                           v-if="isTitleVisible('day')"
-                          :class="[
-                            'time-tracking-title',
-                            dayDisabled === false &&
-                              'time-tracking-title--hover',
-                            isWeekend(day.day_name) &&
-                              'time-tracking-title--muted',
-                          ]"
+                          :class="{
+                            'text-base': true,
+                            'cursor-pointer hover:text-(--color-primary-element)':
+                              dayDisabled === false,
+                            'text-(--color-placeholder-dark)': isWeekend(
+                              day.day_name
+                            ),
+                          }"
                           @click="handleClickDay(day.id, monthId, yearId)"
                         >
                           {{
@@ -132,7 +140,7 @@
                         :animation="150"
                         handle="[data-handle]"
                         ghost-class="opacity-0"
-                        class="time-tracking-list"
+                        class="flex flex-col gap-2"
                         @start="handleDragStart"
                         @end="
                           (event) =>
@@ -152,7 +160,7 @@
                           @onDelete="handleDelete"
                         />
                       </Draggable>
-                      <div v-else class="time-tracking-list">
+                      <div v-else class="flex flex-col gap-2">
                         <TimeTrackingItem
                           v-for="item in day.children"
                           :key="item.id"
@@ -246,6 +254,10 @@ export default {
     return {
       context: "user/time-tracking",
       dragEndTimeout: null,
+      classNames: {
+        row: "flex gap-4 items-center h-(--time-tracking-row-height) nowrap",
+        sticky: "sticky left-0 w-full z-100 bg-(--color-main-background)",
+      },
     };
   },
   methods: {

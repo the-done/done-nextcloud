@@ -23,7 +23,7 @@ use OCP\IRequest;
 
 class EntityController extends BaseController
 {
-     /**
+    /**
      * Get entity data
      */
     #[NoAdminRequired]
@@ -88,15 +88,15 @@ class EntityController extends BaseController
             return new JSONResponse(
                 [
                     'message'  => $this->translateService->getTranslate('Saved successfully'),
-                    'fileName' => $result['fileName']
+                    'fileName' => $result['fileName'],
                 ],
                 Http::STATUS_OK
             );
         } else {
             return new JSONResponse(
                 [
-                    'message' => $this->translateService->getTranslate('An error occurred while retrieving data') .
-                        $result['message']
+                    'message' => $this->translateService->getTranslate('An error occurred while retrieving data').
+                        $result['message'],
                 ],
                 Http::STATUS_BAD_REQUEST
             );
@@ -133,20 +133,20 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $result = $fieldsOrderingService->saveFieldsOrdering($source, $fields);
+        $result                = $fieldsOrderingService->saveFieldsOrdering($source, $fields);
 
         if ($result['success']) {
             return new JSONResponse(
                 [
                     'message' => $result['message'],
-                    'data' => $result['data']
+                    'data'    => $result['data'],
                 ],
                 Http::STATUS_OK
             );
         } else {
             return new JSONResponse(
                 [
-                    'message' => $result['message']
+                    'message' => $result['message'],
                 ],
                 Http::STATUS_BAD_REQUEST
             );
@@ -173,19 +173,19 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $result = $fieldsOrderingService->resetToDefaultOrdering($source);
+        $result                = $fieldsOrderingService->resetToDefaultOrdering($source);
 
         if ($result['success']) {
             return new JSONResponse(
                 [
-                    'message' => $result['message']
+                    'message' => $result['message'],
                 ],
                 Http::STATUS_OK
             );
         } else {
             return new JSONResponse(
                 [
-                    'message' => $result['message']
+                    'message' => $result['message'],
                 ],
                 Http::STATUS_BAD_REQUEST
             );
@@ -212,11 +212,11 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $data = $fieldsOrderingService->getFieldsOrdering($source);
+        $data                  = $fieldsOrderingService->getFieldsOrdering($source);
 
         return new JSONResponse(
             [
-                'data'    => $data
+                'data' => $data,
             ],
             Http::STATUS_OK
         );
@@ -230,9 +230,9 @@ class EntityController extends BaseController
     #[RequireRole([GlobalRoles_Model::OFFICER])]
     public function saveEntityColor(IRequest $request): JSONResponse
     {
-        $entityId  = $request->getParam('entityId');
-        $color     = $request->getParam('color');
-        $source    = (int)$request->getParam('source');
+        $entitySlug = $request->getParam('slug');
+        $color      = $request->getParam('color');
+        $source     = (int)$request->getParam('source');
 
         if (empty($color)) {
             return new JSONResponse(
@@ -243,7 +243,7 @@ class EntityController extends BaseController
             );
         }
 
-        if (empty($entityId)) {
+        if (empty($entitySlug)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('Not enough data to save'),
@@ -252,7 +252,7 @@ class EntityController extends BaseController
             );
         }
 
-        $result = $this->appearanceService->saveEntityColor($entityId, $color, $source);
+        $result = $this->appearanceService->saveEntityColor($entitySlug, $color, $source);
 
         if ($result['success']) {
             return new JSONResponse(
@@ -280,7 +280,7 @@ class EntityController extends BaseController
     #[Route(type: 'ajax', verb: 'POST', url: '/exportToExcel')]
     public function exportToExcel(IRequest $request): DataDownloadResponse|JSONResponse
     {
-        $source = (int)$request->getParam('source');
+        $source  = (int)$request->getParam('source');
         $filters = $request->getParam('filters', []);
         $options = $request->getParam('options', []);
 
@@ -288,31 +288,31 @@ class EntityController extends BaseController
             return new JSONResponse(
                 [
                     'success' => false,
-                    'message' => $this->translateService->getTranslate('Invalid entity source')
+                    'message' => $this->translateService->getTranslate('Invalid entity source'),
                 ],
                 Http::STATUS_BAD_REQUEST
             );
         }
 
         $result = $this->excelExportService->exportEntityToExcel($source, $filters, $options);
-        
+
         if (!$result['success']) {
             return new JSONResponse(
                 [
                     'success' => false,
-                    'message' => $result['message']
+                    'message' => $result['message'],
                 ],
                 Http::STATUS_BAD_REQUEST
             );
         }
-        
+
         // Return file for download
         $fileContent = file_get_contents($result['filePath']);
-        $mimeType = $result['format'] === 'csv' ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        
+        $mimeType    = $result['format'] === 'csv' ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
         // Clean up temporary file
         $this->excelExportService->cleanupTempFile($result['filePath']);
-        
+
         return new DataDownloadResponse(
             $fileContent,
             $result['fileName'],

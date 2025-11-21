@@ -76,7 +76,7 @@
       </table>
     </VScrollArea>
     <div v-else-if="loading === true" class="v-table-full">
-      <NcLoadingIcon :size="64" />
+      <NcLoadingIcon :size="loaderSize" />
     </div>
     <div class="v-table-full" v-else>
       <NcEmptyContent
@@ -106,6 +106,7 @@ import {
   checkIfDarkTheme,
 } from "@nextcloud/vue";
 import DraggableCol from "vuedraggable";
+import { t } from "@nextcloud/l10n";
 
 import TableSearch from "vue-material-design-icons/TableSearch.vue";
 
@@ -116,8 +117,10 @@ import VTableHead from "../VTableHead/VTableHead.vue";
 import VTableBody from "../VTableBody/VTableBody.vue";
 import VTableRow from "../VTableRow/VTableRow.vue";
 import VTableCol from "../VTableCol/VTableCol.vue";
-import { t } from "@nextcloud/l10n";
+
 import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+
+import { LOADER_SIZE } from "@/common/shared/lib/constants";
 
 export default {
   name: "VTable",
@@ -172,6 +175,7 @@ export default {
   data() {
     return {
       isDragInProcess: false,
+      loaderSize: LOADER_SIZE,
     };
   },
   computed: {

@@ -73,7 +73,8 @@
          * handleUpdateFilter
          * */
       }}
-      <VPageContent :style="{ scrollPaddingTop: '42px' }">
+      <VPageContent :style="{ scrollPaddingTop: '42px' }" class="relative">
+        <VLoader v-if="isLoading" absolute />
         <div class="flex-[1_1_auto] p-4">
           <TimeTrackingView
             :model-data="modelData"
@@ -130,6 +131,7 @@ import { TimeTrackingFilter } from "@/common/widgets/TimeTrackingFilter";
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 import VScrollArea from "@/common/shared/components/VScrollArea/VScrollArea.vue";
+import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
 
@@ -166,12 +168,14 @@ export default {
     TimeTrackingFilter,
     VToolbar,
     VScrollArea,
+    VLoader,
   },
   mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
   data: () => ({
     context: "user/time-tracking",
     modelData: [],
     totals: {},
+    isLoading: false,
     isFormActive: false,
     formDate: getFormatedTodayDate(),
     localStorageActiveDateKey: LOCALSTORAGE_SELF_STATISTICS_ACTIVE_DATE,
@@ -208,6 +212,8 @@ export default {
       this.isFormActive = false;
     },
     async handleFetchData(payload) {
+      this.isLoading = true;
+
       try {
         const filters = payload?.filters || {};
         const { date_from, date_to, callback } = payload;
@@ -226,6 +232,8 @@ export default {
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
     handleCopy({ comment, date, description, minutes, project_id, task_link }) {

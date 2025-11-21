@@ -22,7 +22,7 @@
       </NcButton>
     </template>
     <div class="flex items-center gap-2">
-      <div class="font-medium">
+      <div class="text-base font-medium">
         {{ modelData.project_title }}
       </div>
       <VTimeChip :value="modelData.total" :variant="chipVariant" />

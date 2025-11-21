@@ -34,9 +34,9 @@
          * handleUpdateActiveRangeType
          * */
       }}
-      <VPageContent>
-        <VLoader v-if="isInitLoading === true" />
-        <template v-else>
+      <VPageContent class="relative">
+        <VLoader v-if="isLoading" absolute />
+        <template v-if="isInitLoading === false">
           <VEmptyState
             v-if="modelData && modelData.length === 0"
             :caption="
@@ -117,6 +117,7 @@ export default {
   mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
   data() {
     return {
+      isLoading: false,
       isInitLoading: true,
       modelData: [],
       totals: {},
@@ -171,6 +172,8 @@ export default {
       });
     },
     async handleFetchData(payload) {
+      this.isLoading = true;
+
       try {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
@@ -195,37 +198,11 @@ export default {
         });
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
-    /* async handleUpdateFilter() {
-      this.setFilterQuery();
-
-      await this.fetchDataWithFilters();
-
-      const slug = this.activeFilter?.slug;
-
-      if (!slug) {
-        return;
-      }
-
-      this.$nextTick(() => {
-        this.expandNodes();
-      });
-    },
-    async handleUpdateActiveRangeType(value) {
-      this.activeRangeType = value;
-
-      this.saveLocalStorageActiveRangeType();
-
-      await this.fetchDataWithFilters();
-
-      this.$nextTick(() => {
-        this.expandNodes();
-      });
-    }, */
     async init() {
-      this.isInitLoading = true;
-
       try {
         const localActiveRangeType = localStorage.getItem(
           this.localStorageActiveRangeTypeKey
@@ -235,7 +212,7 @@ export default {
           this.activeRangeType = localActiveRangeType;
         }
 
-        this.initFetchDataWithFilters(); // timeTrackingPageMixin
+        await this.initFetchDataWithFilters(); // timeTrackingPageMixin
       } catch (e) {
         console.log(e);
       } finally {

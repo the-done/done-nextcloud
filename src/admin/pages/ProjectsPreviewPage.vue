@@ -39,6 +39,7 @@
             :enable-appearance-preview="true"
             @onClickBlock="handleClickBlock"
             @onFileUpload="handleFileUpload"
+            @onColorSubmit="handleColorSubmit"
           />
         </VPagePadding>
       </VPageContent>
@@ -53,15 +54,11 @@ import {
   NcActions,
   NcActionButton,
 } from "@nextcloud/vue";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 import BookCog from "vue-material-design-icons/BookCog.vue";
 import Pencil from "vue-material-design-icons/Pencil.vue";
 
-import {
-  getDataToViewEntity,
-  saveEntityImage,
-} from "@/admin/entities/common/api";
+import { getDataToViewEntity } from "@/admin/entities/common/api";
 import { fetchProjectPublicDataBySlug } from "@/common/entities/projects/api";
 
 import { EntityPreview } from "@/admin/widgets/EntityPreview";
@@ -75,11 +72,14 @@ import {
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { entityPreviewMixin } from "@/admin/shared/lib/mixins/entityPreviewMixin";
+
 import { MAP_ENTITY_SOURCE } from "@/common/shared/lib/constants";
 
 export default {
   name: "ProjectsPreviewPage",
-  mixins: [contextualTranslationsMixin],
+  mixins: [contextualTranslationsMixin, entityPreviewMixin],
   components: {
     NcBreadcrumbs,
     NcBreadcrumb,
@@ -95,6 +95,7 @@ export default {
     EntityPreview,
   },
   data: () => ({
+    source: MAP_ENTITY_SOURCE["project"],
     isLoading: false,
     publicData: null,
     entityData: null,
@@ -146,7 +147,7 @@ export default {
           fetchProjectPublicDataBySlug({ slug: this.slug }),
           getDataToViewEntity({
             slug: this.slug,
-            source: MAP_ENTITY_SOURCE["project"],
+            source: this.source,
           }),
         ];
 
@@ -160,20 +161,6 @@ export default {
         console.log(e);
       } finally {
         this.isLoading = false;
-      }
-    },
-    async handleFileUpload({ fieldName, image }) {
-      try {
-        await saveEntityImage({
-          slug: this.slug,
-          fieldName,
-          image,
-          source: MAP_ENTITY_SOURCE["project"],
-        });
-
-        this.handleFetchData();
-      } catch (error) {
-        console.error("Error uploading file:", error);
       }
     },
     init() {

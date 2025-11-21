@@ -28,6 +28,16 @@ export const saveEntityImage = async ({ slug, source, fieldName, image }) => {
   return response;
 };
 
+export const saveEntityColor = async ({ source, slug, color }) => {
+  const response = await axios.post("/saveEntityColor", {
+    source,
+    slug,
+    color,
+  });
+
+  return response;
+};
+
 export const saveFieldsOrdering = async ({ source, fields }) => {
   /**
    * data: [{

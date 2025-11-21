@@ -7,7 +7,11 @@
   <VPage data-id="ReportsCommonPage">
     <VToolbar>
       <NcBreadcrumbs>
-        <NcBreadcrumb :name="contextTranslate('Reports', context)" :to="{ name: 'report-home' }" forceIconText>
+        <NcBreadcrumb
+          :name="contextTranslate('Reports', context)"
+          :to="{ name: 'report-home' }"
+          forceIconText
+        >
           <template #icon>
             <FileChart />
           </template>
@@ -31,20 +35,30 @@
          * handleUpdateFilter
          * */
       }}
-      <VPageContent>
+      <VPageContent class="relative">
+        <VLoader v-if="isLoading" absolute />
         <template v-if="isInitLoading === false">
           <VEmptyState
             v-if="modelData && modelData.length === 0"
-            :caption="contextTranslate('No data found for the selected period', context)"
+            :caption="
+              contextTranslate('No data found for the selected period', context)
+            "
           />
           <template v-else>
             <div
-              v-for="project in modelData"
+              v-for="(project, index) in modelData"
               :key="project.project_id"
-              class="reports-common-page__block"
+              :class="{
+                'p-4': true,
+                'border-t border-(--color-border)': index > 0,
+              }"
             >
               <div
-                class="time-tracking-row time-tracking-row--md time-tracking-row--sticky"
+                :class="[
+                  'sticky top-0 left-0 w-full bg-(--color-main-background) z-100',
+                  'flex gap-4 items-center',
+                  'h-(--time-tracking-row-height) nowrap',
+                ]"
               >
                 <ReportActionsProjectItem
                   :model-data="project"
@@ -53,7 +67,7 @@
               </div>
               <div
                 v-if="project.users && project.users.length > 0"
-                class="v-flex v-flex--column"
+                class="flex flex-col"
               >
                 <ReportActionsUserItem
                   v-for="user in project.users"
@@ -94,6 +108,7 @@ import ReportActionsProjectItem from "@/admin/features/ReportActionsProjectItem/
 
 import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 import VEmptyState from "@/common/shared/components/VEmptyState/VEmptyState.vue";
+import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
 
@@ -102,7 +117,7 @@ import { initFilterDescriptor } from "@/common/shared/lib/filterHelpers";
 import { LOCALSTORAGE_REPORT_COMMON_RANGE_TYPE } from "@/common/shared/lib/constants";
 
 import { t } from "@nextcloud/l10n";
-import { contextualTranslationsMixin } from '@/common/shared/mixins/contextualTranslationsMixin';
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "ReportsCommonPage",
@@ -121,11 +136,13 @@ export default {
     ReportActionsProjectItem,
     VToolbar,
     VEmptyState,
+    VLoader,
   },
   mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
   data() {
     return {
-      isInitLoading: false,
+      isLoading: false,
+      isInitLoading: true,
       modelData: [],
       localStorageActiveRangeTypeKey: LOCALSTORAGE_REPORT_COMMON_RANGE_TYPE,
       filterDescriptor: initFilterDescriptor([
@@ -136,7 +153,7 @@ export default {
           options: [],
           value: [],
           fetchOptionsFunction: fetchProjects,
-          placeholder: this.contextTranslate('Project', this.context),
+          placeholder: this.contextTranslate("Project", this.context),
         },
       ]),
       /* timeTrackingPageMixin
@@ -149,6 +166,8 @@ export default {
   methods: {
     t,
     async handleFetchData(payload) {
+      this.isLoading = true;
+
       try {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
@@ -162,11 +181,11 @@ export default {
         this.modelData = data;
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     },
     async init() {
-      this.isInitLoading = true;
-
       try {
         const localActiveRangeType = localStorage.getItem(
           this.localStorageActiveRangeTypeKey
@@ -176,7 +195,7 @@ export default {
           this.activeRangeType = localActiveRangeType;
         }
 
-        this.initFetchDataWithFilters(); // timeTrackingPageMixin
+        await this.initFetchDataWithFilters(); // timeTrackingPageMixin
       } catch (e) {
         console.log(e);
       } finally {
@@ -189,13 +208,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.reports-common-page__block {
-  padding: 16px;
-}
-
-.reports-common-page__block + .reports-common-page__block {
-  border-top: 1px solid var(--color-border);
-}
-</style>
