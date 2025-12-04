@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -32,8 +31,9 @@ class FieldCommentsService
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(FieldCommentsService::class);
+            self::$instance = Server::get(self::class);
         }
+
         return self::$instance;
     }
 
@@ -55,19 +55,19 @@ class FieldCommentsService
     public function saveComment(array $data): array
     {
         [$validatedData, $errors] = $this->validateCommentData($data);
-        
+
         if (!empty($errors)) {
             return ['success' => false, 'errors' => $errors];
         }
 
         // Проверяем, существует ли уже комментарий для этого поля
         if ($this->fieldCommentModel->commentExistsForField(
-            (int)$validatedData['source'], 
+            (int)$validatedData['source'],
             $validatedData['field']
         )) {
             return [
-                'success' => false, 
-                'errors' => [$this->translateService->getTranslate('Comment already exists for this field')]
+                'success' => false,
+                'errors'  => [$this->translateService->getTranslate('Comment already exists for this field')],
             ];
         }
 
@@ -75,9 +75,11 @@ class FieldCommentsService
 
         if ($commentId) {
             $comment = $this->fieldCommentModel->getItemByFilter(['id' => $commentId]);
+
             if (empty($comment)) {
                 return ['success' => false, 'errors' => ['Failed to retrieve saved comment']];
             }
+
             return ['success' => true, 'data' => $comment];
         }
 
@@ -90,7 +92,7 @@ class FieldCommentsService
     public function updateComment(string $commentId, array $data): array
     {
         [$validatedData, $errors] = $this->validateCommentData($data);
-        
+
         if (!empty($errors)) {
             return ['success' => false, 'errors' => $errors];
         }
@@ -112,6 +114,7 @@ class FieldCommentsService
     {
         try {
             $this->fieldCommentModel->delete($commentId);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -154,7 +157,7 @@ class FieldCommentsService
         // Validate comment
         if (empty($data['comment'])) {
             $errors[] = $this->translateService->getTranslate('Comment text is required');
-        } elseif (strlen(trim($data['comment'])) < 3) {
+        } elseif (\strlen(trim($data['comment'])) < 3) {
             $errors[] = $this->translateService->getTranslate('Comment must be at least 3 characters');
         }
 
@@ -180,20 +183,21 @@ class FieldCommentsService
 
         $sourceFields = $this->getSourceAllFields($source);
 
-        return in_array($field, $sourceFields);
+        return \in_array($field, $sourceFields);
     }
 
     /**
      * Get all fields for entity
      *
      * @param int $source
+     *
      * @return array
      */
     private function getSourceAllFields(int $source): array
     {
-        $sourceData      = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model           = new $sourceData[$source]['model']();
-        $modelFields     = array_keys($model->fields);
+        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model = new $sourceData[$source]['model']();
+        $modelFields = array_keys($model->fields);
         $entityDynFields = array_keys($this->dynamicFieldsModel->getIndexedListByFilter(filter: ['source' => $source]));
 
         return array_merge($modelFields, $entityDynFields);

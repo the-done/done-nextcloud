@@ -5,11 +5,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
-use Doctrine\DBAL\Types\Types;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\DB\Types;
 
 /**
  * Class DynamicFieldsTypes_Model.
@@ -28,7 +27,7 @@ class DynamicFieldsTypes_Model extends Base_Model
     /**
      * Get list of dynamic field types mapped to Nextcloud types
      *
-     * @return array<int,string>
+     * @return array<int,int|string>
      */
     public static function getComparedFieldsTypes(): array
     {

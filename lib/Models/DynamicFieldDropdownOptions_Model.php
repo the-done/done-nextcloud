@@ -5,10 +5,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
-use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -27,40 +25,40 @@ class DynamicFieldDropdownOptions_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'           => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
-            'db_comment' => 'Internal unique key for a record containing a dynamic field value'
+            'db_comment' => 'Internal unique key for a record containing a dynamic field value',
         ],
         'dyn_field_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Dynamic field id',
             'required'   => true,
-            'db_comment' => 'Dynamic field ID. References oc_done_dynamic_fields.id'
+            'db_comment' => 'Dynamic field ID. References oc_done_dynamic_fields.id',
         ],
-        'option_label'    => [
+        'option_label' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Option label',
             'required'   => true,
-            'db_comment' => 'Option label'
+            'db_comment' => 'Option label',
         ],
-        'ordering'      => [
+        'ordering' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Ordering',
             'required'   => false,
-            'db_comment' => 'Ordering option in option list for dynamic field type DROPDOWN'
+            'db_comment' => 'Ordering option in option list for dynamic field type DROPDOWN',
         ],
-        'created_at'   => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
-            'db_comment' => 'Record creation timestamp in UTC'
+            'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'   => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
-            'db_comment' => 'Record last update timestamp in UTC'
+            'db_comment' => 'Record last update timestamp in UTC',
         ],
     ];
 
@@ -68,6 +66,7 @@ class DynamicFieldDropdownOptions_Model extends Base_Model
      * Get options for dynamic field with ordering
      *
      * @param string $dynFieldId
+     *
      * @return array
      */
     public function getOptionsForField(string $dynFieldId): array
@@ -84,6 +83,7 @@ class DynamicFieldDropdownOptions_Model extends Base_Model
      * Get next ordering number for field
      *
      * @param string $dynFieldId
+     *
      * @return int
      */
     public function getNextOrdering(string $dynFieldId): int
@@ -106,13 +106,14 @@ class DynamicFieldDropdownOptions_Model extends Base_Model
      *
      * @param string $dynFieldId
      * @param string $optionLabel
+     *
      * @return array
      */
     public function getOptionByFieldAndLabel(string $dynFieldId, string $optionLabel): array
     {
         return $this->getItemByFilter([
             'dyn_field_id' => $dynFieldId,
-            'option_label' => $optionLabel
+            'option_label' => $optionLabel,
         ]);
     }
 }

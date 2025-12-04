@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -39,7 +38,7 @@ class FieldComment_Model extends Base_Model
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Source entity',
             'required'   => true,
-            'db_comment' => 'Entity source identifier. See OCA\\Done\\Models\\PermissionsEntities_Model constants (e.g., 1 - Users, 2 - Projects).',
+            'db_comment' => 'Entity source identifier. See OCA\Done\Models\PermissionsEntities_Model constants (e.g., 1 - Users, 2 - Projects).',
             'show'       => true,
         ],
         'field' => [
@@ -113,9 +112,7 @@ class FieldComment_Model extends Base_Model
             ],
             ['id']
         );
-        
+
         return !empty($result);
     }
 }
-
-

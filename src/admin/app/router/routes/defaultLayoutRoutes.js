@@ -3,10 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+import FileChart from "vue-material-design-icons/FileChart.vue";
+import CashMultiple from "vue-material-design-icons/CashMultiple.vue";
+
 import DefaultLayout from "@/admin/layouts/DefaultLayout.vue";
 
 import SimpleRouterPage from "@/common/pages/SimpleRouterPage.vue";
-/* import PlaceholderPage from "@/common/pages/PlaceholderPage.vue"; */
+import SectionNavigationPage from "@/admin/pages/SectionNavigationPage.vue";
+import PlaceholderPage from "@/common/pages/PlaceholderPage.vue";
 import Error404 from "@/common/pages/Error404.vue";
 
 import UsersTablePage from "@/admin/pages/UsersTablePage.vue";
@@ -26,6 +30,8 @@ import ProjectsEditUsersPage from "@/admin/pages/ProjectsEditUsersPage.vue";
 import SelfTimeTrackingPage from "@/common/pages/SelfTimeTrackingPage.vue";
 import SelfTimeTrackingEditPage from "@/common/pages/SelfTimeTrackingEditPage.vue";
 
+import ProfilePage from "@/admin/pages/ProfilePage.vue";
+
 import TeamsTablePage from "@/admin/pages/TeamsTablePage.vue";
 import TeamsPreviewPage from "@/admin/pages/TeamsPreviewPage.vue";
 import TeamsEditPage from "@/admin/pages/TeamsEditPage.vue";
@@ -34,12 +40,10 @@ import TeamsEditDirectionsPage from "@/admin/pages/TeamsEditDirectionsPage.vue";
 import TeamsEditProjectsPage from "@/admin/pages/TeamsEditProjectsPage.vue";
 import TeamsEditUsersPage from "@/admin/pages/TeamsEditUsersPage.vue";
 
-import ReportsHomePage from "@/admin/pages/ReportsHomePage.vue";
 import ReportsCommonPage from "@/admin/pages/ReportsCommonPage.vue";
 import ReportsProjectPage from "@/admin/pages/ReportsProjectPage.vue";
 import ReportsStaffPage from "@/admin/pages/ReportsStaffPage.vue";
 
-import FinancesHomePage from "@/admin/pages/FinancesHomePage.vue";
 import FinancesPaymentsPage from "@/admin/pages/FinancesPaymentsPage.vue";
 import FinancesPaymentEditPage from "@/admin/pages/FinancesPaymentEditPage.vue";
 
@@ -70,6 +74,11 @@ export const defaultLayoutRoutes = [
         component: Error404,
       },
       {
+        name: "profile",
+        path: "me",
+        component: ProfilePage,
+      },
+      {
         name: "time-tracking-statistics",
         path: "statistics",
         component: SelfTimeTrackingPage,
@@ -79,11 +88,20 @@ export const defaultLayoutRoutes = [
         component: SimpleRouterPage,
         children: [
           {
-            path: "",
             name: "report-home",
-            component: ReportsHomePage,
-            meta: {
-              permissions: ["canReadReports"],
+            path: "",
+            component: SectionNavigationPage,
+            props: {
+              additionalProps: {
+                navigationName: "reportsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "report-home" },
+                    title: "Reports",
+                    icon: FileChart,
+                  },
+                ],
+              },
             },
           },
           {
@@ -108,37 +126,63 @@ export const defaultLayoutRoutes = [
         component: SimpleRouterPage,
         children: [
           {
-            path: "",
             name: "finances-home",
-            component: FinancesHomePage,
-            meta: {
-              permissions: ["canReadFinances"],
+            path: "",
+            component: SectionNavigationPage,
+            props: {
+              additionalProps: {
+                navigationName: "financesNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "finances-home" },
+                    title: "Finances",
+                    icon: CashMultiple,
+                  },
+                ],
+              },
             },
           },
           {
-            name: "finances-payments",
             path: "payments",
-            component: FinancesPaymentsPage,
-            meta: {
-              permissions: ["canReadFinances"],
-            },
+            component: SimpleRouterPage,
+            children: [
+              {
+                name: "finances-payments-table",
+                path: "",
+                component: FinancesPaymentsPage,
+                meta: {
+                  permissions: ["canReadFinances"],
+                },
+              },
+              {
+                name: "finances-payment-new",
+                path: "payments/new",
+                component: FinancesPaymentEditPage,
+                meta: {
+                  permissions: ["canReadFinances"],
+                },
+              },
+              {
+                name: "finances-payment-edit",
+                path: "payments/:slug",
+                component: FinancesPaymentEditPage,
+                meta: {
+                  permissions: ["canReadFinances"],
+                },
+              },
+            ],
           },
-          {
-            path: "payments/new",
-            name: "finances-payment-new",
-            component: FinancesPaymentEditPage,
-            meta: {
-              permissions: ["canReadFinances"],
-            },
-          },
-          {
-            path: "payments/:slug",
-            name: "finances-payment-edit",
-            component: FinancesPaymentEditPage,
-            meta: {
-              permissions: ["canReadFinances"],
-            },
-          },
+          /* {
+            path: "finances-contracts",
+            component: SimpleRouterPage,
+            children: [
+              {
+                name: "finances-contracts-table",
+                path: "",
+                component: PlaceholderPage,
+              },
+            ],
+          }, */
         ],
       },
       {

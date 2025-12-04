@@ -101,7 +101,13 @@
 
                   <!-- DAYS -->
                   <template v-if="days && days.length > 0">
-                    <div v-for="day in days" :key="day.id">
+                    <div
+                      v-for="day in days"
+                      :key="day.id"
+                      :ref="
+                        (el) => observeDayElement(el, day.id, monthId, yearId)
+                      "
+                    >
                       <div
                         :id="getDayId(day.id, monthId, yearId)"
                         :class="classNames.row"
@@ -134,43 +140,54 @@
                           "
                         />
                       </div>
-                      <Draggable
-                        v-if="taskDraggable"
-                        v-model="day.children"
-                        :animation="150"
-                        handle="[data-handle]"
-                        ghost-class="opacity-0"
-                        class="flex flex-col gap-2"
-                        @start="handleDragStart"
-                        @end="
-                          (event) =>
-                            handleDragEnd({
-                              event,
-                              list: day.children,
-                            })
-                        "
-                      >
-                        <TimeTrackingItem
-                          v-for="item in day.children"
-                          :key="item.id"
-                          :model-data="item"
-                          :disabled="taskDisabled"
-                          :draggable="taskDraggable"
-                          @onCopy="handleCopy"
-                          @onDelete="handleDelete"
-                        />
-                      </Draggable>
-                      <div v-else class="flex flex-col gap-2">
-                        <TimeTrackingItem
-                          v-for="item in day.children"
-                          :key="item.id"
-                          :model-data="item"
-                          :disabled="taskDisabled"
-                          :draggable="taskDraggable"
-                          @onCopy="handleCopy"
-                          @onDelete="handleDelete"
-                        />
-                      </div>
+                      <template v-if="isDayVisible(day.id, monthId, yearId)">
+                        <Draggable
+                          v-if="taskDraggable"
+                          v-model="day.children"
+                          :animation="150"
+                          handle="[data-handle]"
+                          ghost-class="opacity-0"
+                          class="flex flex-col gap-2"
+                          @start="handleDragStart"
+                          @end="
+                            (event) =>
+                              handleDragEnd({
+                                event,
+                                list: day.children,
+                              })
+                          "
+                        >
+                          <TimeTrackingItem
+                            v-for="item in day.children"
+                            :key="item.id"
+                            :model-data="item"
+                            :disabled="taskDisabled"
+                            :draggable="taskDraggable"
+                            @onCopy="handleCopy"
+                            @onDelete="handleDelete"
+                          />
+                        </Draggable>
+                        <div v-else class="flex flex-col gap-2">
+                          <TimeTrackingItem
+                            v-for="item in day.children"
+                            :key="item.id"
+                            :model-data="item"
+                            :disabled="taskDisabled"
+                            :draggable="taskDraggable"
+                            @onCopy="handleCopy"
+                            @onDelete="handleDelete"
+                          />
+                        </div>
+                      </template>
+                      <!-- <div v-else class="flex flex-col gap-2">
+                        <div 
+                          v-for="n in getPlaceholderCount(day.children)" 
+                          :key="n"
+                          class="h-12 bg-gray-100 dark:bg-gray-700 animate-pulse rounded"
+                        >
+                          {{ /** Placeholder */ }}
+                        </div>
+                      </div> -->
                     </div>
                   </template>
                   <!-- /DAYS -->
@@ -195,17 +212,18 @@ import {
   NcActions,
   NcActionButton,
 } from "@nextcloud/vue";
+import { t } from "@nextcloud/l10n";
 import Draggable from "vuedraggable";
 
 import { TimeTrackingItem } from "@/common/features/TimeTrackingItem";
 
 import VTimeChip from "@/common/shared/components/VTimeChip/VTimeChip.vue";
 
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { visibilityMixin } from "@/admin/shared/lib/mixins/visibilityMixin";
 import { minutesToHours, isEmptyValue } from "@/common/shared/lib/helpers";
 
 import { MONTHS } from "@/common/shared/lib/constants";
-import { t } from "@nextcloud/l10n";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "TimeTrackingView",
@@ -219,7 +237,7 @@ export default {
     VTimeChip,
   },
   emits: ["onClickDate", "onCopy", "onDelete", "onDragEnd"],
-  mixins: [contextualTranslationsMixin],
+  mixins: [contextualTranslationsMixin, visibilityMixin],
   props: {
     modelData: {
       type: Array,
@@ -340,6 +358,33 @@ export default {
         this.$emit("onDragEnd", { event, list });
       }, 1000);
     },
+    getDayElementId(dayId, monthId, yearId) {
+      return `day-container-${yearId}-${monthId}-${dayId}`;
+    },
+    observeDayElement(element, dayId, monthId, yearId) {
+      if (!element) {
+        return;
+      }
+
+      const dayElementId = this.getDayElementId(dayId, monthId, yearId);
+
+      this.$nextTick(() => {
+        this.observeElement(element, dayElementId);
+      });
+    },
+    isDayVisible(dayId, monthId, yearId) {
+      const dayElementId = this.getDayElementId(dayId, monthId, yearId);
+
+      return this.isItemVisible(dayElementId); // visibilityMixin
+    },
+    /* getPlaceholderCount(children) {
+      // Placeholders count based on items
+      if (!children || !Array.isArray(children)) {
+        return 1; // Minimum 1 placeholder
+      }
+
+      return Math.max(1, children.length);
+    }, */
   },
 };
 </script>

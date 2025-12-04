@@ -68,6 +68,7 @@ return (new Config())
         'phpdoc_add_missing_param_annotation' => true,
         'phpdoc_align'                        => true,
         'phpdoc_var_annotation_correct_order' => true,
+        'phpdoc_summary'                      => false,
         'single_line_comment_spacing'         => true,
         'phpdoc_to_comment'                   => false,
         'phpdoc_line_span'                    => [

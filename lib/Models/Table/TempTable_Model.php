@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models\Table;
 
 use OCA\Done\Models\Base_Model;
@@ -40,10 +39,10 @@ class TempTable_Model extends Base_Model
         array $filter = [],
         array $sortWithinColumns = [],
     ): array {
-        $dynamicFieldsModel            = new DynamicFields_Model();
-        $dynamicFieldsDataModel        = new DynamicFieldsData_Model();
+        $dynamicFieldsModel = new DynamicFields_Model();
+        $dynamicFieldsDataModel = new DynamicFieldsData_Model();
         $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
-        $this->primarySlugField        = $commonModel->primarySlugField;
+        $this->primarySlugField = $commonModel->primarySlugField;
 
         [$commonFields, $tempTableModelCommonFields] = self::getCommonFieldsForTempTable(
             $commonModel,
@@ -52,7 +51,7 @@ class TempTable_Model extends Base_Model
         [$dynFields, $tempTableModelDynFields] = self::getDynFieldsForTempTable($selectDynColumns);
         $tempTableModelFields = [...$tempTableModelCommonFields, ...$tempTableModelDynFields];
 
-        $commonData          = $commonModel->getListByFilter([], $selectCommonColumns);
+        $commonData = $commonModel->getListByFilter([], $selectCommonColumns);
         $dynSimpleFieldsData = $dynamicFieldsDataModel->getListByFilter(
             ['dyn_field_id' => ['IN', $selectDynColumns, IQueryBuilder::PARAM_STR_ARRAY]]
         );
@@ -63,7 +62,7 @@ class TempTable_Model extends Base_Model
 
         $dynData = [...$dynSimpleFieldsData, ...$dynDropdownData];
 
-        $dynDataIndexed   = BaseService::makeHash($dynData, 'record_id', true, 'dyn_field_id', true);
+        $dynDataIndexed = BaseService::makeHash($dynData, 'record_id', true, 'dyn_field_id', true);
         $dinFieldsIndexed = $dynamicFieldsModel->getIndexedListByFilter(
             'id',
             ['id' => ['IN', $selectDynColumns, IQueryBuilder::PARAM_STR_ARRAY]]
@@ -73,19 +72,19 @@ class TempTable_Model extends Base_Model
 
         $fieldsForInsert = !empty($dynFields) ? "{$commonFields},{$dynFields}" : "{$commonFields}";
 
-        $tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS `*PREFIX*temp_data` ($fieldsForInsert)";
+        $tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS `*PREFIX*temp_data` ({$fieldsForInsert})";
 
         $this->db->executeQuery($tempTable);
 
         foreach ($commonData as &$record) {
-            $dataToSave                    = [];
-            $id                            = $record['id'];
+            $dataToSave = [];
+            $id = $record['id'];
             $dynFieldsDataForRecordGrouped = $dynDataIndexed[$id] ?? [];
 
             foreach ($dynFieldsDataForRecordGrouped as $dynFieldId => $dynFieldsDataForRecord) {
-                $dynFieldType     = (int)$dinFieldsIndexed[$dynFieldId]['field_type'] ?? null;
-                $dynFieldMultiple = (bool)$dinFieldsIndexed[$dynFieldId]['multiple'] ?? false;
-                $dynFieldData     = $dynFieldMultiple ? $dynFieldsDataForRecord : $dynFieldsDataForRecord[0] ?? null;
+                $dynFieldType = (int)$dinFieldsIndexed[$dynFieldId]['field_type'];
+                $dynFieldMultiple = (bool)$dinFieldsIndexed[$dynFieldId]['multiple'];
+                $dynFieldData = $dynFieldMultiple ? $dynFieldsDataForRecord : $dynFieldsDataForRecord[0] ?? null;
 
                 $record[$dynFieldId] = $dynamicFieldsDataModel->getDynFieldValueByType(
                     $dynFieldData,
@@ -133,18 +132,18 @@ class TempTable_Model extends Base_Model
 
     public static function getCommonFieldsForTempTable(Base_Model $model, array $selectCommonColumns = []): array
     {
-        $fields                     = $model->fields;
-        $types                      = self::getCommonDataTypes();
-        $tempTableColumns           = [
+        $fields = $model->fields;
+        $types = self::getCommonDataTypes();
+        $tempTableColumns = [
             'id'        => 'id VARCHAR(32) PRIMARY KEY',
             'slug'      => 'slug VARCHAR(32)',
             'slug_type' => 'slug_type INT',
         ];
         $tempTableModelCommonFields = [
-            'id'        => [
+            'id' => [
                 'type' => IQueryBuilder::PARAM_STR,
             ],
-            'slug'      => [
+            'slug' => [
                 'type' => IQueryBuilder::PARAM_STR,
             ],
             'slug_type' => [
@@ -153,12 +152,12 @@ class TempTable_Model extends Base_Model
         ];
 
         foreach ($fields as $fieldName => $params) {
-            if (!in_array($fieldName, $selectCommonColumns) || in_array($fieldName, $tempTableColumns)) {
+            if (!\in_array($fieldName, $selectCommonColumns) || \in_array($fieldName, $tempTableColumns)) {
                 continue;
             }
 
-            $sqlType                                = $types[$params['type']];
-            $tempTableColumns[$fieldName]           = "`{$fieldName}` {$sqlType}";
+            $sqlType = $types[$params['type']];
+            $tempTableColumns[$fieldName] = "`{$fieldName}` {$sqlType}";
             $tempTableModelCommonFields[$fieldName] = ['type' => $params['type'], 'link' => $params['link'] ?? null];
         }
 
@@ -173,17 +172,17 @@ class TempTable_Model extends Base_Model
             ['id' => ['IN', $selectDynColumns, IQueryBuilder::PARAM_STR_ARRAY]]
         );
 
-        $result              = $tempTableModelDynFields = [];
-        $commonDataTypes     = self::getCommonDataTypes();
+        $result = $tempTableModelDynFields = [];
+        $commonDataTypes = self::getCommonDataTypes();
         $comparedFieldsTypes = DynamicFieldsTypes_Model::getComparedFieldsTypes();
 
         foreach ($fields as $field) {
-            $fieldType     = $field['field_type'];
-            $id            = $field['id'];
+            $fieldType = $field['field_type'];
+            $id = $field['id'];
             $nextcloudType = $comparedFieldsTypes[$fieldType];
-            $sqlType       = $commonDataTypes[$nextcloudType];
+            $sqlType = $commonDataTypes[$nextcloudType];
 
-            $result[]                     = "`{$id}` {$sqlType}";
+            $result[] = "`{$id}` {$sqlType}";
             $tempTableModelDynFields[$id] = ['type' => $nextcloudType];
         }
 
@@ -193,30 +192,31 @@ class TempTable_Model extends Base_Model
     /**
      * Sorts multidimensional array by multiple fields with specified directions
      *
-     * @param array $array Source array
+     * @param array $array     Source array
      * @param array $sortRules Sorting rules in format:
-     *     [
-     *         [field1, direction],
-     *         [field2, direction],
-     *         ...
-     *     ]
-     *     direction: 'ASC' (ascending) or 'DESC' (descending)
+     *                         {
+     *                         [field1, direction],
+     *                         [field2, direction],
+     *                         ...
+     *                         },
+     *                         direction: 'ASC' (ascending) or 'DESC' (descending)
+     *
      * @return array Sorted array
      */
     public function sortByMultipleFields(array $array, array $sortRules): array
     {
-        usort($array, function ($a, $b) use ($sortRules) {
+        usort($array, static function ($a, $b) use ($sortRules) {
             foreach ($sortRules as $rule) {
                 // Check rule correctness
-                if (!is_array($rule) || count($rule) < 2) {
+                if (!\is_array($rule) || \count($rule) < 2) {
                     continue;
                 }
 
-                $field     = $rule[0];
+                $field = $rule[0];
                 $direction = strtoupper($rule[1]);
 
                 // Check field existence in array
-                if (!array_key_exists($field, $a) || !array_key_exists($field, $b)) {
+                if (!\array_key_exists($field, $a) || !\array_key_exists($field, $b)) {
                     continue;
                 }
 

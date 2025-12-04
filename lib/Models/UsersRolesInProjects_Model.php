@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Models\Dictionaries\Roles_Model;
@@ -30,19 +29,19 @@ class UsersRolesInProjects_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
-            'db_comment' => 'Unique identifier for a user role assignment in a project'
+            'db_comment' => 'Unique identifier for a user role assignment in a project',
         ],
-        'user_id'    => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Employee',
             'required'   => true,
             'link'       => User_Model::class,
-            'db_comment' => 'User ID. References oc_done_users_data.id'
+            'db_comment' => 'User ID. References oc_done_users_data.id',
         ],
-        'role_id'    => [
+        'role_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Role in project',
             'required'   => true,
@@ -60,13 +59,13 @@ class UsersRolesInProjects_Model extends Base_Model
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
-            'db_comment' => 'Record creation timestamp in UTC'
+            'db_comment' => 'Record creation timestamp in UTC',
         ],
         'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
-            'db_comment' => 'Record last update timestamp in UTC'
+            'db_comment' => 'Record last update timestamp in UTC',
         ],
     ];
 
@@ -78,15 +77,15 @@ class UsersRolesInProjects_Model extends Base_Model
         [$data, $errors] = parent::validateData($data, $save, $ignoreFields);
 
         if (
-            $save &&
-            !empty(
-            $this->getItemByFilter(
-                [
-                    'user_id'    => $data['user_id'],
-                    'project_id' => $data['project_id'],
-                    'role_id'    => $data['role_id'],
-                ]
-            )
+            $save
+            && !empty(
+                $this->getItemByFilter(
+                    [
+                        'user_id'    => $data['user_id'],
+                        'project_id' => $data['project_id'],
+                        'role_id'    => $data['role_id'],
+                    ]
+                )
             )
         ) {
             $errors[] = $this->translateService->getTranslate(
@@ -95,16 +94,16 @@ class UsersRolesInProjects_Model extends Base_Model
         }
 
         if (
-            !$save &&
-            !empty(
-            $this->getItemByFilter(
-                [
-                    'user_id'    => $data['user_id'],
-                    'project_id' => $data['project_id'],
-                    'role_id'    => $data['role_id'],
-                    'id'         => ['!=', $data['id']],
-                ]
-            )
+            !$save
+            && !empty(
+                $this->getItemByFilter(
+                    [
+                        'user_id'    => $data['user_id'],
+                        'project_id' => $data['project_id'],
+                        'role_id'    => $data['role_id'],
+                        'id'         => ['!=', $data['id']],
+                    ]
+                )
             )
         ) {
             $errors[] = $this->translateService->getTranslate(
@@ -148,7 +147,7 @@ class UsersRolesInProjects_Model extends Base_Model
             $data[$idx]['uname'] = $userName;
         }
 
-        usort($data, fn($a, $b) => strnatcmp($a['uname'], $b['uname']));
+        usort($data, static fn ($a, $b) => strnatcmp($a['uname'], $b['uname']));
 
         return $data;
     }
@@ -162,15 +161,15 @@ class UsersRolesInProjects_Model extends Base_Model
      */
     public function getUsersRolesInProjects(array $projects = []): array
     {
-        $result     = [];
-        $data       = $this->getListByFilter(['project_id' => ['IN', $projects, IQueryBuilder::PARAM_STR_ARRAY]]);
+        $result = [];
+        $data = $this->getListByFilter(['project_id' => ['IN', $projects, IQueryBuilder::PARAM_STR_ARRAY]]);
         $dataLinked = $this->getLinkedList(['project_id' => ['IN', $projects, IQueryBuilder::PARAM_STR_ARRAY]]);
 
         foreach ($data as $idx => $item) {
             $itemLinked = $dataLinked[$idx];
-            $user       = $item['user_id'];
-            $project    = $item['project_id'];
-            $role       = $itemLinked['role_id'] ?? '';
+            $user = $item['user_id'];
+            $project = $item['project_id'];
+            $role = $itemLinked['role_id'] ?? '';
 
             $result[$project][$user][] = $role;
         }
@@ -192,7 +191,7 @@ class UsersRolesInProjects_Model extends Base_Model
         $data = $this->getListByFilter(['user_id' => $userId]);
 
         $projectsIds = BaseService::getField($data, 'project_id', true);
-        $projects    = (new Project_Model())->getIndexedListByFilter(
+        $projects = (new Project_Model())->getIndexedListByFilter(
             'id',
             ['id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]]
         );
@@ -221,57 +220,58 @@ class UsersRolesInProjects_Model extends Base_Model
      * Get projects user participates in, sorted by last usage
      *
      * @param string $userId
-     * @param int $recentCount
+     * @param int    $recentCount
      *
      * @return array<int, array{slug: string, slug_type: int|string, name: string, id: string, is_separator?: bool}>
      */
     public function getUserProjectsForReport(string $userId, int $recentCount = 3): array
     {
         $allProjects = $this->getUserProjects($userId);
-        
+
         if (empty($allProjects)) {
             return [];
         }
-        
+
         $recentProjectIds = $this->getLastUsedProjectIds($userId, $recentCount);
 
         $projectsMap = [];
+
         foreach ($allProjects as $project) {
             $projectsMap[$project['id']] = $project;
         }
-        
+
         $recentProjectsList = [];
         $otherProjects = [];
-        
+
         foreach ($recentProjectIds as $projectId) {
             if (isset($projectsMap[$projectId])) {
                 $recentProjectsList[] = $projectsMap[$projectId];
             }
         }
-        
+
         foreach ($allProjects as $project) {
-            if (!in_array($project['id'], $recentProjectIds)) {
+            if (!\in_array($project['id'], $recentProjectIds)) {
                 $otherProjects[] = $project;
             }
         }
-        
-        usort($otherProjects, fn($a, $b) => strcmp($a['name'], $b['name']));
-        
+
+        usort($otherProjects, static fn ($a, $b) => strcmp($a['name'], $b['name']));
+
         $result = $recentProjectsList;
 
         // Add a separator if there are both the latest and the other projects
         if (!empty($recentProjectsList) && !empty($otherProjects)) {
             $result[] = [
-                'id' => 'separator',
-                'name' => '──────────────',
+                'id'           => 'separator',
+                'name'         => '──────────────',
                 'is_separator' => true,
-                'slug' => 'separator',
-                'slug_type' => 0
+                'slug'         => 'separator',
+                'slug_type'    => 0,
             ];
         }
-        
+
         $result = array_merge($result, $otherProjects);
-        
+
         return $result;
     }
 
@@ -279,28 +279,30 @@ class UsersRolesInProjects_Model extends Base_Model
      * Get last used project IDs by user
      *
      * @param string $userId
-     * @param int $count
+     * @param int    $count
      *
      * @return array<int, string>
      */
     private function getLastUsedProjectIds(string $userId, int $count): array
     {
         $timesModel = new Times_Model();
-        
+
         $reports = $timesModel->getListByFilter(
             ['user_id' => $userId],
             ['project_id', 'created_at'],
             ['created_at', 'DESC']
         );
-        
+
         $uniqueProjectIds = [];
+
         foreach ($reports as $report) {
             $projectId = $report['project_id'];
-            if (!in_array($projectId, $uniqueProjectIds) && count($uniqueProjectIds) < $count) {
+
+            if (!\in_array($projectId, $uniqueProjectIds) && \count($uniqueProjectIds) < $count) {
                 $uniqueProjectIds[] = $projectId;
             }
         }
-        
+
         return $uniqueProjectIds;
     }
 }

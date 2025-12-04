@@ -1,4 +1,4 @@
-.PHONY: help build appstore clean
+.PHONY: help build appstore clean phpstan phpstan-level
 
 app_name=done
 
@@ -35,6 +35,8 @@ help:
 	@echo "  make test-release     - Test release build locally (without App Store upload)"
 	@echo "  make export-certs     - Export certificates from environment variables"
 	@echo "  make clean            - Clean build artifacts"
+	@echo "  make phpstan          - Run PHPStan static analysis with default level (0)"
+	@echo "  make phpstan-level    - Run PHPStan with custom level (usage: make phpstan-level LEVEL=8)"
 
 # Install dependencies
 build:
@@ -217,3 +219,65 @@ test-release:
 # Clean build artifacts
 clean:
 	rm -rf build
+
+cs-fix:
+	composer exec -- php-cs-fixer fix --allow-risky=yes
+
+cs-check:
+	@rm -f .php-cs-fixer.cache
+	composer exec -- php-cs-fixer fix --dry-run --diff --allow-risky=yes
+
+eslint-check:
+	npm run eslint-check
+
+eslint-fix:
+	npm run eslint-fix
+
+nextcloud-upgrade:
+	docker compose exec -T app php ./occ upgrade
+
+migrations-create:
+	@echo "Enter version number (e.g., 22 for version 0022):"
+	@read version; \
+	version_padded=$$(printf "%04d" $$version); \
+	echo "y" | docker compose exec -T app php ./occ migrations:generate done $$version_padded
+
+migrations-execute:
+	docker compose exec -T app php ./occ migrations:execute done $(VERSION)
+
+migrations-rollback:
+	./create-rollback.sh
+
+migrations-status:
+	docker compose exec -T app php ./occ migrations:status done
+
+migrations-migrate:
+	docker compose exec -T app php ./occ migrations:migrate done $(VERSION)
+
+# Tests for checking Cyrillic symbols
+test-cyrillic-unit:
+	vendor/bin/phpunit tests/unit/CyrillicDetectionTest.php
+
+# All application tests
+test-all:
+	vendor/bin/phpunit tests/
+
+# PHPStan static analysis
+phpstan:
+	@if [ ! -f vendor-bin/phpstan/vendor/phpstan/phpstan/phpstan ]; then \
+		echo "PHPStan not installed. Installing..."; \
+		composer bin phpstan install; \
+	fi
+	php vendor-bin/phpstan/vendor/phpstan/phpstan/phpstan analyse --memory-limit=1G
+
+# PHPStan with specified check level (0-9)
+phpstan-level:
+	@if [ ! -f vendor-bin/phpstan/vendor/phpstan/phpstan/phpstan ]; then \
+		echo "PHPStan not installed. Installing..."; \
+		composer bin phpstan install; \
+	fi
+	@if [ -z "$(LEVEL)" ]; then \
+		echo "Error: LEVEL is not set. Usage: make phpstan-level LEVEL=8"; \
+		exit 1; \
+	fi
+	php vendor-bin/phpstan/vendor/phpstan/phpstan/phpstan analyse --memory-limit=1G --level=$(LEVEL)

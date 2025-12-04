@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Connections\DoneConnectionAdapter;
@@ -22,18 +21,21 @@ abstract class Base_Model
     public string $modelTitle;
     public string $modelName;
     public string $dbTableComment;
+
     /**
      * Field definitions for the model
-     * 
+     *
      * @var array<string, array{
-     *     type: int,                    // Database parameter type (IQueryBuilder::PARAM_*)
+     *     type: int|string,             // Database parameter type (IQueryBuilder::PARAM_* or string)
      *     title?: string,               // Display name for the field
      *     required?: bool,              // Whether the field is required
      *     db_comment?: string,          // Database column comment
      *     validation_rules?: array,     // Validation rules (e.g., ['trim' => true])
      *     permission?: bool,            // Whether field requires permission check
      *     show?: bool,                  // Whether to show field in UI
-     *     link?: string                 // Related model class name
+     *     link?: string,                // Related model class name
+     *     unsigned?: bool,              // Is unsigned field
+     *     values?: array<int, string>   // Possible values for translation
      * }>
      */
     public array $fields;
@@ -86,10 +88,10 @@ abstract class Base_Model
 
     public function __construct()
     {
-        $this->baseService      = BaseService::getInstance();
-        $this->userService      = UserService::getInstance();
+        $this->baseService = BaseService::getInstance();
+        $this->userService = UserService::getInstance();
         $this->translateService = TranslateService::getInstance();
-        $this->db               = (new DoneConnectionAdapter())->getInstance();
+        $this->db = (new DoneConnectionAdapter())->getInstance();
         $this->setFieldsWithPreparedValues();
     }
 
@@ -109,11 +111,11 @@ abstract class Base_Model
     /**
      * Get records with filter by ids
      *
-     * @param string[] $ids
-     * @param string[] $fields
-     * @param bool $needIndex
-     * @param bool $group
-     * @param string $keyField
+     * @param string[]    $ids
+     * @param string[]    $fields
+     * @param bool        $needIndex
+     * @param bool        $group
+     * @param string      $keyField
      * @param null|string $subField
      *
      * @return array
@@ -124,7 +126,7 @@ abstract class Base_Model
         bool $needIndex = false,
         bool $group = false,
         string $keyField = 'id',
-        string $subField = null
+        ?string $subField = null
     ): array {
         $qb = $this->db->getQueryBuilder();
 
@@ -148,8 +150,8 @@ abstract class Base_Model
      * Get record by filter
      *
      * @param array<string, mixed> $filter
-     * @param string[] $fields
-     * @param string[] $orderBy
+     * @param string[]             $fields
+     * @param string[]             $orderBy
      *
      * @return array
      */
@@ -166,7 +168,7 @@ abstract class Base_Model
     /**
      * Get record by id
      *
-     * @param string $id
+     * @param string   $id
      * @param string[] $fields
      *
      * @return array
@@ -199,13 +201,13 @@ abstract class Base_Model
         $primarySlugField = $this->primarySlugField ?? '';
 
         if (!empty($primarySlugField) && isset($this->fields[$primarySlugField]) && !empty($item[$primarySlugField])) {
-            $item['slug']      = $item[$primarySlugField];
+            $item['slug'] = $item[$primarySlugField];
             $item['slug_type'] = self::SLUG_TYPE_FIELD;
 
             return $item;
         }
 
-        $item['slug']      = $item['id'];
+        $item['slug'] = $item['id'];
         $item['slug_type'] = self::SLUG_TYPE_ID;
 
         return $item;
@@ -215,11 +217,11 @@ abstract class Base_Model
      * Get record slug
      *
      * @param array<string, mixed> $item
-     * @param null|string $itemId
+     * @param null|string          $itemId
      *
      * @return int|string
      */
-    public function getItemSlug(array $item = [], ?string $itemId = null): int|string
+    public function getItemSlug(array $item = [], ?string $itemId = null): int | string
     {
         $primarySlugField = $this->primarySlugField ?? '';
 
@@ -240,10 +242,10 @@ abstract class Base_Model
      * Get records
      *
      * @param array<string, mixed> $filter
-     * @param string[] $fields
-     * @param string[] $orderBy
-     * @param string[] $additionalOrderBy
-     * @param bool $needDeleted
+     * @param string[]             $fields
+     * @param string[]             $orderBy
+     * @param string[]             $additionalOrderBy
+     * @param bool                 $needDeleted
      *
      * @return array
      */
@@ -296,7 +298,7 @@ abstract class Base_Model
     public function prepareItem(array $item = [], array $dateFields = []): array
     {
         if ($this->unsetIndexField) {
-            //unset($item['id']);
+            // unset($item['id']);
         }
 
         if ($this->needPrepareDates) {
@@ -320,7 +322,7 @@ abstract class Base_Model
 
         foreach ($this->fields as $field => $params) {
             if (
-                in_array(
+                \in_array(
                     $params['type'],
                     [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
                 )
@@ -335,12 +337,12 @@ abstract class Base_Model
     /**
      * Get records indexed by field
      *
-     * @param string $indexField
+     * @param string               $indexField
      * @param array<string, mixed> $filter
-     * @param string[] $fields
-     * @param string[] $orderBy
-     * @param string[] $additionalOrderBy
-     * @param bool $needDeleted
+     * @param string[]             $fields
+     * @param string[]             $orderBy
+     * @param string[]             $additionalOrderBy
+     * @param bool                 $needDeleted
      *
      * @return array
      */
@@ -366,7 +368,7 @@ abstract class Base_Model
     /**
      * Generate filter
      *
-     * @param IQueryBuilder $qb
+     * @param IQueryBuilder        $qb
      * @param array<string, mixed> $filter
      *
      * @return IQueryBuilder
@@ -379,17 +381,17 @@ abstract class Base_Model
             }
 
             $modelField = $this->fields[$field];
-            $fieldType  = $modelField['type'];
+            $fieldType = $modelField['type'];
 
             $operation = $params[0] ?? null;
-            $value     = is_array($params) ? $params[1] : $params;
+            $value = \is_array($params) ? $params[1] : $params;
             $typeParam = $params[2] ?? null;
 
             if (
-                in_array(
+                \in_array(
                     $fieldType,
                     [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
-                ) && !$value instanceof \DateTimeImmutable && !is_array($value)
+                ) && !$value instanceof \DateTimeImmutable && !\is_array($value)
             ) {
                 $value = new \DateTimeImmutable($value);
             }
@@ -398,21 +400,27 @@ abstract class Base_Model
                 case '=':
                     $qb->andWhere($qb->expr()->eq($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case '!=':
                     $qb->andWhere($qb->expr()->neq($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case '>':
                     $qb->andWhere($qb->expr()->gt($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case '<':
                     $qb->andWhere($qb->expr()->lt($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case '>=':
                     $qb->andWhere($qb->expr()->gte($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case '<=':
                     $qb->andWhere($qb->expr()->lte($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
+
                 case 'IN':
                     $qb->andWhere(
                         $qb->expr()->in(
@@ -421,6 +429,7 @@ abstract class Base_Model
                         )
                     );
                     break;
+
                 case 'NOT IN':
                     $qb->andWhere(
                         $qb->expr()->notIn(
@@ -429,22 +438,28 @@ abstract class Base_Model
                         )
                     );
                     break;
+
                 case 'IS NULL':
                     $qb->andWhere($qb->expr()->isNull($field));
                     break;
+
                 case 'IS NOT NULL':
                     $qb->andWhere($qb->expr()->isNotNull($field));
                     break;
+
                 case 'LIKE':
                     $qb->andWhere($qb->expr()->like($field, $qb->createNamedParameter("%{$value}%", $fieldType)));
                     break;
+
                 case 'NOT LIKE':
                     $qb->andWhere($qb->expr()->notLike($field, $qb->createNamedParameter("%{$value}%", $fieldType)));
                     break;
+
                 case 'BETWEEN':
                     $qb->andWhere($qb->expr()->gte($field, $qb->createNamedParameter($value[0])));
                     $qb->andWhere($qb->expr()->lte($field, $qb->createNamedParameter($value[1])));
                     break;
+
                 case 'OR':
                     $conditions = [];
 
@@ -456,7 +471,7 @@ abstract class Base_Model
                         }
                     }
 
-                    if (count($conditions) == 1) {
+                    if (\count($conditions) == 1) {
                         $qb->andWhere(...$conditions);
                     } else {
                         $qb->andWhere(
@@ -464,6 +479,7 @@ abstract class Base_Model
                         );
                     }
                     break;
+
                 case 'AND':
                     $conditions = [];
 
@@ -475,7 +491,7 @@ abstract class Base_Model
                         }
                     }
 
-                    if (count($conditions) == 1) {
+                    if (\count($conditions) == 1) {
                         $qb->andWhere(...$conditions);
                     } else {
                         $qb->andWhere(
@@ -483,6 +499,7 @@ abstract class Base_Model
                         );
                     }
                     break;
+
                 default:
                     $qb->andWhere($qb->expr()->eq($field, $qb->createNamedParameter($value, $fieldType)));
                     break;
@@ -499,24 +516,24 @@ abstract class Base_Model
         }
 
         $modelField = $this->fields[$field];
-        $fieldType  = $modelField['type'];
-        $operation  = $params[0] ?? null;
-        $value      = $params[1] ?? null;
-        $typeParam  = $params[2] ?? null;
+        $fieldType = $modelField['type'];
+        $operation = $params[0] ?? null;
+        $value = $params[1] ?? null;
+        $typeParam = $params[2] ?? null;
 
         if (
-            $value == '' &&
-            in_array($operation, ['=', '!=', '', null]) &&
-            !in_array($fieldType, [IQueryBuilder::PARAM_STR, IQueryBuilder::PARAM_LOB])
+            $value == ''
+            && \in_array($operation, ['=', '!=', '', null])
+            && !\in_array($fieldType, [IQueryBuilder::PARAM_STR, IQueryBuilder::PARAM_LOB])
         ) {
             return '';
         }
 
         return match ($operation) {
-            '=' => $qb->expr()->eq($field, $qb->createNamedParameter($value, $fieldType)),
+            '='  => $qb->expr()->eq($field, $qb->createNamedParameter($value, $fieldType)),
             '!=' => $qb->expr()->neq($field, $qb->createNamedParameter($value, $fieldType)),
-            '>' => $qb->expr()->gt($field, $qb->createNamedParameter($value, $fieldType)),
-            '<' => $qb->expr()->lt($field, $qb->createNamedParameter($value, $fieldType)),
+            '>'  => $qb->expr()->gt($field, $qb->createNamedParameter($value, $fieldType)),
+            '<'  => $qb->expr()->lt($field, $qb->createNamedParameter($value, $fieldType)),
             '>=' => $qb->expr()->gte($field, $qb->createNamedParameter($value, $fieldType)),
             '<=' => $qb->expr()->lte($field, $qb->createNamedParameter($value, $fieldType)),
             'IN' => $qb->expr()->in(
@@ -527,11 +544,11 @@ abstract class Base_Model
                 $field,
                 $qb->createNamedParameter($value, $typeParam ?? IQueryBuilder::PARAM_INT_ARRAY)
             ),
-            'IS NULL' => $qb->expr()->isNull($field),
+            'IS NULL'     => $qb->expr()->isNull($field),
             'IS NOT NULL' => $qb->expr()->isNotNull($field),
-            'LIKE' => $qb->expr()->like($field, $qb->createNamedParameter("%{$value}%", $fieldType)),
-            'NOT LIKE' => $qb->expr()->notLike($field, $qb->createNamedParameter("%{$value}%", $fieldType)),
-            default => $qb->expr()->eq($field, $qb->createNamedParameter($params, $fieldType)),
+            'LIKE'        => $qb->expr()->like($field, $qb->createNamedParameter("%{$value}%", $fieldType)),
+            'NOT LIKE'    => $qb->expr()->notLike($field, $qb->createNamedParameter("%{$value}%", $fieldType)),
+            default       => $qb->expr()->eq($field, $qb->createNamedParameter($params, $fieldType)),
         };
     }
 
@@ -544,7 +561,7 @@ abstract class Base_Model
      */
     public function addData(array $data): ?string
     {
-        $dataToSave      = [];
+        $dataToSave = [];
         $currentDateTime = (new \DateTimeImmutable());
 
         $query = $this->db->getQueryBuilder();
@@ -555,13 +572,13 @@ abstract class Base_Model
                 continue;
             }
 
-            $type  = $this->fields[$field]['type'];
-            $value = in_array(
+            $type = $this->fields[$field]['type'];
+            $value = \in_array(
                 $type,
                 [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
             ) && !empty($value) && !($value instanceof \DateTimeImmutable) ? (new \DateTimeImmutable($value)) : $value;
 
-            $dataToSave[$field] = $query->createNamedParameter($value, $type ?? IQueryBuilder::PARAM_STR);
+            $dataToSave[$field] = $query->createNamedParameter($value, $type);
         }
 
         if (empty($dataToSave)) {
@@ -609,7 +626,7 @@ abstract class Base_Model
      * Update record
      *
      * @param array<string, mixed> $data
-     * @param string $id
+     * @param string               $id
      *
      * @return string
      */
@@ -625,13 +642,13 @@ abstract class Base_Model
                 continue;
             }
 
-            $type  = $this->fields[$field]['type'];
-            $value = in_array(
+            $type = $this->fields[$field]['type'];
+            $value = \in_array(
                 $type,
                 [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
             ) && !empty($value) && !($value instanceof \DateTimeImmutable) ? (new \DateTimeImmutable($value)) : $value;
 
-            $query->set($field, $query->createNamedParameter($value, $type ?? IQueryBuilder::PARAM_STR));
+            $query->set($field, $query->createNamedParameter($value, $type));
         }
 
         if (isset($this->fields['updated_at'])) {
@@ -655,8 +672,6 @@ abstract class Base_Model
      * Delete record
      *
      * @param string $id
-     *
-     * @return void
      */
     public function delete(string $id): void
     {
@@ -678,7 +693,7 @@ abstract class Base_Model
      * Delete record
      *
      * @param array $filter
-     * @return void
+     *
      * @throws Exception
      */
     public function deleteByFilter(array $filter = []): void
@@ -704,14 +719,14 @@ abstract class Base_Model
     /**
      * Get record with linked fields from other models
      *
-     * @param string $id
+     * @param string   $id
      * @param string[] $fields
-     * @param false $returnLinkedRecords
+     * @param false    $returnLinkedRecords
      *
      * @return array
      */
     public function getLinkedItem(
-        string $id = null,
+        ?string $id = null,
         array $fields = ['*'],
         bool $returnLinkedRecords = false
     ): array {
@@ -726,8 +741,8 @@ abstract class Base_Model
      * Get records with linked fields from other models
      *
      * @param array<string, mixed> $filter
-     * @param string[] $fields
-     * @param false $returnLinkedRecords
+     * @param string[]             $fields
+     * @param bool                 $returnLinkedRecords
      *
      * @return array
      */
@@ -764,11 +779,10 @@ abstract class Base_Model
             }
         }
 
-
         foreach ($models as $field => $link) {
-            $values              = $fieldsValues[$field] ?? [];
-            $values              = array_unique($values);
-            $linkedModel         = new $link();
+            $values = $fieldsValues[$field] ?? [];
+            $values = array_unique($values);
+            $linkedModel = new $link();
             $indexedList[$field] = $this->getValuesByIdForModel($values, $linkedModel);
         }
 
@@ -780,7 +794,7 @@ abstract class Base_Model
                 }
 
                 if ($returnLinkedRecords) {
-                    $result[$idx][$field]            = $indexedList[$field][$value] ?? $value;
+                    $result[$idx][$field] = $indexedList[$field][$value] ?? $value;
                     $result[$idx]["{$field}_linked"] = $indexedList[$field][$value]['name'] ?? $value;
                 } else {
                     $result[$idx][$field] = $indexedList[$field][$value]['name'] ?? $value;
@@ -794,15 +808,15 @@ abstract class Base_Model
     /**
      * Get records by ID from specified model
      *
-     * @param string[] $values
+     * @param string[]   $values
      * @param Base_Model $model
      *
      * @return array
      */
-    public function getValuesByIdForModel(array $values, Base_Model $model): array
+    public function getValuesByIdForModel(array $values, self $model): array
     {
-        return !empty($values) ?
-            $model->getListForLink(
+        return !empty($values)
+            ? $model->getListForLink(
                 ['id' => ['IN', $values, IQueryBuilder::PARAM_STR_ARRAY]],
                 true
             ) : [];
@@ -812,15 +826,15 @@ abstract class Base_Model
      * Validate data before saving/updating
      *
      * @param array<string, mixed> $data
-     * @param bool $save
+     * @param bool                 $save
      *
      * @return array
      */
     public function validateData(array $data, bool $save = false, array $ignoreFields = []): array
     {
-        return $save ?
-            $this->validateDataForSave($data, $ignoreFields) :
-            $this->validateDataForUpdate($data, $ignoreFields);
+        return $save
+            ? $this->validateDataForSave($data, $ignoreFields)
+            : $this->validateDataForUpdate($data, $ignoreFields);
     }
 
     /**
@@ -835,28 +849,28 @@ abstract class Base_Model
         $result = $errors = [];
 
         foreach ($this->fields as $field => $params) {
-            if (in_array($field, $this->excludedKeys) || in_array($field, $ignoreFields)) {
+            if (\in_array($field, $this->excludedKeys) || \in_array($field, $ignoreFields)) {
                 continue;
             }
 
             $required = $params['required'] ?? false;
             $needTrim = $params['validation_rules']['trim'] ?? false;
             $unsigned = $params['unsigned'] ?? false;
-            $title    = $params['title'] ?? '';
-            $type     = $params['type'] ?? '';
+            $title = $params['title'] ?? '';
+            $type = $params['type'];
 
             $value = $data[$field] ?? null;
 
             if (empty($value) && $required) {
                 $errors[] = $this->translateService->getTranslate(
-                    "The «{%s}» field must be filled in",
+                    'The «{%s}» field must be filled in',
                     [$this->translateService->getTranslate($title)]
                 );
             }
 
             if ($unsigned && (int)$value < 0) {
                 $errors[] = $this->translateService->getTranslate(
-                    "The «{%s}» field must not contain a negative value",
+                    'The «{%s}» field must not contain a negative value',
                     [$this->translateService->getTranslate($title)]
                 );
             }
@@ -866,7 +880,7 @@ abstract class Base_Model
             }
 
             if (
-                in_array($type, [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE])
+                \in_array($type, [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE])
                 && isset($value)
             ) {
                 $value = (new \DateTimeImmutable($value));
@@ -894,29 +908,29 @@ abstract class Base_Model
         }
 
         foreach ($data as $key => $value) {
-            if (!isset($this->fields[$key]) || in_array($key, $this->excludedKeys) || in_array($key, $ignoreFields)) {
+            if (!isset($this->fields[$key]) || \in_array($key, $this->excludedKeys) || \in_array($key, $ignoreFields)) {
                 continue;
             }
 
-            $params   = $this->fields[$key];
+            $params = $this->fields[$key];
             $required = $params['required'] ?? false;
             $needTrim = $params['validation_rules']['trim'] ?? false;
             $unsigned = $params['unsigned'] ?? false;
-            $title    = $params['title'] ?? '';
-            $type     = $params['type'] ?? '';
+            $title = $params['title'] ?? '';
+            $type = $params['type'];
 
             $value = $value ?? null;
 
             if (empty($value) && $required) {
                 $errors[] = $this->translateService->getTranslate(
-                    "The «{%s}» field must be filled in",
+                    'The «{%s}» field must be filled in',
                     [$this->translateService->getTranslate($title)]
                 );
             }
 
             if ($unsigned && (int)$value < 0) {
                 $errors[] = $this->translateService->getTranslate(
-                    "The «{%s}» field must not contain a negative value",
+                    'The «{%s}» field must not contain a negative value',
                     [$this->translateService->getTranslate($title)]
                 );
             }
@@ -926,7 +940,7 @@ abstract class Base_Model
             }
 
             if (
-                in_array($type, [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE])
+                \in_array($type, [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE])
                 && isset($value)
             ) {
                 $value = (new \DateTimeImmutable($value));
@@ -942,7 +956,7 @@ abstract class Base_Model
      * Get records for linking to other record fields (helper function for getLinkedList)
      *
      * @param array<string, mixed> $filter
-     * @param bool $needIndex
+     * @param bool                 $needIndex
      *
      * @return array
      */
@@ -985,12 +999,12 @@ abstract class Base_Model
     /**
      * Prepare filter by slug
      *
-     * @param string|int $slug
-     * @param int $slugType
+     * @param int|string $slug
+     * @param int        $slugType
      *
      * @return array<string, int|string>
      */
-    public function prepareSlugFilter(string|int $slug, int $slugType): array
+    public function prepareSlugFilter(int | string $slug, int $slugType): array
     {
         $filter = [];
 
@@ -998,6 +1012,7 @@ abstract class Base_Model
             case self::SLUG_TYPE_FIELD:
                 $filter[$this->primarySlugField] = (string)$slug;
                 break;
+
             case self::SLUG_TYPE_ID:
                 $filter['id'] = $slug;
                 break;
@@ -1015,14 +1030,15 @@ abstract class Base_Model
      */
     public function prepareSelectFields(array $fields): array
     {
-        if (!in_array('*', $fields)) {
-            if (isset($this->fields['id']) && !in_array('id', $fields)) {
+        if (!\in_array('*', $fields)) {
+            if (isset($this->fields['id']) && !\in_array('id', $fields)) {
                 $fields[] = 'id';
             }
+
             if (
-                !empty($this->primarySlugField) &&
-                isset($this->fields[$this->primarySlugField]) &&
-                !in_array($this->primarySlugField, $fields)
+                !empty($this->primarySlugField)
+                && isset($this->fields[$this->primarySlugField])
+                && !\in_array($this->primarySlugField, $fields)
             ) {
                 $fields[] = $this->primarySlugField;
             }
@@ -1034,12 +1050,12 @@ abstract class Base_Model
     /**
      * Get record ID by slug and slug_type
      *
-     * @param int|string|null $slug
-     * @param int|null $slugType
+     * @param null|int|string $slug
+     * @param null|int        $slugType
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getItemId(int|string|null $slug, ?int $slugType): ?string
+    public function getItemId(int | string | null $slug, ?int $slugType): ?string
     {
         if (empty($slug) && empty($slugType)) {
             return null;
@@ -1067,11 +1083,11 @@ abstract class Base_Model
     /**
      * Get record ID by slug
      *
-     * @param int|string|null $slug
+     * @param null|int|string $slug
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getItemIdBySlug(int|string|null $slug): int|string|null
+    public function getItemIdBySlug(int | string | null $slug): int | string | null
     {
         if (empty($slug)) {
             return null;
@@ -1096,7 +1112,7 @@ abstract class Base_Model
      * Generate md5 id for new record
      *
      * @param string $dateTime
-     * @param array $dataToSave
+     * @param array  $dataToSave
      *
      * @return string
      */
@@ -1106,7 +1122,7 @@ abstract class Base_Model
 
         foreach ($this->hashFields as $field) {
             $hashFieldValue = $dataToSave[$field] ?? '';
-            $stringForHash  .= "_{$hashFieldValue}";
+            $stringForHash .= "_{$hashFieldValue}";
         }
 
         return BaseService::makeMd5Hash($stringForHash);
@@ -1131,7 +1147,7 @@ abstract class Base_Model
             $query->set(
                 'updated_at',
                 $query->createNamedParameter(
-                    (new \DateTimeImmutable()),
+                    new \DateTimeImmutable(),
                     IQueryBuilder::PARAM_DATETIME_IMMUTABLE
                 )
             );
@@ -1148,7 +1164,6 @@ abstract class Base_Model
      * @param array $filter
      *
      * @return string
-     *
      */
     public function upsertByFilter(array $data = [], array $filter = []): string
     {
@@ -1164,7 +1179,6 @@ abstract class Base_Model
      * @param array $modelFieldsWithPreparedValues
      *
      * @return array
-     *
      */
     public function prepareItemsFields(array $data = [], array $modelFieldsWithPreparedValues = []): array
     {
@@ -1180,7 +1194,6 @@ abstract class Base_Model
      * @param array $modelFieldsWithPreparedValues
      *
      * @return array
-     *
      */
     public function prepareItemFields(array $item = [], array $modelFieldsWithPreparedValues = []): array
     {
@@ -1199,15 +1212,14 @@ abstract class Base_Model
      * Prepare data before sending to frontend
      *
      * @param array $data
-     * @param int $entityId
-     * @param bool $isList
+     * @param int   $entityId
+     * @param bool  $isList
      *
      * @return array
-     *
      */
     public function prepareDataBeforeSend(array $data, int $entityId, bool $isList = false): array
     {
-        $userId    = $this->userService->getCurrentUserId();
+        $userId = $this->userService->getCurrentUserId();
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
 
         $filter = [
@@ -1220,10 +1232,10 @@ abstract class Base_Model
         if ($isList) {
             foreach ($data as $idx => $item) {
                 foreach ($item as $field => $value) {
-                    if ((isset($permissions[$field]) && !$permissions[$field]) || in_array(
-                            $field,
-                            $this->systemFields
-                        )) {
+                    if ((isset($permissions[$field]) && !$permissions[$field]) || \in_array(
+                        $field,
+                        $this->systemFields
+                    )) {
                         unset($data[$idx][$field]);
                     }
                 }
@@ -1233,7 +1245,7 @@ abstract class Base_Model
         }
 
         foreach ($data as $field => $value) {
-            if ((isset($permissions[$field]) && !$permissions[$field]) || in_array($field, $this->systemFields)) {
+            if ((isset($permissions[$field]) && !$permissions[$field]) || \in_array($field, $this->systemFields)) {
                 unset($data[$field]);
             }
         }
@@ -1245,11 +1257,10 @@ abstract class Base_Model
      * Get allowed fields from model
      *
      * @return array
-     *
      */
     public function getAvailableEntityFields(): array
     {
-        $result = array_filter($this->fields, function($params) {
+        $result = array_filter($this->fields, static function ($params) {
             return $params['show'] ?? false;
         });
 

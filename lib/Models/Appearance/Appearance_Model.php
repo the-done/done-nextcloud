@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models\Appearance;
 
 use OCA\Done\Models\Base_Model;

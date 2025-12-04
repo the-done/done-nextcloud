@@ -43,9 +43,6 @@ export const LOCALSTORAGE_REPORT_STAFF_RANGE_TYPE = "done_reportStaffRangeType";
 export const LOCALSTORAGE_REPORT_PROJECT_RANGE_TYPE =
   "done_reportProjectRangeType";
 
-// TODO: Redesign variable name or convert to common filters
-/* export const LOCALSTORAGE_REPORT_PROJECT_ID = "done_reportProjectId"; */
-
 export const FIELD_IS_REQUIRED_ERROR = "Required field";
 export const FIELD_WRONG_VALUE_ERROR = "Invalid value";
 

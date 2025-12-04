@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -37,8 +36,9 @@ class FieldsOrderingService
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(FieldsOrderingService::class);
+            self::$instance = Server::get(self::class);
         }
+
         return self::$instance;
     }
 
@@ -47,6 +47,7 @@ class FieldsOrderingService
      *
      * @param int   $entityId Entity ID
      * @param array $fields   Object of fields with ordering {"name": 1, "email": 2, ...}
+     *
      * @return array [$validatedData, $errors]
      */
     public function validateFieldsOrdering(int $entityId, array $fields): array
@@ -57,6 +58,7 @@ class FieldsOrderingService
         // Check entity existence
         if (!PermissionsEntities_Model::entityExists($entityId)) {
             $errors[] = $this->translateService->getTranslate('Invalid entity');
+
             return [$validatedData, $errors];
         }
 
@@ -81,7 +83,7 @@ class FieldsOrderingService
             }
 
             // Check that field exists in Entity
-            if (!in_array($field, $availableEntityFields)) {
+            if (!\in_array($field, $availableEntityFields)) {
                 $errors[] = $this->translateService->getTranslate('Field ' . $field . ' does not exist in entity');
                 continue;
             }
@@ -94,7 +96,7 @@ class FieldsOrderingService
 
             $validatedData[] = [
                 'field'    => $field,
-                'ordering' => (int)$ordering
+                'ordering' => (int)$ordering,
             ];
         }
 
@@ -106,6 +108,7 @@ class FieldsOrderingService
      *
      * @param int   $entityId Entity ID
      * @param array $fields   Array of fields with ordering
+     *
      * @return array ['success' => bool, 'message' => string, 'data' => array]
      */
     public function saveFieldsOrdering(int $entityId, array $fields): array
@@ -117,7 +120,7 @@ class FieldsOrderingService
             return [
                 'success' => false,
                 'message' => implode(', ', $errors),
-                'data'    => []
+                'data'    => [],
             ];
         }
 
@@ -128,7 +131,7 @@ class FieldsOrderingService
             return [
                 'success' => false,
                 'message' => $this->translateService->getTranslate('User not found'),
-                'data'    => []
+                'data'    => [],
             ];
         }
 
@@ -146,7 +149,7 @@ class FieldsOrderingService
                 $filter = [
                     'user_id'   => $userId,
                     'entity_id' => $entityId,
-                    'field'     => $field
+                    'field'     => $field,
                 ];
 
                 // Data for save/update
@@ -154,7 +157,7 @@ class FieldsOrderingService
                     'user_id'   => $userId,
                     'entity_id' => $entityId,
                     'field'     => $field,
-                    'ordering'  => $ordering
+                    'ordering'  => $ordering,
                 ];
 
                 // Data validation through model
@@ -177,15 +180,16 @@ class FieldsOrderingService
             return [
                 'success' => true,
                 'message' => $this->translateService->getTranslate('Fields ordering saved successfully'),
-                'data'    => $savedData
+                'data'    => $savedData,
             ];
         } catch (\Exception $e) {
             $this->db->rollBack();
+
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error saving fields ordering') . ': ' .
-                    $e->getMessage(),
-                'data'    => []
+                'message' => $this->translateService->getTranslate('Error saving fields ordering') . ': '
+                    . $e->getMessage(),
+                'data' => [],
             ];
         }
     }
@@ -194,6 +198,7 @@ class FieldsOrderingService
      * Get field ordering for user and entity
      *
      * @param int $entityId Entity ID
+     *
      * @return array Array of fields with ordering, sorted by ordering and field name
      */
     public function getFieldsOrdering(int $entityId): array
@@ -205,18 +210,20 @@ class FieldsOrderingService
         }
 
         $model = new FieldsOrdering_Model();
-        $records = $model->getListByFilter([
-            'user_id'   => $userId,
-            'entity_id' => $entityId
+        $records = $model->getListByFilter(
+            [
+                'user_id'   => $userId,
+                'entity_id' => $entityId,
             ],
-            ['user_id','entity_id','field','ordering',]
+            ['user_id', 'entity_id', 'field', 'ordering']
         );
 
         // Sort by ordering (primary) and field name (secondary)
-        usort($records, function ($a, $b) {
+        usort($records, static function ($a, $b) {
             if ($a['ordering'] !== $b['ordering']) {
                 return $a['ordering'] <=> $b['ordering'];
             }
+
             return strcmp($a['field'], $b['field']);
         });
 
@@ -227,15 +234,17 @@ class FieldsOrderingService
      * Reset to default ordering (complete removal of all records for user and entity)
      *
      * @param int $entityId Entity ID
+     *
      * @return array ['success' => bool, 'message' => string]
      */
     public function resetToDefaultOrdering(int $entityId): array
     {
         $userId = $this->userService->getCurrentUserId();
+
         if (empty($userId)) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('User not found')
+                'message' => $this->translateService->getTranslate('User not found'),
             ];
         }
 
@@ -244,14 +253,14 @@ class FieldsOrderingService
         // Get all records for user and entity BEFORE transaction
         $records = $model->getListByFilter([
             'user_id'   => $userId,
-            'entity_id' => $entityId
+            'entity_id' => $entityId,
         ]);
 
         // If records not found, settings were not set
         if (empty($records)) {
             return [
                 'success' => true,
-                'message' => $this->translateService->getTranslate('Fields ordering is already in default state')
+                'message' => $this->translateService->getTranslate('Fields ordering is already in default state'),
             ];
         }
 
@@ -267,13 +276,14 @@ class FieldsOrderingService
 
             return [
                 'success' => true,
-                'message' => $this->translateService->getTranslate('Fields ordering reset to default successfully')
+                'message' => $this->translateService->getTranslate('Fields ordering reset to default successfully'),
             ];
         } catch (\Exception $e) {
             $this->db->rollBack();
+
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error resetting fields ordering')
+                'message' => $this->translateService->getTranslate('Error resetting fields ordering'),
             ];
         }
     }

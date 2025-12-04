@@ -24,7 +24,7 @@
             forceIconText
           >
             <template #icon>
-              <Account />
+              <AccountMultiple />
             </template>
           </NcBreadcrumb>
         </NcBreadcrumbs>
@@ -111,7 +111,7 @@ import {
 import { t } from "@nextcloud/l10n";
 import { mapState } from "pinia";
 
-import Account from "vue-material-design-icons/Account.vue";
+import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import Plus from "vue-material-design-icons/Plus.vue";
 import Pencil from "vue-material-design-icons/Pencil.vue";
 import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
@@ -140,8 +140,8 @@ export default {
     NcActions,
     NcActionButton,
     NcButton,
-    Account,
     ExportButton,
+    AccountMultiple,
     Plus,
     Pencil,
     EyeOutline,

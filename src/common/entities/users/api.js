@@ -20,7 +20,7 @@ export const fetchUsersTableData = async () => {
 export const fetchUserPermissions = async () => {
   const { data } = await axios.post("/getPermissions");
 
-  return { data };
+  return data;
 };
 
 export const fetchAvailableModules = async () => {

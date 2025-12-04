@@ -160,7 +160,6 @@
     "Hide column": "Masquer la colonne",
     "Hide empty fields in preview": "Masquer les champs vides dans l'aperçu",
     "Hours": "Heures",
-    "_%n hour_::_%n hours_": ["%n heure", "%n heures"],
     "In development": "En développement",
     "Insufficient permissions to perform the operation": "Permissions insuffisantes pour effectuer l'opération",
     "Integer": "Nombre entier",
@@ -435,7 +434,10 @@
     "You do not have permission to export data.": "Vous n'avez pas l'autorisation d'exporter des données.",
     "Multiselect": "Sélection multiple",
     "No options available": "Aucune option disponible",
-    "Comment for field": "Commentaire pour le champ"
+    "Comment for field": "Commentaire pour le champ",
+    "Profile": "Profil",
+    "Enter your message": "Entrez votre message",
+    "Submit": "Envoyer"
   },
   "pluralForm": "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

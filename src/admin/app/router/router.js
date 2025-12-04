@@ -46,9 +46,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (permissionStore.isFetched === false) {
-    const { data: permissionsData } = await fetchUserPermissions();
+    const { common, fields, isOfficer } = await fetchUserPermissions();
 
-    permissionStore.list = { ...permissionsData };
+    permissionStore.list = { common, fields };
+    permissionStore.isOfficer = isOfficer;
     permissionStore.isFetched = true;
   }
 

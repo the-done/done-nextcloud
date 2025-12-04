@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
@@ -16,7 +15,6 @@ use OCA\Done\Models\PermissionsEntities_Model;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
-use OCP\AppFramework\Http\Attribute\Route;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -28,11 +26,10 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/getDataToViewEntity')]
     public function getDataToViewEntity(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
-        $slug   = $request->getParam('slug');
+        $slug = $request->getParam('slug');
 
         if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
             return new JSONResponse(
@@ -54,13 +51,12 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/saveEntityImage')]
     public function saveEntityImage(IRequest $request): JSONResponse
     {
-        $source     = (int)$request->getParam('source');
-        $slug       = $request->getParam('slug');
+        $source = (int)$request->getParam('source');
+        $slug = $request->getParam('slug');
         $imageField = $request->getParam('field_name');
-        $image      = $request->getUploadedFile('image');
+        $image = $request->getUploadedFile('image');
 
         if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
             return new JSONResponse(
@@ -92,15 +88,15 @@ class EntityController extends BaseController
                 ],
                 Http::STATUS_OK
             );
-        } else {
-            return new JSONResponse(
-                [
-                    'message' => $this->translateService->getTranslate('An error occurred while retrieving data').
-                        $result['message'],
-                ],
-                Http::STATUS_BAD_REQUEST
-            );
         }
+
+        return new JSONResponse(
+            [
+                'message' => $this->translateService->getTranslate('An error occurred while retrieving data')
+                    . $result['message'],
+            ],
+            Http::STATUS_BAD_REQUEST
+        );
     }
 
     /**
@@ -108,7 +104,6 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/saveFieldsOrdering')]
     public function saveFieldsOrdering(IRequest $request): JSONResponse
     {
         $source = (int)$request->getParam('source');
@@ -133,7 +128,7 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $result                = $fieldsOrderingService->saveFieldsOrdering($source, $fields);
+        $result = $fieldsOrderingService->saveFieldsOrdering($source, $fields);
 
         if ($result['success']) {
             return new JSONResponse(
@@ -143,14 +138,14 @@ class EntityController extends BaseController
                 ],
                 Http::STATUS_OK
             );
-        } else {
-            return new JSONResponse(
-                [
-                    'message' => $result['message'],
-                ],
-                Http::STATUS_BAD_REQUEST
-            );
         }
+
+        return new JSONResponse(
+            [
+                'message' => $result['message'],
+            ],
+            Http::STATUS_BAD_REQUEST
+        );
     }
 
     /**
@@ -158,7 +153,6 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/resetFieldsOrdering')]
     public function resetToDefaultOrdering(IRequest $request): JSONResponse
     {
         $source = (int)$request->getParam('source');
@@ -173,7 +167,7 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $result                = $fieldsOrderingService->resetToDefaultOrdering($source);
+        $result = $fieldsOrderingService->resetToDefaultOrdering($source);
 
         if ($result['success']) {
             return new JSONResponse(
@@ -182,14 +176,14 @@ class EntityController extends BaseController
                 ],
                 Http::STATUS_OK
             );
-        } else {
-            return new JSONResponse(
-                [
-                    'message' => $result['message'],
-                ],
-                Http::STATUS_BAD_REQUEST
-            );
         }
+
+        return new JSONResponse(
+            [
+                'message' => $result['message'],
+            ],
+            Http::STATUS_BAD_REQUEST
+        );
     }
 
     /**
@@ -197,7 +191,6 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/getFieldsOrdering')]
     public function getFieldsOrdering(IRequest $request): JSONResponse
     {
         $source = (int)$request->getParam('source');
@@ -212,7 +205,7 @@ class EntityController extends BaseController
         }
 
         $fieldsOrderingService = \OCA\Done\Service\FieldsOrderingService::getInstance();
-        $data                  = $fieldsOrderingService->getFieldsOrdering($source);
+        $data = $fieldsOrderingService->getFieldsOrdering($source);
 
         return new JSONResponse(
             [
@@ -231,8 +224,8 @@ class EntityController extends BaseController
     public function saveEntityColor(IRequest $request): JSONResponse
     {
         $entitySlug = $request->getParam('slug');
-        $color      = $request->getParam('color');
-        $source     = (int)$request->getParam('source');
+        $color = $request->getParam('color');
+        $source = (int)$request->getParam('source');
 
         if (empty($color)) {
             return new JSONResponse(
@@ -262,14 +255,14 @@ class EntityController extends BaseController
                 ],
                 Http::STATUS_OK
             );
-        } else {
-            return new JSONResponse(
-                [
-                    'message' => $result['message'],
-                ],
-                Http::STATUS_BAD_REQUEST
-            );
         }
+
+        return new JSONResponse(
+            [
+                'message' => $result['message'],
+            ],
+            Http::STATUS_BAD_REQUEST
+        );
     }
 
     /**
@@ -277,10 +270,9 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/exportToExcel')]
-    public function exportToExcel(IRequest $request): DataDownloadResponse|JSONResponse
+    public function exportToExcel(IRequest $request): DataDownloadResponse | JSONResponse
     {
-        $source  = (int)$request->getParam('source');
+        $source = (int)$request->getParam('source');
         $filters = $request->getParam('filters', []);
         $options = $request->getParam('options', []);
 
@@ -308,7 +300,7 @@ class EntityController extends BaseController
 
         // Return file for download
         $fileContent = file_get_contents($result['filePath']);
-        $mimeType    = $result['format'] === 'csv' ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        $mimeType = $result['format'] === 'csv' ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
         // Clean up temporary file
         $this->excelExportService->cleanupTempFile($result['filePath']);

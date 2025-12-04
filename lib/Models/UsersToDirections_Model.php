@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Models\Dictionaries\Direction_Model;
@@ -28,36 +27,36 @@ class UsersToDirections_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'           => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
-            'db_comment' => 'Unique identifier for the user-to-direction link'
+            'db_comment' => 'Unique identifier for the user-to-direction link',
         ],
-        'user_id'      => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'User',
             'link'       => User_Model::class,
             'required'   => true,
-            'db_comment' => 'User ID. References oc_done_users_data.id'
+            'db_comment' => 'User ID. References oc_done_users_data.id',
         ],
         'direction_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Direction',
             'link'       => Direction_Model::class,
             'required'   => true,
-            'db_comment' => 'Direction ID. References oc_done_directions.id'
+            'db_comment' => 'Direction ID. References oc_done_directions.id',
         ],
-        'created_at'   => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
-            'db_comment' => 'Record creation timestamp in UTC'
+            'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'   => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
-            'db_comment' => 'Record last update timestamp in UTC'
+            'db_comment' => 'Record last update timestamp in UTC',
         ],
     ];
 
@@ -69,14 +68,14 @@ class UsersToDirections_Model extends Base_Model
         [$data, $errors] = parent::validateData($data, $save, $ignoreFields);
 
         if (
-            $save &&
-            !empty(
-            $this->getItemByFilter(
-                [
-                    'user_id'      => $data['user_id'],
-                    'direction_id' => $data['direction_id'],
-                ]
-            )
+            $save
+            && !empty(
+                $this->getItemByFilter(
+                    [
+                        'user_id'      => $data['user_id'],
+                        'direction_id' => $data['direction_id'],
+                    ]
+                )
             )
         ) {
             $errors[] = $this->translateService->getTranslate(
@@ -85,15 +84,15 @@ class UsersToDirections_Model extends Base_Model
         }
 
         if (
-            !$save &&
-            !empty(
-            $this->getItemByFilter(
-                [
-                    'user_id'      => $data['user_id'],
-                    'direction_id' => $data['direction_id'],
-                    'id'           => ['!=', $data['id']],
-                ]
-            )
+            !$save
+            && !empty(
+                $this->getItemByFilter(
+                    [
+                        'user_id'      => $data['user_id'],
+                        'direction_id' => $data['direction_id'],
+                        'id'           => ['!=', $data['id']],
+                    ]
+                )
             )
         ) {
             $errors[] = $this->translateService->getTranslate(

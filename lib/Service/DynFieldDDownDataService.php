@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -14,7 +13,6 @@ use OCA\Done\Models\DynamicFieldDropdownData_Model;
 use OCA\Done\Models\DynamicFieldDropdownOptions_Model;
 use OCA\Done\Models\DynamicFields_Model;
 use OCA\Done\Models\DynamicFieldsTypes_Model;
-use OCP\DB\Exception;
 use OCP\IDBConnection;
 use OCP\Server;
 
@@ -31,15 +29,15 @@ class DynFieldDDownDataService
         TranslateService $translateService,
         IDBConnection $db
     ) {
-        $this->userService      = $userService;
+        $this->userService = $userService;
         $this->translateService = $translateService;
-        $this->db               = $db;
+        $this->db = $db;
     }
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(DynFieldDDownDataService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -48,18 +46,19 @@ class DynFieldDDownDataService
     /**
      * Save dropdown data (main method for saving)
      *
-     * @param string $dynFieldId
-     * @param string $recordId
-     * @param array|string|null $value
+     * @param string            $dynFieldId
+     * @param string            $recordId
+     * @param null|array|string $value
+     *
      * @return array
      */
     public function saveDropdownData(
         string $dynFieldId,
         string $recordId,
-        array|string|null $value,
+        array | string | null $value,
     ): array {
         $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
-        $savedIds                      = [];
+        $savedIds = [];
 
         try {
             if ($value === null) {
@@ -92,7 +91,7 @@ class DynFieldDDownDataService
                     if (!empty($optionSlug) && !$this->validateOptionExists($dynFieldId, $optionSlug)) {
                         return [
                             'success' => false,
-                            'message' => $this->translateService->getTranslate('Option not found: ').$optionSlug,
+                            'message' => $this->translateService->getTranslate('Option not found: ') . $optionSlug,
                             'data'    => [],
                         ];
                     }
@@ -120,7 +119,7 @@ class DynFieldDDownDataService
                 if (!empty($optionSlug) && !$this->validateOptionExists($dynFieldId, $optionSlug)) {
                     return [
                         'success' => false,
-                        'message' => $this->translateService->getTranslate('Option not found: ').$optionSlug,
+                        'message' => $this->translateService->getTranslate('Option not found: ') . $optionSlug,
                         'data'    => [],
                     ];
                 }
@@ -142,7 +141,7 @@ class DynFieldDDownDataService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error saving dropdown data').': '.$e->getMessage(),
+                'message' => $this->translateService->getTranslate('Error saving dropdown data') . ': ' . $e->getMessage(),
                 'data'    => [],
             ];
         }
@@ -151,22 +150,24 @@ class DynFieldDDownDataService
     /**
      * Get dropdown data for record
      *
-     * @param string $recordId
-     * @param string|null $dynFieldId
+     * @param string      $recordId
+     * @param null|string $dynFieldId
+     *
      * @return array
      */
     public function getDropdownDataForRecord(string $recordId, ?string $dynFieldId = null): array
     {
         try {
             $dropdownDataModel = new DynamicFieldDropdownData_Model();
-            $optionsModel      = new DynamicFieldDropdownOptions_Model();
+            $optionsModel = new DynamicFieldDropdownOptions_Model();
 
             $filter = ['record_id' => $recordId];
+
             if ($dynFieldId) {
                 $filter['dyn_field_id'] = $dynFieldId;
             }
 
-            $dropdownData         = $dropdownDataModel->getListByFilter($filter);
+            $dropdownData = $dropdownDataModel->getListByFilter($filter);
             $dataHashedByDynField = BaseService::makeHash($dropdownData, 'dyn_field_id', true);
 
             if (empty($dropdownData)) {
@@ -174,7 +175,7 @@ class DynFieldDDownDataService
             }
 
             $optionIds = array_column($dropdownData, 'option_id');
-            $options   = $optionsModel->getList($optionIds, ['id', 'option_label'], true);
+            $options = $optionsModel->getList($optionIds, ['id', 'option_label'], true);
 
             $result = [];
 
@@ -187,7 +188,7 @@ class DynFieldDDownDataService
                 ];
 
                 foreach ($items as $item) {
-                    $optionData           = $options[$item['option_id']] ?? null;
+                    $optionData = $options[$item['option_id']] ?? null;
                     $fieldData['value'][] = [
                         'option_slug'  => $item['option_id'],
                         'option_label' => $optionData['option_label'],
@@ -208,6 +209,7 @@ class DynFieldDDownDataService
      *
      * @param string $dynFieldId
      * @param string $recordId
+     *
      * @return array
      */
     public function deleteDropdownData(string $dynFieldId, string $recordId): array
@@ -230,9 +232,9 @@ class DynFieldDDownDataService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error deleting dropdown data').': '.$e->getMessage(
-                    ),
-                'data'    => [],
+                'message' => $this->translateService->getTranslate('Error deleting dropdown data') . ': ' . $e->getMessage(
+                ),
+                'data' => [],
             ];
         }
     }
@@ -240,12 +242,13 @@ class DynFieldDDownDataService
     /**
      * Validate dropdown data
      *
-     * @param string $dynFieldId
-     * @param string $recordId
-     * @param array|string|null $value
+     * @param string            $dynFieldId
+     * @param string            $recordId
+     * @param null|array|string $value
+     *
      * @return array
      */
-    private function validateDropdownData(string $dynFieldId, string $recordId, array|string|null $value): array
+    private function validateDropdownData(string $dynFieldId, string $recordId, array | string | null $value): array
     {
         $errors = [];
 
@@ -268,7 +271,7 @@ class DynFieldDDownDataService
                 'value'        => [],
             ];
         } else {
-            if (!is_array($value)) {
+            if (!\is_array($value)) {
                 $errors[] = $this->translateService->getTranslate('Option IDs must be string or array');
             }
 
@@ -286,12 +289,13 @@ class DynFieldDDownDataService
      * Validate field exists
      *
      * @param string $dynFieldId
+     *
      * @return bool
      */
     private function validateFieldExists(string $dynFieldId): bool
     {
         $dynamicFieldsModel = new DynamicFields_Model();
-        $field              = $dynamicFieldsModel->getItem($dynFieldId);
+        $field = $dynamicFieldsModel->getItem($dynFieldId);
 
         return !empty($field);
     }
@@ -299,14 +303,15 @@ class DynFieldDDownDataService
     /**
      * Validate option exists
      *
-     * @param string|null $dynFieldId
-     * @param string|null $optionSlug
+     * @param null|string $dynFieldId
+     * @param null|string $optionSlug
+     *
      * @return bool
      */
     private function validateOptionExists(?string $dynFieldId = '', ?string $optionSlug = ''): bool
     {
         $optionsModel = new DynamicFieldDropdownOptions_Model();
-        $option       = $optionsModel->getItemByFilter(['id' => $optionSlug, 'dyn_field_id' => $dynFieldId]);
+        $option = $optionsModel->getItemByFilter(['id' => $optionSlug, 'dyn_field_id' => $dynFieldId]);
 
         return !empty($option);
     }

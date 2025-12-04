@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPage class="reports-project-page">
@@ -61,6 +59,7 @@
 
 <script>
 import { NcBreadcrumbs, NcBreadcrumb, NcListItemIcon } from "@nextcloud/vue";
+import { t } from "@nextcloud/l10n";
 
 import FileChart from "vue-material-design-icons/FileChart.vue";
 
@@ -83,17 +82,15 @@ import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 import VEmptyState from "@/common/shared/components/VEmptyState/VEmptyState.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { abortControllerMixin } from "@/admin/shared/lib/mixins/abortControllerMixin";
 
 import { initFilterDescriptor } from "@/common/shared/lib/filterHelpers";
 import { findPathToNode } from "@/common/shared/lib/helpers";
 
 import {
   LOCALSTORAGE_REPORT_PROJECT_RANGE_TYPE,
-  /* LOCALSTORAGE_REPORT_PROJECT_ID, */
 } from "@/common/shared/lib/constants";
-
-import { t } from "@nextcloud/l10n";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "ReportsProjectPage",
@@ -114,7 +111,11 @@ export default {
     VToolbar,
     VDropdown,
   },
-  mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
+  mixins: [
+    timeTrackingPageMixin,
+    contextualTranslationsMixin,
+    abortControllerMixin,
+  ],
   data() {
     return {
       isLoading: false,
@@ -178,14 +179,18 @@ export default {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
 
+        this.resetAbortController();
+
         const { data, totals } = await fetchProjectsStatistics({
           date_from,
           date_to,
+          signal: this.abortController.signal,
           ...filters,
         });
 
         this.modelData = this.transformDataForFront(data);
         this.totals = totals;
+        this.isLoading = false;
 
         const { slug } = filters;
 
@@ -197,26 +202,7 @@ export default {
           this.expandNodes();
         });
       } catch (e) {
-        console.log(e);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-    async init() {
-      try {
-        const localActiveRangeType = localStorage.getItem(
-          this.localStorageActiveRangeTypeKey
-        );
-
-        if (localActiveRangeType) {
-          this.activeRangeType = localActiveRangeType;
-        }
-
-        await this.initFetchDataWithFilters(); // timeTrackingPageMixin
-      } catch (e) {
-        console.log(e);
-      } finally {
-        this.isInitLoading = false;
+        this.handleCatchAbortControllerError(e);
       }
     },
   },

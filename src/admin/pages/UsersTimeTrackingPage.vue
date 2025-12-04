@@ -1,10 +1,8 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
-  <VPage class="user-time-tracking-page">
+  <VPage class="overflow-hidden">
     <VToolbar>
       <NcBreadcrumbs>
         <NcBreadcrumb
@@ -13,7 +11,7 @@
           forceIconText
         >
           <template #icon>
-            <Account />
+            <AccountMultiple />
           </template>
         </NcBreadcrumb>
         <NcBreadcrumb
@@ -45,6 +43,7 @@
           <TimeTrackingView
             :model-data="modelData"
             :totals="totals"
+            :active-range-type="activeRangeType"
             :day-disabled="true"
             :task-disabled="true"
           />
@@ -61,8 +60,9 @@ import {
   NcActions,
   NcActionButton,
 } from "@nextcloud/vue";
+import { t } from "@nextcloud/l10n";
 
-import Account from "vue-material-design-icons/Account.vue";
+import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 
 import { fetchUserPublicDataBySlug } from "@/common/entities/users/api";
 import { fetchUserStatisticsBySlug } from "@/common/entities/statistics/api";
@@ -77,13 +77,13 @@ import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { abortControllerMixin } from "@/admin/shared/lib/mixins/abortControllerMixin";
 
 import { getJoinString } from "@/common/shared/lib/helpers";
 import { initFilterDescriptor } from "@/common/shared/lib/filterHelpers";
 
 import { LOCALSTORAGE_USER_STATISTICS_RANGE_TYPE } from "@/common/shared/lib/constants";
-import { t } from "@nextcloud/l10n";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "UsersTablePage",
@@ -92,7 +92,7 @@ export default {
     NcBreadcrumb,
     NcActions,
     NcActionButton,
-    Account,
+    AccountMultiple,
     VPage,
     VPageLayout,
     VPageContent,
@@ -102,7 +102,11 @@ export default {
     VToolbar,
     VLoader,
   },
-  mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
+  mixins: [
+    timeTrackingPageMixin,
+    contextualTranslationsMixin,
+    abortControllerMixin,
+  ],
   data: () => ({
     context: "user/time-tracking",
     isLoading: false,
@@ -156,19 +160,21 @@ export default {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
 
+        this.resetAbortController();
+
         const { data, totals } = await fetchUserStatisticsBySlug({
           date_from,
           date_to,
           slug: this.slug,
+          signal: this.abortController.signal,
           ...filters,
         });
 
         this.modelData = data;
         this.totals = totals;
-      } catch (e) {
-        console.log(e);
-      } finally {
         this.isLoading = false;
+      } catch (e) {
+        this.handleCatchAbortControllerError(e);
       }
     },
     async fetchUserData() {
@@ -188,18 +194,14 @@ export default {
         },
       } = this.$route;
 
-      const localActiveRangeType = localStorage.getItem(
-        this.localStorageActiveRangeTypeKey
-      );
-
       if (queryActiveDate) {
         this.activeDate = new Date(queryActiveDate);
       }
 
       if (queryActiveRangeType) {
         this.activeRangeType = queryActiveRangeType;
-      } else if (localActiveRangeType) {
-        this.activeRangeType = localActiveRangeType;
+      } else {
+        this.setActiveRangeTypeFromLocalStorage();
       }
 
       this.fetchUserData();
@@ -211,21 +213,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.user-time-tracking-page {
-  overflow: hidden;
-}
-
-.user-time-tracking-page__content {
-  display: flex;
-  height: 100%;
-  border-top: 1px solid var(--color-border);
-  overflow: hidden;
-}
-
-.user-time-tracking-page__main {
-  flex: 1 1 auto;
-  padding: 16px 32px;
-}
-</style>

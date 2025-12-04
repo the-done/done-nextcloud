@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
@@ -38,9 +37,10 @@ class FileController extends OCSController
      *
      * The method is used in the file lib/base.php
      *
-     * @param string $projectId Project ID
+     * @param string $entityId
      * @param string $fileType File type
      * @param string $fileName File name
+     *
      * @return DataDownloadResponse|DataResponse
      */
     #[NoAdminRequired]
@@ -50,11 +50,12 @@ class FileController extends OCSController
         string $entityId,
         string $fileType,
         string $fileName
-    ): DataDownloadResponse|DataResponse {
+    ): DataDownloadResponse | DataResponse {
         $fileData = $this->appearanceService->getEntityFile($entityId, $fileType, $fileName);
 
         if ($fileData === null) {
-            return new DataResponse('', Http::STATUS_NOT_FOUND);
+            /** @phpstan-ignore argument.type */
+            return new DataResponse(['error' => 'File not found'], Http::STATUS_NOT_FOUND);
         }
 
         $response = new DataDownloadResponse(

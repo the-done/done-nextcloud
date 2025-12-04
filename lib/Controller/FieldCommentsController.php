@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
@@ -13,7 +12,6 @@ namespace OCA\Done\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
-use OCP\AppFramework\Http\Attribute\Route;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
@@ -24,7 +22,6 @@ class FieldCommentsController extends AdminController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/getFieldComments')]
     public function getFieldComments(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
@@ -32,14 +29,14 @@ class FieldCommentsController extends AdminController
 
         if (empty($source) || empty($field)) {
             return new JSONResponse([
-                'message' => $this->translateService->getTranslate('Missing required parameters')
+                'message' => $this->translateService->getTranslate('Missing required parameters'),
             ], Http::STATUS_BAD_REQUEST);
         }
 
         $comments = $this->fieldCommentsService->getFieldCommentsForField((int)$source, $field);
 
         return new JSONResponse([
-            'data' => $comments
+            'data' => $comments,
         ], Http::STATUS_OK);
     }
 
@@ -48,7 +45,6 @@ class FieldCommentsController extends AdminController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/saveFieldComment')]
     public function saveFieldComment(IRequest $request): JSONResponse
     {
         $data = $request->getParam('data');
@@ -59,7 +55,7 @@ class FieldCommentsController extends AdminController
         if (!empty($errors)) {
             return new JSONResponse([
                 'error_type' => 'validation',
-                'message' => $errors
+                'message'    => $errors,
             ], Http::STATUS_BAD_REQUEST);
         }
 
@@ -72,18 +68,19 @@ class FieldCommentsController extends AdminController
         if ($result['success']) {
             return new JSONResponse([
                 'message' => $this->translateService->getTranslate('Comment saved successfully'),
-                'data' => $result['data']
+                'data'    => $result['data'],
             ], Http::STATUS_OK);
         }
 
         // Проверяем, есть ли конкретные ошибки от сервиса
         $errorMessage = $this->translateService->getTranslate('Error saving comment');
+
         if (isset($result['errors']) && !empty($result['errors'])) {
             $errorMessage = $result['errors'][0];
         }
 
         return new JSONResponse([
-            'message' => $errorMessage
+            'message' => $errorMessage,
         ], Http::STATUS_BAD_REQUEST);
     }
 
@@ -92,14 +89,13 @@ class FieldCommentsController extends AdminController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/deleteFieldComment')]
     public function deleteFieldComment(IRequest $request): JSONResponse
     {
         $commentId = $request->getParam('commentId');
 
         if (empty($commentId)) {
             return new JSONResponse([
-                'message' => $this->translateService->getTranslate('Comment ID is required')
+                'message' => $this->translateService->getTranslate('Comment ID is required'),
             ], Http::STATUS_BAD_REQUEST);
         }
 
@@ -107,12 +103,12 @@ class FieldCommentsController extends AdminController
 
         if ($success) {
             return new JSONResponse([
-                'message' => $this->translateService->getTranslate('Comment deleted successfully')
+                'message' => $this->translateService->getTranslate('Comment deleted successfully'),
             ], Http::STATUS_OK);
         }
 
         return new JSONResponse([
-            'message' => $this->translateService->getTranslate('Error deleting comment')
+            'message' => $this->translateService->getTranslate('Error deleting comment'),
         ], Http::STATUS_BAD_REQUEST);
     }
 
@@ -121,21 +117,20 @@ class FieldCommentsController extends AdminController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[Route(type: 'ajax', verb: 'POST', url: '/ajax/getFieldCommentsBySource')]
     public function getFieldCommentsBySource(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
 
         if (empty($source)) {
             return new JSONResponse([
-                'message' => $this->translateService->getTranslate('Source is required')
+                'message' => $this->translateService->getTranslate('Source is required'),
             ], Http::STATUS_BAD_REQUEST);
         }
 
         $comments = $this->fieldCommentsService->getFieldCommentsBySource((int)$source);
 
         return new JSONResponse([
-            'data' => $comments
+            'data' => $comments,
         ], Http::STATUS_OK);
     }
 }

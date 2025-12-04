@@ -5,15 +5,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
 use OCA\Done\Service\DynFieldDDownOptionsService;
 use OCP\AppFramework\Http;
-use OCP\IRequest;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IRequest;
 
 class DynamicFieldsOptionController extends AdminController
 {
@@ -21,6 +20,7 @@ class DynamicFieldsOptionController extends AdminController
      * Save dropdown option (add or update)
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveDropdownOption(IRequest $request): JSONResponse
@@ -46,7 +46,7 @@ class DynamicFieldsOptionController extends AdminController
             return new JSONResponse(
                 [
                     'message' => $result['message'],
-                    'data' => $result['data'],
+                    'data'    => $result['data'],
                 ],
                 Http::STATUS_OK
             );
@@ -64,6 +64,7 @@ class DynamicFieldsOptionController extends AdminController
      * Delete dropdown option
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteDropdownOption(IRequest $request): JSONResponse
@@ -103,6 +104,7 @@ class DynamicFieldsOptionController extends AdminController
      * Get dropdown options for field
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDropdownOptions(IRequest $request): JSONResponse
@@ -140,6 +142,7 @@ class DynamicFieldsOptionController extends AdminController
      * Reorder dropdown options
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function reorderDropdownOptions(IRequest $request): JSONResponse
@@ -147,7 +150,7 @@ class DynamicFieldsOptionController extends AdminController
         $dynFieldId = $request->getParam('dyn_field_id');
         $optionIds = $request->getParam('option_ids');
 
-        if (empty($dynFieldId) || empty($optionIds) || !is_array($optionIds)) {
+        if (empty($dynFieldId) || empty($optionIds) || !\is_array($optionIds)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),

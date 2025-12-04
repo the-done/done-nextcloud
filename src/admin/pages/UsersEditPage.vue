@@ -13,7 +13,7 @@
           forceIconText
         >
           <template #icon>
-            <Account />
+            <AccountMultiple />
           </template>
         </NcBreadcrumb>
         <NcBreadcrumb :name="pageTitle" :to="{ name: 'staff-preview' }" />
@@ -34,7 +34,7 @@
 import { NcBreadcrumbs, NcBreadcrumb, NcListItem } from "@nextcloud/vue";
 import { mapState } from "pinia";
 
-import Account from "vue-material-design-icons/Account.vue";
+import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import Cog from "vue-material-design-icons/Cog.vue";
 import ShieldAccount from "vue-material-design-icons/ShieldAccount.vue";
 import DirectionsFork from "vue-material-design-icons/DirectionsFork.vue";
@@ -63,7 +63,7 @@ export default {
     NcBreadcrumbs,
     NcBreadcrumb,
     NcListItem,
-    Account,
+    AccountMultiple,
     Cog,
     ShieldAccount,
     DirectionsFork,

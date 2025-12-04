@@ -5,10 +5,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
-use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -29,13 +27,13 @@ class CustomSettingsData_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'required'   => true,
             'db_comment' => 'Internal unique key for a user\'s custom setting record',
         ],
-        'user_id'    => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'User id',
             'required'   => true,
@@ -47,13 +45,13 @@ class CustomSettingsData_Model extends Base_Model
             'required'   => true,
             'db_comment' => 'Setting identifier. Possible values: 1 (Cache Time), 2 (Hide empty fields in preview), 3 (User Language)',
         ],
-        'type_id'    => [
+        'type_id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Setting type',
             'required'   => true,
             'db_comment' => 'Setting value type. Possible values: 1 (Checkbox), 2 (String), 3 (Number), 4 (Select), 5 (Textarea)',
         ],
-        'value'      => [
+        'value' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Setting value',
             'required'   => false,

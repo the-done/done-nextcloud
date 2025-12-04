@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <div data-component-id="EntityPreview" class="flex flex-col gap-8">
@@ -12,7 +10,7 @@
             ? `url(${backgroundImage.file_url})`
             : null,
         }"
-        class="relative h-[200px] max-w-[768px] rounded-(--border-radius-large) bg-(--color-background-dark) bg-cover"
+        class="relative h-[200px] max-w-[768px] rounded-(--border-radius-large) bg-(--color-background-dark) bg-cover bg-center"
       >
         <div
           v-if="!backgroundImage?.file_url"
@@ -123,7 +121,10 @@
         class="inline-block relative mb-2 text-xl font-medium min-w-[320px] pr-(--default-clickable-area) min-h-(--default-clickable-area)"
       >
         {{ contextTranslate("Main", context) }}
-        <div class="absolute right-0 -top-1 group-hover/block:block md:hidden">
+        <div
+          v-if="clickBlockEnabled === true"
+          class="absolute right-0 -top-1 group-hover/block:block md:hidden"
+        >
           <NcActions>
             <NcActionButton @click="() => handleClickBlock('main')">
               <template #icon>
@@ -138,17 +139,15 @@
         v-if="modelData"
         class="pb-4 grid grid-cols-1 sm:gap-x-8 sm:gap-y-2 sm:grid-cols-[minmax(200px,max-content)_1fr]"
       >
-        <template v-for="item in modelData">
-          <div :key="item.title" class="contents">
-            <div class="font-medium">
-              {{ item.title }}
-            </div>
-            <div class="flex mb-4 sm:mb-0">
-              <span v-if="item.value"> {{ item.value }}</span>
-              <Cancel v-else class="text-(--color-placeholder-dark)" />
-            </div>
+        <div v-for="item in modelData" :key="item.title" class="contents">
+          <div class="font-medium">
+            {{ item.title }}
           </div>
-        </template>
+          <div class="flex mb-4 sm:mb-0">
+            <span v-if="item.value"> {{ item.value }}</span>
+            <Cancel v-else class="text-(--color-placeholder-dark)" />
+          </div>
+        </div>
       </div>
     </div>
     <template v-if="externalData">
@@ -158,6 +157,7 @@
         >
           {{ block.title }}
           <div
+            v-if="clickBlockEnabled === true"
             class="absolute right-0 -top-1 group-hover/block:block md:hidden"
           >
             <NcActions>
@@ -233,6 +233,10 @@ export default {
     enableAppearancePreview: {
       type: Boolean,
       default: false,
+    },
+    clickBlockEnabled: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

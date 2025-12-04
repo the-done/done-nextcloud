@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -14,13 +13,11 @@ use OCA\Done\Models\Base_Model;
 use OCA\Done\Models\PermissionsEntities_Model;
 use OCP\Server;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Font;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Universal Excel/CSV export service for Done application
@@ -28,23 +25,23 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class ExcelExportService
 {
     private static ExcelExportService $instance;
-    
+
     protected UserService $userService;
     protected TranslateService $translateService;
     protected TableService $tableService;
-    
+
     // Export limits
     private const MAX_ROWS = 10000;
     private const MEMORY_LIMIT = '512M';
-    
+
     // Supported formats
     public const FORMAT_EXCEL = 'excel';
     public const FORMAT_CSV = 'csv';
-    
+
     // Cache for prepared data
     private array $dataCache = [];
     private int $cacheTimeout = 300; // 5 minutes
-    
+
     public function __construct(
         UserService $userService,
         TranslateService $translateService,
@@ -54,22 +51,23 @@ class ExcelExportService
         $this->translateService = $translateService;
         $this->tableService = $tableService;
     }
-    
+
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(ExcelExportService::class);
+            self::$instance = Server::get(self::class);
         }
-        
+
         return self::$instance;
     }
-    
+
     /**
      * Export entity data to Excel or CSV
      *
-     * @param int $source Entity ID
+     * @param int   $source  Entity ID
      * @param array $filters Table filters
      * @param array $options Export options (format, includeHidden, etc.)
+     *
      * @return array Export result with file path and metadata
      */
     public function exportEntityToExcel(int $source, array $filters = [], array $options = []): array
@@ -77,42 +75,45 @@ class ExcelExportService
         if (!PermissionsEntities_Model::entityExists($source)) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Invalid entity source')
+                'message' => $this->translateService->getTranslate('Invalid entity source'),
             ];
         }
-        
-        $originalMemoryLimit = ini_get('memory_limit');
+
+        $originalMemoryLimit = \ini_get('memory_limit');
         ini_set('memory_limit', self::MEMORY_LIMIT);
-        
+
         try {
             $format = $options['format'] ?? self::FORMAT_EXCEL;
-            if (!in_array($format, [self::FORMAT_EXCEL, self::FORMAT_CSV])) {
+
+            if (!\in_array($format, [self::FORMAT_EXCEL, self::FORMAT_CSV])) {
                 $format = self::FORMAT_EXCEL;
             }
-            
+
             $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
             $modelClass = $sourceData[$source]['model'];
             $model = new $modelClass();
-            
+
             $userId = $this->userService->getCurrentUserId();
+
             if (empty($userId)) {
                 return [
                     'success' => false,
-                    'message' => $this->translateService->getTranslate('User not found')
+                    'message' => $this->translateService->getTranslate('User not found'),
                 ];
             }
-            
+
             $tableData = $this->getTableDataWithCache($model, $source, $userId, $filters);
 
-            if (count($tableData['data']) > self::MAX_ROWS) {
+            if (\count($tableData['data']) > self::MAX_ROWS) {
                 return [
                     'success' => false,
-                    'message' => $this->translateService->getTranslate('Too many rows to export. Maximum allowed: ') . self::MAX_ROWS
+                    'message' => $this->translateService->getTranslate('Too many rows to export. Maximum allowed: ') . self::MAX_ROWS,
                 ];
             }
-            
+
             if ($format === self::FORMAT_CSV) {
                 $csvResult = $this->exportToCsv($tableData, $sourceData[$source]['slug']);
+
                 if (!$csvResult['success']) {
                     return $csvResult;
                 }
@@ -123,54 +124,54 @@ class ExcelExportService
                 $fileName = $this->generateFileName($sourceData[$source]['slug'], $filters, 'xlsx');
                 $filePath = $this->saveSpreadsheet($spreadsheet, $fileName);
             }
-            
+
             return [
-                'success' => true,
-                'filePath' => $filePath,
-                'fileName' => $fileName,
-                'rowsCount' => count($tableData['data']),
-                'columnsCount' => count($tableData['allColumnsOrdering']),
-                'format' => $format
+                'success'      => true,
+                'filePath'     => $filePath,
+                'fileName'     => $fileName,
+                'rowsCount'    => \count($tableData['data']),
+                'columnsCount' => \count($tableData['allColumnsOrdering']),
+                'format'       => $format,
             ];
-            
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Export failed: ') . $e->getMessage()
+                'message' => $this->translateService->getTranslate('Export failed: ') . $e->getMessage(),
             ];
         } finally {
             ini_set('memory_limit', $originalMemoryLimit);
         }
     }
-    
+
     /**
      * Get table data with caching
      */
     private function getTableDataWithCache(Base_Model $model, int $source, string $userId, array $filters): array
     {
         $cacheKey = $this->generateCacheKey($source, $userId, $filters);
-        
+
         // Check cache
         if (isset($this->dataCache[$cacheKey])) {
             $cachedData = $this->dataCache[$cacheKey];
+
             if (time() - $cachedData['timestamp'] < $this->cacheTimeout) {
                 return $cachedData['data'];
             }
             unset($this->dataCache[$cacheKey]);
         }
-        
+
         // Get fresh data
         $tableData = $this->tableService->getTableDataForEntity($model, $source, $userId);
-        
+
         // Cache the data
         $this->dataCache[$cacheKey] = [
-            'data' => $tableData,
-            'timestamp' => time()
+            'data'      => $tableData,
+            'timestamp' => time(),
         ];
-        
+
         return $tableData;
     }
-    
+
     /**
      * Generate cache key
      */
@@ -178,8 +179,7 @@ class ExcelExportService
     {
         return md5($source . '_' . $userId . '_' . serialize($filters));
     }
-    
-    
+
     /**
      * Create spreadsheet with data
      */
@@ -187,31 +187,33 @@ class ExcelExportService
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        
+
         $sheet->setTitle($this->translateService->getTranslate($sourceConfig['entity_name']));
-        
+
         $headers = [];
         $columnIndex = 1;
-        
+
         foreach ($tableData['allColumnsOrdering'] as $column) {
             if (!$column['hidden']) {
                 $headers[] = $column['title'];
                 $columnIndex++;
             }
         }
-        
+
         $row = 1;
+
         foreach ($headers as $index => $header) {
             $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex((string)($index + 1));
             $sheet->setCellValue($columnLetter . $row, $header);
         }
-        
-        $this->styleHeaders($sheet, count($headers));
-        
+
+        $this->styleHeaders($sheet, \count($headers));
+
         $row = 2;
+
         foreach ($tableData['data'] as $dataRow) {
             $columnIndex = 1;
-            
+
             foreach ($tableData['allColumnsOrdering'] as $column) {
                 if (!$column['hidden']) {
                     $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex((string)$columnIndex);
@@ -222,43 +224,47 @@ class ExcelExportService
             }
             $row++;
         }
-        
-        $this->autoSizeColumns($sheet, count($headers));
-        
+
+        $this->autoSizeColumns($sheet, \count($headers));
+
         return $spreadsheet;
     }
-    
+
     /**
      * Style headers
+     *
+     * @param mixed $sheet
      */
     private function styleHeaders($sheet, int $columnCount): void
     {
         $headerRange = 'A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex((string)$columnCount) . '1';
-        
+
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => [
-                'bold' => true,
-                'color' => ['rgb' => 'FFFFFF']
+                'bold'  => true,
+                'color' => ['rgb' => 'FFFFFF'],
             ],
             'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '366092']
+                'fillType'   => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '366092'],
             ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => '000000']
-                ]
+                    'color'       => ['rgb' => '000000'],
+                ],
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER
-            ]
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
         ]);
     }
-    
+
     /**
      * Auto-size columns
+     *
+     * @param mixed $sheet
      */
     private function autoSizeColumns($sheet, int $columnCount): void
     {
@@ -267,27 +273,29 @@ class ExcelExportService
             $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
         }
     }
-    
+
     /**
      * Format cell value based on data type
+     *
+     * @param mixed $value
      */
     private function formatCellValue($value): string
     {
-        if (is_array($value)) {
+        if (\is_array($value)) {
             return implode(', ', $value);
         }
-        
-        if (is_bool($value)) {
+
+        if (\is_bool($value)) {
             return $value ? $this->translateService->getTranslate('Yes') : $this->translateService->getTranslate('No');
         }
-        
+
         if ($value instanceof \DateTimeInterface) {
             return $value->format('Y-m-d H:i:s');
         }
-        
+
         return (string)$value;
     }
-    
+
     /**
      * Generate safe filename
      */
@@ -295,16 +303,17 @@ class ExcelExportService
     {
         $timestamp = date('Y-m-d_H-i-s');
         $baseName = $this->sanitizeFileName($entitySlug);
-        
+
         // Add filter info to filename if present
         $filterSuffix = '';
+
         if (!empty($filters)) {
             $filterSuffix = '_filtered';
         }
-        
+
         return "{$baseName}_export{$filterSuffix}_{$timestamp}.{$extension}";
     }
-    
+
     /**
      * Sanitize filename
      */
@@ -313,24 +322,24 @@ class ExcelExportService
         $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename);
         $filename = preg_replace('/_+/', '_', $filename);
         $filename = trim($filename, '_');
-        
+
         return $filename ?: 'export';
     }
-    
+
     /**
      * Save spreadsheet to temporary file
      */
     private function saveSpreadsheet(Spreadsheet $spreadsheet, string $fileName): string
     {
         $tempDir = sys_get_temp_dir();
-        $filePath = $tempDir . DIRECTORY_SEPARATOR . $fileName;
-        
+        $filePath = $tempDir . \DIRECTORY_SEPARATOR . $fileName;
+
         $writer = new Xlsx($spreadsheet);
         $writer->save($filePath);
-        
+
         return $filePath;
     }
-    
+
     /**
      * Clean up temporary file
      */
@@ -340,7 +349,7 @@ class ExcelExportService
             unlink($filePath);
         }
     }
-    
+
     /**
      * Clear cache
      */
@@ -348,31 +357,32 @@ class ExcelExportService
     {
         $this->dataCache = [];
     }
-    
+
     /**
      * Clear expired cache entries
      */
     public function clearExpiredCache(): void
     {
         $currentTime = time();
+
         foreach ($this->dataCache as $key => $cachedData) {
             if ($currentTime - $cachedData['timestamp'] >= $this->cacheTimeout) {
                 unset($this->dataCache[$key]);
             }
         }
     }
-    
+
     /**
      * Get cache statistics
      */
     public function getCacheStats(): array
     {
         return [
-            'entries' => count($this->dataCache),
-            'timeout' => $this->cacheTimeout
+            'entries' => \count($this->dataCache),
+            'timeout' => $this->cacheTimeout,
         ];
     }
-    
+
     /**
      * Export data to CSV format (without PhpSpreadsheet)
      */
@@ -382,19 +392,21 @@ class ExcelExportService
             $timestamp = date('Y-m-d_H-i-s');
             $fileName = "{$entitySlug}_export_{$timestamp}.csv";
             $filePath = sys_get_temp_dir() . '/' . $fileName;
-            
+
             $file = fopen($filePath, 'w');
+
             if (!$file) {
                 return [
                     'success' => false,
-                    'message' => $this->translateService->getTranslate('Cannot create temporary file')
+                    'message' => $this->translateService->getTranslate('Cannot create temporary file'),
                 ];
             }
-            
+
             fwrite($file, "\xEF\xBB\xBF");
-            
+
             if (!empty($tableData['allColumnsOrdering'])) {
                 $headers = [];
+
                 foreach ($tableData['allColumnsOrdering'] as $column) {
                     if (!$column['hidden']) {
                         $headers[] = $this->translateService->getTranslate($column['title'] ?? $column['name']);
@@ -402,49 +414,49 @@ class ExcelExportService
                 }
                 fputcsv($file, $headers, ';'); // Use semicolon as delimiter for better Excel compatibility
             }
-            
+
             if (!empty($tableData['data'])) {
                 foreach ($tableData['data'] as $row) {
                     $csvRow = [];
+
                     foreach ($tableData['allColumnsOrdering'] as $column) {
                         if (!$column['hidden']) {
                             $value = $row[$column['key']] ?? '';
-                            
+
                             // Format value for CSV
-                            if (is_array($value)) {
+                            if (\is_array($value)) {
                                 $value = implode(', ', $value);
-                            } elseif (is_bool($value)) {
+                            } elseif (\is_bool($value)) {
                                 $value = $value ? $this->translateService->getTranslate('Yes') : $this->translateService->getTranslate('No');
                             } elseif ($value instanceof \DateTime) {
                                 $value = $value->format('Y-m-d H:i:s');
                             } else {
                                 $value = (string)$value;
                             }
-                            
+
                             $csvRow[] = $value;
                         }
                     }
                     fputcsv($file, $csvRow, ';');
                 }
             }
-            
+
             fclose($file);
-            
+
             return [
-                'success' => true,
+                'success'  => true,
                 'filePath' => $filePath,
                 'fileName' => $fileName,
-                'format' => 'csv'
+                'format'   => 'csv',
             ];
-            
         } catch (\Exception $e) {
-            if (isset($file) && is_resource($file)) {
+            if (isset($file) && \is_resource($file)) {
                 fclose($file);
             }
-            
+
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('CSV export failed: ') . $e->getMessage()
+                'message' => $this->translateService->getTranslate('CSV export failed: ') . $e->getMessage(),
             ];
         }
     }

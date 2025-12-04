@@ -1,0 +1,16 @@
+parameters:
+	level: 0
+	paths:
+		- lib
+	excludePaths:
+		- vendor
+	bootstrapFiles:
+		- vendor/autoload.php
+	scanDirectories:
+		- ../../lib/public
+		- ../../lib/private
+		- ../../3rdparty
+		- vendor
+	ignoreErrors:
+		- '#Access to static property \$[a-zA-Z]+ on an unknown class OC\.#'
+

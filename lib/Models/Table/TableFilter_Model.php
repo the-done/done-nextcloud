@@ -5,10 +5,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models\Table;
 
-use OCA\Done\Models\Base_Model;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -35,65 +33,65 @@ class TableFilter_Model extends TableSettings_Model
     public const IS_NOT_LIKE_CONDITION = 4;
     public const IS_EMPTY_CONDITION = 5;
     public const IS_NOT_EMPTY_CONDITION = 6;
-//    public const STARTS_WITH_CONDITION = 5;
-//    public const ENDS_WITH_CONDITION = 6;
+    //    public const STARTS_WITH_CONDITION = 5;
+    //    public const ENDS_WITH_CONDITION = 6;
     public const CONTAINS_CONDITION = 7;
     public const DOES_NOT_CONTAIN_CONDITION = 8;
 
     public array $fields = [
-        'id'         => [
-            'type'     => IQueryBuilder::PARAM_STR,
-            'title'    => 'ID',
-            'required' => true,
-            'db_comment' => 'Unique identifier for a filter setting'
+        'id' => [
+            'type'       => IQueryBuilder::PARAM_STR,
+            'title'      => 'ID',
+            'required'   => true,
+            'db_comment' => 'Unique identifier for a filter setting',
         ],
-        'user_id'    => [
-            'type'     => IQueryBuilder::PARAM_STR,
-            'title'    => 'User',
-            'required' => false,
-            'db_comment' => 'User ID (null if the setting is for all users). References oc_done_users_data.id'
+        'user_id' => [
+            'type'       => IQueryBuilder::PARAM_STR,
+            'title'      => 'User',
+            'required'   => false,
+            'db_comment' => 'User ID (null if the setting is for all users). References oc_done_users_data.id',
         ],
-        'source'     => [
-            'type'     => IQueryBuilder::PARAM_INT,
-            'title'    => 'Section',
-            'required' => true,
-            'db_comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)'
+        'source' => [
+            'type'       => IQueryBuilder::PARAM_INT,
+            'title'      => 'Section',
+            'required'   => true,
+            'db_comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)',
         ],
-        'column'     => [
-            'type'     => IQueryBuilder::PARAM_STR,
-            'title'    => 'Column',
-            'required' => true,
-            'db_comment' => 'Technical name of the column to filter by'
+        'column' => [
+            'type'       => IQueryBuilder::PARAM_STR,
+            'title'      => 'Column',
+            'required'   => true,
+            'db_comment' => 'Technical name of the column to filter by',
         ],
-        'condition'  => [
-            'type'     => IQueryBuilder::PARAM_INT,
-            'title'    => 'Filter condition',
-            'required' => true,
-            'db_comment' => 'Filter condition type. Possible values: 1 (is), 2 (is not), 3 (contains), 4 (does not contain), 5 (is empty), 6 (is not empty), 7 (includes), 8 (does not include)'
+        'condition' => [
+            'type'       => IQueryBuilder::PARAM_INT,
+            'title'      => 'Filter condition',
+            'required'   => true,
+            'db_comment' => 'Filter condition type. Possible values: 1 (is), 2 (is not), 3 (contains), 4 (does not contain), 5 (is empty), 6 (is not empty), 7 (includes), 8 (does not include)',
         ],
-        'value'      => [
-            'type'     => IQueryBuilder::PARAM_STR,
-            'title'    => 'Filter value',
-            'required' => false,
-            'db_comment' => 'Value to filter by'
+        'value' => [
+            'type'       => IQueryBuilder::PARAM_STR,
+            'title'      => 'Filter value',
+            'required'   => false,
+            'db_comment' => 'Value to filter by',
         ],
-        'for_all'    => [
-            'type'     => IQueryBuilder::PARAM_BOOL,
-            'title'    => 'For all',
-            'required' => false,
-            'db_comment' => 'Flag to apply the filter to all users (1 - for all, 0 - only for the specified `user_id`)'
+        'for_all' => [
+            'type'       => IQueryBuilder::PARAM_BOOL,
+            'title'      => 'For all',
+            'required'   => false,
+            'db_comment' => 'Flag to apply the filter to all users (1 - for all, 0 - only for the specified `user_id`)',
         ],
         'created_at' => [
-            'type'     => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
-            'title'    => 'Created at',
-            'required' => false,
-            'db_comment' => 'Record creation timestamp in UTC'
+            'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
+            'title'      => 'Created at',
+            'required'   => false,
+            'db_comment' => 'Record creation timestamp in UTC',
         ],
         'updated_at' => [
-            'type'     => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
-            'title'    => 'Updated at',
-            'required' => false,
-            'db_comment' => 'Record last update timestamp in UTC'
+            'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
+            'title'      => 'Updated at',
+            'required'   => false,
+            'db_comment' => 'Record last update timestamp in UTC',
         ],
     ];
 
@@ -153,7 +151,7 @@ class TableFilter_Model extends TableSettings_Model
         ];
     }
 
-    public static function makeColumnFilter(string $column, int $condition, int|string|array|null $value = null): array
+    public static function makeColumnFilter(string $column, int $condition, array | int | string | null $value = null): array
     {
         $filterInner = [];
 
@@ -161,9 +159,11 @@ class TableFilter_Model extends TableSettings_Model
             case self::IS_CONDITION:
                 $filterInner[$column] = $value;
                 break;
+
             case self::IS_NOT_CONDITION:
                 $filterInner[$column] = ['!=', $value];
                 break;
+
             case self::LIKE_CONDITION:
                 $filterInner[$column] = [
                     'LIKE',
@@ -171,6 +171,7 @@ class TableFilter_Model extends TableSettings_Model
                     IQueryBuilder::PARAM_STR,
                 ];
                 break;
+
             case self::IS_NOT_LIKE_CONDITION:
                 $filterInner[$column] = [
                     'NOT LIKE',
@@ -178,32 +179,36 @@ class TableFilter_Model extends TableSettings_Model
                     IQueryBuilder::PARAM_STR,
                 ];
                 break;
+
             case self::CONTAINS_CONDITION:
-                $value                = explode(',', $value);
+                $value = explode(',', $value);
                 $filterInner[$column] = [
                     'IN',
                     $value,
                     IQueryBuilder::PARAM_STR_ARRAY,
                 ];
                 break;
+
             case self::DOES_NOT_CONTAIN_CONDITION:
-                $value                = explode(',', $value);
+                $value = explode(',', $value);
                 $filterInner[$column] = [
                     'NOT IN',
                     $value,
                     IQueryBuilder::PARAM_STR_ARRAY,
                 ];
                 break;
+
             case self::IS_EMPTY_CONDITION:
                 $filterInner[$column] = ['OR', [['IS NULL'], ['=', '']]];
                 break;
+
             case self::IS_NOT_EMPTY_CONDITION:
                 $filterInner[$column] = ['AND', [['IS NOT NULL'], ['!=', '']]];
                 break;
-//            case self::STARTS_WITH_CONDITION:
-//                break;
-//            case self::ENDS_WITH_CONDITION:
-//                break;
+                //            case self::STARTS_WITH_CONDITION:
+                //                break;
+                //            case self::ENDS_WITH_CONDITION:
+                //                break;
         }
 
         $filterPublic = [

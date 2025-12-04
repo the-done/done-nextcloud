@@ -15,6 +15,7 @@ import {
   isSunday,
   previousMonday,
   nextSunday,
+  isBefore,
 } from "date-fns";
 
 import { SUBMIT_DATE_FORMAT } from "@/common/shared/lib/constants";
@@ -134,6 +135,21 @@ export const timeTrackingPageMixin = {
         localStorage.setItem(activeRangeTypeKey, this.activeRangeType);
       }
     },
+    setActiveRangeTypeFromLocalStorage() {
+      const activeRangeTypeKey = this.localStorageActiveRangeTypeKey;
+
+      if (!activeRangeTypeKey) {
+        return;
+      }
+
+      const localActiveRangeType = localStorage.getItem(activeRangeTypeKey);
+
+      if (!localActiveRangeType) {
+        return;
+      }
+
+      this.activeRangeType = localActiveRangeType;
+    },
     async fetchDataWithFilters(payload = {}) {
       const { date_from, date_to } = this.getSubmitRange();
       const filters = this.getSerializedFilters();
@@ -141,7 +157,11 @@ export const timeTrackingPageMixin = {
       await this.handleFetchData({ date_from, date_to, filters, ...payload });
     },
     async handleUpdateActiveDate(value) {
-      this.activeDate = value;
+      if (this.limitFirstDate && isBefore(value, this.limitFirstDate)) {
+        this.activeDate = this.limitFirstDate;
+      } else {
+        this.activeDate = value;
+      }
 
       await this.fetchDataWithFilters();
     },
@@ -220,6 +240,17 @@ export const timeTrackingPageMixin = {
       this.setFilterValuesFromQuery();
 
       await this.fetchDataWithFilters(payload);
+    },
+    async init() {
+      try {
+        this.setActiveRangeTypeFromLocalStorage();
+
+        await this.initFetchDataWithFilters(); // timeTrackingPageMixin
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.isInitLoading = false;
+      }
     },
   },
 };
