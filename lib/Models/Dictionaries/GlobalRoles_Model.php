@@ -5,12 +5,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models\Dictionaries;
 
 use OCA\Done\Models\Base_Model;
 use OCA\Done\Modules\BaseModuleService;
-use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -24,29 +22,29 @@ class GlobalRoles_Model extends Base_Model
     public string $dbTableComment = 'Lookup table: stores the names of global user roles. Uses soft-delete.';
 
     public array $fields = [
-        'id'      => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'ID',
-            'db_comment' => 'Internal unique key for a global role'
+            'db_comment' => 'Internal unique key for a global role',
         ],
-        'name'    => [
+        'name' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Role name',
             'required'         => true,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment' => 'Name of the user\'s global role (e.g., Administrator, Director)'
+            'db_comment' => 'Name of the user\'s global role (e.g., Administrator, Director)',
         ],
-        'sort'    => [
+        'sort' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Sorting',
-            'db_comment' => 'Sort order number for the record'
+            'db_comment' => 'Sort order number for the record',
         ],
         'deleted' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Deleted',
-            'db_comment' => 'Soft-delete flag (1 - deleted, 0 - active). Deleted records should be excluded from queries.'
+            'db_comment' => 'Soft-delete flag (1 - deleted, 0 - active). Deleted records should be excluded from queries.',
         ],
     ];
 
@@ -98,12 +96,14 @@ class GlobalRoles_Model extends Base_Model
     public const CAN_EDIT_USERS_GLOBAL_ROLES = 'canEditUsersGlobalRoles';
     public const CAN_ADD_USERS_TO_DIRECTIONS = 'canAddUsersToDirections';
 
+    public const CAN_HIDE_EMPTY_FIELDS_IN_PREVIEW = 'canHideEmptyFieldsInPreview';
+
     /**
      * Returns permission names.
      *
      * @return string[]
      */
-    public function getPermissionNames(): array
+    public function getRolesActions(): array
     {
         return [
             self::CAN_CREATE_USERS            => 'Create employees',
@@ -148,74 +148,6 @@ class GlobalRoles_Model extends Base_Model
         ];
     }
 
-    public static function getUsersRightsMap(): array
-    {
-        return [
-            self::ADMIN    => [
-                self::CAN_ADD_ADMIN,
-                self::CAN_ADD_OFFICER,
-                self::CAN_CREATE_USERS,
-                self::CAN_READ_USERS_LIST,
-                self::CAN_READ_USERS_PROFILE,
-                self::CAN_DISMISS_USERS,
-                self::CAN_EDIT_USERS_GLOBAL_ROLES,
-                self::CAN_READ_DICTIONARIES,
-                self::CAN_ADD_STATISTICS,
-            ],
-            self::OFFICER  => [
-                self::CAN_ADD_HEAD,
-                self::CAN_ADD_CURATOR,
-                self::CAN_CREATE_USERS,
-                self::CAN_READ_USERS_LIST,
-                self::CAN_READ_USERS_PROFILE,
-                self::CAN_ADD_USERS_TO_DIRECTIONS,
-                self::CAN_DISMISS_USERS,
-                self::CAN_CREATE_PROJECTS,
-                self::CAN_READ_PROJECTS_LIST,
-                self::CAN_ADD_USERS_TO_PROJECTS,
-                self::CAN_EDIT_PROJECTS,
-                self::CAN_DELETE_PROJECTS,
-                self::CAN_ADD_USERS_TO_TEAMS,
-                self::CAN_READ_TEAMS_LIST,
-                self::CAN_CREATE_TEAMS,
-                self::CAN_EDIT_TEAMS,
-                self::CAN_DELETE_TEAMS,
-                self::CAN_ADD_TEAMS_TO_DIRECTIONS,
-                self::CAN_ADD_TEAMS_TO_PROJECTS,
-                self::CAN_READ_REPORTS,
-                self::CAN_READ_COMMON_REPORT,
-                self::CAN_READ_PROJECTS_REPORT,
-                self::CAN_READ_STAFF_REPORT,
-                self::CAN_READ_SETTINGS,
-                self::CAN_READ_RIGHTS_MATRIX,
-                self::CAN_EDIT_RIGHTS_MATRIX,
-                self::CAN_READ_STATISTICS_ALL_USERS,
-                self::CAN_READ_DICTIONARIES,
-                self::CAN_ADD_STATISTICS,
-            ],
-            self::HEAD     => [
-                self::CAN_READ_USERS_LIST,
-                self::CAN_READ_USERS_PROFILE,
-                self::CAN_READ_PROJECTS_LIST,
-                self::CAN_READ_REPORTS,
-                self::CAN_READ_COMMON_REPORT,
-                self::CAN_READ_PROJECTS_REPORT,
-                self::CAN_READ_STAFF_REPORT,
-                self::CAN_READ_STATISTICS_ALL_USERS,
-                self::CAN_ADD_STATISTICS,
-            ],
-            self::CURATOR  => [
-                self::CAN_ADD_STATISTICS,
-            ],
-            self::EMPLOYEE => [
-                self::CAN_ADD_STATISTICS,
-            ],
-            self::FINANCE  => [
-                self::CAN_READ_FINANCES,
-            ],
-        ];
-    }
-
     public static function getUsersDefaultRights(): array
     {
         return [
@@ -256,7 +188,7 @@ class GlobalRoles_Model extends Base_Model
     }
 
     public function getItem(
-        string|int $id,
+        int | string $id,
         array $fields = ['*'],
     ): array {
         $roleId = (int)$id;
@@ -272,7 +204,7 @@ class GlobalRoles_Model extends Base_Model
 
         if (!empty($item)) {
             $item['name'] = $this->translateService->getTranslate($item['name']);
-            $item         = $this->addSlugToItem($item);
+            $item = $this->addSlugToItem($item);
         }
 
         return !empty($item) ? $item : [];

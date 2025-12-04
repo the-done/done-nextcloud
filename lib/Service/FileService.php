@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -26,7 +25,7 @@ class FileService
     // Allowed extensions for all files (lowercase only)
     private array $enabledExt = [
         'bmp', 'csv', 'doc', 'docx', 'gif', 'ico', 'jpg', 'jpeg', 'odg', 'odp', 'ods', 'odt',
-        'pdf', 'png', 'ppt', 'swf', 'txt', 'xcf', 'xls', 'xlsx', 'zip'
+        'pdf', 'png', 'ppt', 'swf', 'txt', 'xcf', 'xls', 'xlsx', 'zip',
     ];
 
     // Allowed MIME types for all files
@@ -35,7 +34,7 @@ class FileService
         'application/msword', 'application/excel', 'application/pdf', 'application/powerpoint',
         'text/plain', 'application/x-zip', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'image/svg+xml', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     ];
 
     // Maximum file size (10MB)
@@ -51,13 +50,16 @@ class FileService
     {
         if (!isset(self::$instance)) {
             $container = \OC::$server->get(\OCP\IServerContainer::class);
-            self::$instance = $container->get(\OCA\Done\Service\FileService::class);
+            self::$instance = $container->get(self::class);
         }
+
         return self::$instance;
     }
 
     /**
      * Validate any file
+     *
+     * @param mixed $file
      */
     public function validateFile($file): bool
     {
@@ -72,12 +74,13 @@ class FileService
 
         // Extension check
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, $this->enabledExt)) {
+
+        if (!\in_array($ext, $this->enabledExt)) {
             return false;
         }
 
         // MIME type check
-        if (!in_array($file['type'], $this->enabledMimeTypes)) {
+        if (!\in_array($file['type'], $this->enabledMimeTypes)) {
             return false;
         }
 
@@ -86,15 +89,18 @@ class FileService
 
     /**
      * Save file to AppData
+     *
+     * @param mixed $file
      */
     public function saveFileToAppData(string $folderPath, $file, string $subFolder = ''): string
     {
         try {
             // Create main folder
             $mainFolder = $this->appData->newFolder($folderPath);
-            
+
             // Create subfolder if specified
             $targetFolder = $mainFolder;
+
             if (!empty($subFolder)) {
                 try {
                     $targetFolder = $mainFolder->getFolder($subFolder);
@@ -128,6 +134,7 @@ class FileService
             $targetFolder = $mainFolder->getFolder($subFolder);
             $fileNode = $targetFolder->getFile($fileName);
             $fileNode->delete();
+
             return true;
         } catch (NotFoundException $e) {
             // File no longer exists, this is normal
@@ -148,10 +155,10 @@ class FileService
             $fileNode = $targetFolder->getFile($fileName);
 
             return [
-                'content' => $fileNode->getContent(),
+                'content'  => $fileNode->getContent(),
                 'mimeType' => $this->getMimeTypeByExtension(pathinfo($fileName, PATHINFO_EXTENSION)),
-                'size' => $fileNode->getSize(),
-                'name' => $fileName
+                'size'     => $fileNode->getSize(),
+                'name'     => $fileName,
             ];
         } catch (NotFoundException $e) {
             return null;
@@ -167,6 +174,7 @@ class FileService
     {
         $fileName = str_replace(' ', '-', $fileName);
         $fileName = $this->transliterate($fileName, true);
+
         return (string)preg_replace('/[^a-zA-Z0-9._\-]/ui', '', $fileName);
     }
 
@@ -182,12 +190,10 @@ class FileService
 
         // Create timestamp with microseconds for uniqueness
         // Use sprintf to avoid scientific notation
-        $timestamp = sprintf('%.0f', microtime(true) * 1000000);
-        
+        $timestamp = \sprintf('%.0f', microtime(true) * 1000000);
+
         return $name . '_' . $timestamp . $ext;
     }
-
-
 
     /**
      * Determine MIME type by extension
@@ -195,27 +201,31 @@ class FileService
     public function getMimeTypeByExtension(string $extension): string
     {
         $mimeTypes = [
-            'jpg' => 'image/jpeg',
+            'jpg'  => 'image/jpeg',
             'jpeg' => 'image/jpeg',
-            'png' => 'image/png',
-            'gif' => 'image/gif',
-            'svg' => 'image/svg+xml',
-            'pdf' => 'application/pdf',
-            'txt' => 'text/plain',
-            'doc' => 'application/msword',
+            'png'  => 'image/png',
+            'gif'  => 'image/gif',
+            'svg'  => 'image/svg+xml',
+            'pdf'  => 'application/pdf',
+            'txt'  => 'text/plain',
+            'doc'  => 'application/msword',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'xls' => 'application/vnd.ms-excel',
+            'xls'  => 'application/vnd.ms-excel',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'ppt' => 'application/vnd.ms-powerpoint',
+            'ppt'  => 'application/vnd.ms-powerpoint',
             'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         ];
 
         $ext = strtolower($extension);
+
         return $mimeTypes[$ext] ?? 'application/octet-stream';
     }
 
     /**
      * Transliterate string to Latin
+     *
+     * @param mixed $string
+     * @param mixed $forFiles
      */
     public function transliterate($string, $forFiles = false): string
     {

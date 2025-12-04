@@ -5,13 +5,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
 use OCA\Done\Attribute\RequireRole;
-use ReflectionClass;
 
 /**
  * Service for checking user roles
@@ -31,11 +29,12 @@ class RoleCheckService
     public function checkMethodAccess(string $controllerClass, string $methodName): bool
     {
         try {
-            $reflectionClass  = new ReflectionClass($controllerClass);
+            $reflectionClass = new \ReflectionClass($controllerClass);
             $reflectionMethod = $reflectionClass->getMethod($methodName);
 
             // Check attribute at method level
             $methodAttributes = $reflectionMethod->getAttributes(RequireRole::class);
+
             if (!empty($methodAttributes)) {
                 $requireRole = $methodAttributes[0]->newInstance();
 
@@ -44,6 +43,7 @@ class RoleCheckService
 
             // Check attribute at class level
             $classAttributes = $reflectionClass->getAttributes(RequireRole::class);
+
             if (!empty($classAttributes)) {
                 $requireRole = $classAttributes[0]->newInstance();
 
@@ -71,6 +71,6 @@ class RoleCheckService
 
         $userRoles = $this->userService->getUserGlobalRoles($userId);
 
-        return !empty(array_intersect($requiredRoles, $userRoles));
+        return !empty(array_intersect($requiredRoles, $userRoles)) || \in_array('ALL', $requiredRoles);
     }
 }

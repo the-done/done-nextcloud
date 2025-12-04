@@ -5,11 +5,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models\Dictionaries;
 
 use OCA\Done\Models\Base_Model;
-use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -28,26 +26,26 @@ class Roles_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Internal unique key for an employee role in a project',
         ],
-        'name'       => [
+        'name' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Role name',
             'required'         => true,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Name of the employee role in a project',
+            'db_comment' => 'Name of the employee role in a project',
         ],
-        'sort'       => [
+        'sort' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Sort order',
             'db_comment' => 'Sort order number for the record',
         ],
-        'deleted'    => [
+        'deleted' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Deleted',
             'db_comment' => 'Soft-delete flag (1 - deleted, 0 - active). Deleted records should be excluded from queries.',

@@ -28,7 +28,6 @@ OC.L10N.register(
     "All settings have been saved successfully.":
       "Все настройки были успешно сохранены.",
     "An error occurred while deleting": "Произошла ошибка при удалении",
-    Annotation: "Аннотация",
     Appearance: "Оформление / Внешний вид",
     Approved: "Принят",
     "Are you sure you want to delete the record?":
@@ -44,7 +43,6 @@ OC.L10N.register(
     "Background image": "Фоновое изображение",
     "By employees": "По сотрудникам",
     "By projects": "По проектам",
-    Cancel: "Отменить",
     City: "Город проживания",
     Clarified: "Уточнён",
     "Click here to set background.": "Нажмите здесь, чтобы установить фон",
@@ -53,7 +51,6 @@ OC.L10N.register(
     "Color is required": "Требуется указать цвет",
     "Color saved successfully": "Цвет успешно сохранён",
     "Column visibility": "Видимость колонок",
-    Comment: "Комментарий",
     Common: "Общий",
     "Contract date": "Дата заключения договора",
     "Contract type": "Оформление",
@@ -72,7 +69,6 @@ OC.L10N.register(
     "Created at": "Дата создания",
     Curator: "Куратор",
     "Custom table settings": "Пользовательские настройки таблиц",
-    Customer: "Заказчик",
     "Customer name": "Название заказчика",
     Customers: "Заказчики",
     "Customers dictionary is empty.": "Справочник заказчиков пуст.",
@@ -135,6 +131,12 @@ OC.L10N.register(
     "Error saving fields ordering":
       "Ошибка при сохранении упорядочивания полей",
     "Error while saving:": "Ошибка при сохранении: ",
+    "Export failed. Please try again.": "Ошибка экспорта. Попробуйте еще раз.",
+    "Export rate limit exceeded. Please wait before trying again.":
+      "Превышен лимит экспорта. Пожалуйста, подождите перед повторной попыткой.",
+    "Export to CSV completed successfully": "Экспорт в CSV завершен успешно",
+    "Export to Excel completed successfully":
+      "Экспорт в Excel завершен успешно",
     Expand: "Раскрыть",
     "Failed to change interface language:":
       "Не удалось изменить язык интерфейса: ",
@@ -149,6 +151,7 @@ OC.L10N.register(
     "Field edited successfully": "Поле успешно отредактировано",
     "Field name": "Название поля",
     "Field name is required": "Название поля обязательно",
+    "Field is required": "Название поля обязательно",
     "Field type": "Тип поля",
     "Field updated successfully": "Поле успешно изменено",
     "Fields ordering is already in default state":
@@ -161,7 +164,6 @@ OC.L10N.register(
     "Filter value": "Значение фильтрации",
     Float: "Число с плавающей точкой",
     Forward: "Вперёд",
-    Friday: "Пятница",
     "Full name": "ФИО",
     Gender: "Гендер",
     "Google Drive email": "Почта для Google Drive",
@@ -176,6 +178,8 @@ OC.L10N.register(
     Integer: "Число",
     "Internal user is missing": "Отсутствует внутренний пользователь",
     "Invalid entity": "Неверная сущность",
+    "Invalid entity source": "Неверный источник сущности",
+    "Invalid field": "Неверное поле",
     "Invalid characters found in the field «{field}»":
       "Обнаружены недопустимые символы в поле «{field}»",
     "Invalid gender specified": "Указан некорректный пол",
@@ -345,10 +349,8 @@ OC.L10N.register(
     Payee: "Получатель",
     Payer: "Плательщик",
     INN: "ИНН",
-    Employee: "Сотрудник",
     Customer: "Клиент",
     Comment: "Комментарий",
-    Save: "Сохранить",
     Update: "Обновить",
     Cancel: "Отмена",
     Title: "Название",
@@ -369,8 +371,6 @@ OC.L10N.register(
       "Справочник ролей пуст. Пожалуйста, обратитесь к администратору.",
     "Roles saved": "Роли сохранены",
     RouterLink: "RouterLink",
-    Saturday: "Суббота",
-    saturday: "суббота",
     Save: "Сохранить",
     "Save and continue": "Сохранить и продолжить",
     "Saved successfully": "Успешно сохранено",
@@ -398,6 +398,7 @@ OC.L10N.register(
     "Sorting values within table columns":
       "Сортировка значений внутри колонок таблиц",
     Source: "Источник",
+    "Source is required": "Поле источник обязательно к заполнению",
     "Source not found": "Источник не найден",
     "Stage name": "Название стадии",
     "Start date": "Дата начала работы",
@@ -455,14 +456,11 @@ OC.L10N.register(
       "Эта команда уже прикреплена к выбранному направлению",
     "This team is already attached to the selected project":
       "Эта команда уже прикреплена к выбранному проекту",
-    Thursday: "Четверг",
     "Time spent": "Затраченное время",
     "Time tracking": "Учёт времени",
     "Time zone": "Часовой пояс",
-    Title: "Название",
     "To memorize the last set time": "Запоминать последнее установленное время",
     Today: "Сегодня",
-    Tuesday: "Вторник",
     "Unknown error": "Неизвестная ошибка",
     "Updated at": "Дата последнего изменения",
     "Updated successfully": "Успешно обновлено",
@@ -498,7 +496,6 @@ OC.L10N.register(
       "Мы не смогли найти данные по вашему запросу.",
     "We could not find data for your teams.":
       "Мы не смогли найти данные по вашим командам.",
-    Wednesday: "Среда",
     Week: "Неделя",
     week: "неделя",
     "week of the year": "неделя года",
@@ -524,18 +521,20 @@ OC.L10N.register(
     "You do not have permission to export data.":
       "У вас нет прав для экспорта данных.",
     Multiselect: "Множественный выбор",
-    "Invalid field": "Неверное поле",
+    "No options available": "Нет доступных вариантов",
     "Failed to retrieve saved comment":
       "Не удалось получить сохраненный комментарий.",
     "Failed to retrieve updated comment":
       "Не удалось получить обновленный комментарий.",
     "Comment text is required": "Текст комментария обязателен",
-    "Comment must be at least 3 characters":
-      "Комментарий должен быть не менее 3 символов.",
     "Comment already exists for this field":
       "Комментарий для этого поля уже существует",
-    "No options available": "Нет доступных вариантов",
+    "Comment must be at least 3 characters":
+      "Комментарий должен быть не менее 3 символов.",
     "Comment for field": "Комментарий к полю",
+    Profile: "Профиль",
+    "Enter your message": "Введите ваше сообщение",
+    Submit: "Отправить",
   },
   "ru",
   "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"

@@ -29,7 +29,7 @@
         <div v-if="item.visible !== false" :key="item.key">
           <template v-if="item.type === 'select'">
             <VDropdown
-              v-if="item.initiated === true"
+              v-if="!item.fetchOptionsFunction || item.initiated === true"
               v-model="item.value"
               :options="item.options"
               :multiple="item.multiple === true"
@@ -93,6 +93,7 @@ export default {
         item.fetchOptionsFunction().then(({ data }) => {
           const { value, multiple } = item;
 
+          // TODO: Do we need separator?
           // Filter the separator from the options
           item.options = data.filter((option) => option.id !== "separator");
 

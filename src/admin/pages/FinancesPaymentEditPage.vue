@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPageContent>
@@ -13,18 +11,14 @@
           forceIconText
         >
           <template #icon>
-            <Cash />
+            <CashMultiple />
           </template>
         </NcBreadcrumb>
         <NcBreadcrumb
           :name="contextTranslate('Payments', context)"
-          :to="{ name: 'finances-payments' }"
+          :to="{ name: 'finances-payments-table' }"
           forceIconText
-        >
-          <template #icon>
-            <Cash />
-          </template>
-        </NcBreadcrumb>
+        />
         <NcBreadcrumb :name="pageTitle" />
         <NcBreadcrumb
           v-if="isLoading === false && isEdit === true"
@@ -61,7 +55,7 @@ import { mapState } from "pinia";
 import { required, integer, minValue } from "vuelidate/lib/validators";
 
 import BookCog from "vue-material-design-icons/BookCog.vue";
-import Cash from "vue-material-design-icons/Cash.vue";
+import CashMultiple from "vue-material-design-icons/CashMultiple.vue";
 
 import { FormCreator } from "@/common/widgets/FormCreator";
 import {
@@ -97,7 +91,7 @@ export default {
   name: "FinancesPaymentEditPage",
   mixins: [pageFormCreatorMixin, contextualTranslationsMixin],
   components: {
-    Cash,
+    CashMultiple,
     NcBreadcrumbs,
     VToolbar,
     BookCog,
@@ -436,7 +430,7 @@ export default {
           await createPayment(dataToSend);
         }
 
-        this.$router.push({ name: "finances-payments" });
+        this.$router.push({ name: "finances-payments-table" });
       } catch (e) {
         console.error(e);
       }

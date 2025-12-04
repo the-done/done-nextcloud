@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -27,19 +26,19 @@ class DynamicFields_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Internal unique key for a dynamic field',
         ],
-        'title'      => [
+        'title' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Field name',
             'required'         => true,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Name of the dynamic field displayed in the UI',
+            'db_comment' => 'Name of the dynamic field displayed in the UI',
         ],
         'field_type' => [
             'type'       => IQueryBuilder::PARAM_INT,
@@ -47,19 +46,19 @@ class DynamicFields_Model extends Base_Model
             'required'   => true,
             'db_comment' => 'Field type. Possible values: 1 (INTEGER), 2 (FLOAT), 3 (STRING), 4 (TEXT), 5 (DATE), 6 (DATETIME), 7 (DROPDOWN), 8 (DROPDOWN FROM SOURCE), 9 (BOOL)',
         ],
-        'source'     => [
+        'source' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Source',
             'required'   => true,
             'db_comment' => 'Identifier of the application section the field belongs to. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)',
         ],
-        'required'   => [
+        'required' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Required',
             'required'   => false,
             'db_comment' => 'Required field flag (1 - required, 0 - optional)',
         ],
-        'multiple'   => [
+        'multiple' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Multiple',
             'required'   => false,
@@ -119,7 +118,7 @@ class DynamicFields_Model extends Base_Model
      */
     public function addSlugToItem(array $item): array
     {
-        $item             = parent::addSlugToItem($item);
+        $item = parent::addSlugToItem($item);
         $item['required'] = (bool)$item['required'];
         $item['multiple'] = (bool)$item['multiple'];
 
@@ -130,6 +129,7 @@ class DynamicFields_Model extends Base_Model
      * Prepare filter by dynamic fields for table
      *
      * @param array $dynamicColumnsFilter
+     *
      * @return array
      */
     public function prepareDynFieldsFilter(array $dynamicColumnsFilter = []): array
@@ -142,7 +142,7 @@ class DynamicFields_Model extends Base_Model
         );
 
         foreach ($dynamicColumnsFilter as $id => $filter) {
-            $type   = $dynFields[$id]['field_type'] ?? null;
+            $type = $dynFields[$id]['field_type'] ?? null;
             $column = DynamicFieldsData_Model::getColumnByType($type);
 
             if (empty($column)) {

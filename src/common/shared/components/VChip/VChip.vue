@@ -77,7 +77,7 @@ export default {
 
 .v-chip--warning {
   color: var(--color-primary-element-text);
-  background-color: var(--color-warning);
+  background-color: var(--color-element-warning);
 }
 
 .v-chip--dark {

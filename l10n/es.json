@@ -434,7 +434,10 @@
     "You do not have permission to export data.": "No tiene permisos para exportar datos.",
     "Multiselect": "Selección múltiple",
     "No options available": "No hay opciones disponibles",
-    "Comment for field": "Comentario para el campo"
+    "Comment for field": "Comentario para el campo",
+    "Profile": "Perfil",
+    "Enter your message": "Introduzca su mensaje",
+    "Submit": "Enviar"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

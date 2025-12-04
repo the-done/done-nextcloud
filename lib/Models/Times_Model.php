@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Modules\Projects\Models\Project_Model;
@@ -31,40 +30,40 @@ class Times_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'          => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'required'   => true,
             'db_comment' => 'Unique identifier for a time tracking entry',
         ],
-        'date'        => [
+        'date' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Report date',
             'required'   => true,
             'db_comment' => 'Date for which the time report is made',
         ],
-        'user_id'     => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'User',
             'required'   => true,
             'link'       => User_Model::class,
             'db_comment' => 'User (employee) ID. References oc_done_users_data.id',
         ],
-        'project_id'  => [
+        'project_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Project',
             'required'   => true,
             'link'       => Project_Model::class,
             'db_comment' => 'ID of the project the work was done for. References oc_done_projects.id',
         ],
-        'task_link'   => [
+        'task_link' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Task link',
             'required'         => false,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'URL to a task in an external system (e.g., Yandex Tracker)',
+            'db_comment' => 'URL to a task in an external system (e.g., Yandex Tracker)',
         ],
         'description' => [
             'type'             => IQueryBuilder::PARAM_LOB,
@@ -73,18 +72,18 @@ class Times_Model extends Base_Model
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Description of the work performed',
+            'db_comment' => 'Description of the work performed',
         ],
-        'comment'     => [
+        'comment' => [
             'type'             => IQueryBuilder::PARAM_LOB,
             'title'            => 'Comment',
             'required'         => false,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Additional comment on the time report',
+            'db_comment' => 'Additional comment on the time report',
         ],
-        'minutes'     => [
+        'minutes' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'unsigned'   => true,
             'title'      => 'Minutes',
@@ -97,25 +96,25 @@ class Times_Model extends Base_Model
             'required'   => false,
             'db_comment' => 'Downtime flag (1 - yes, this was downtime, 0 - no, this was work time)',
         ],
-        'status_id'   => [
+        'status_id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Report status',
             'required'   => false,
             'db_comment' => '[FUTURE] Status of the time report. Possible value: 1 (Sent). Other statuses are reserved.',
         ],
-        'sort'        => [
+        'sort' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Report sort order in day',
             'required'   => false,
             'db_comment' => 'Sort order for time report entries within a single day',
         ],
-        'created_at'  => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
             'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'  => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
@@ -132,7 +131,7 @@ class Times_Model extends Base_Model
     /**
      * Get report statuses
      *
-     * @return array<string, string>
+     * @return array<int, string>
      */
     public function getReportStatuses(): array
     {
@@ -151,9 +150,9 @@ class Times_Model extends Base_Model
      * @param string $dateFrom
      * @param string $dateTo
      * @param string $userId
-     * @param array $projects
-     * @param bool $needYearGrouping
-     * @param bool $needProjects
+     * @param array  $projects
+     * @param bool   $needYearGrouping
+     * @param bool   $needProjects
      *
      * @return array
      */
@@ -206,6 +205,24 @@ class Times_Model extends Base_Model
     }
 
     /**
+     * Get first report date by user
+     *
+     * @param string $userId
+     *
+     * @return string
+     */
+    public function getFirstReportDate(string $userId): string
+    {
+        $data = $this->getItemByFilter(
+            ['user_id' => $userId],
+            ['id', 'user_id', 'date'],
+            ['date', 'ASC']
+        );
+
+        return !empty($data) ? ($data['date'] ?? '') : '';
+    }
+
+    /**
      * Get report status
      *
      * @param string $reportId
@@ -244,7 +261,7 @@ class Times_Model extends Base_Model
     /**
      * Get available report actions
      *
-     * @param int $statusId
+     * @param int    $statusId
      * @param string $ownerId
      * @param string $userId
      *
@@ -263,15 +280,15 @@ class Times_Model extends Base_Model
                 ],
                 default => [],
             };
-        } else {
-            return match ($statusId) {
-                self::SENT, self::CLARIFIED => [
-                    self::APPROVED,
-                    self::ON_CLARIFICATION,
-                ],
-                default => [],
-            };
         }
+
+        return match ($statusId) {
+            self::SENT, self::CLARIFIED => [
+                self::APPROVED,
+                self::ON_CLARIFICATION,
+            ],
+            default => [],
+        };
     }
 
     /**
@@ -307,7 +324,7 @@ class Times_Model extends Base_Model
     ): array {
         $data = parent::getListByFilter($filter, $fields, $orderBy, $additionalOrderBy, $needDeleted);
 
-        return array_map(function ($item) {
+        return array_map(static function ($item) {
             if (isset($item['is_downtime'])) {
                 $item['is_downtime'] = (bool)$item['is_downtime'];
             }
@@ -330,6 +347,7 @@ class Times_Model extends Base_Model
 
     /**
      * @override
+     *
      * @throws Exception
      */
     public function update(array $data, string $id): string
@@ -337,17 +355,17 @@ class Times_Model extends Base_Model
         $preparedLogItems = [];
 
         $this->unsetIndexField = false;
-        $item                  = $this->getItem($id);
+        $item = $this->getItem($id);
 
         try {
             foreach ($data as $field => $value) {
                 if ($field == 'date') {
-                    $value        = $value->format('Y-m-d H:i:s');
+                    $value = $value->format('Y-m-d H:i:s');
                     $item[$field] = (new \DateTimeImmutable($item[$field]))->format('Y-m-d H:i:s');
                 }
 
                 if ($field == 'is_downtime') {
-                    $value        = (bool)$value;
+                    $value = (bool)$value;
                     $item[$field] = (bool)$item[$field];
                 }
 

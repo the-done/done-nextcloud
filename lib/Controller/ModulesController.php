@@ -5,21 +5,23 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
 use OCA\Done\Attribute\RequireRole;
 use OCA\Done\Modules\BaseModuleService;
+use OCA\Done\Modules\Finances\Controller\FinancesController;
+use OCA\Done\Modules\Projects\Controller\ProjectsController;
+use OCA\Done\Modules\Teams\Controller\TeamsController;
 use OCA\Done\Service\RoleCheckService;
 use OCA\Done\Service\TranslateService;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
-use OCP\AppFramework\Http;
 
 /**
  * Universal controller for all modules
@@ -29,6 +31,9 @@ use OCP\AppFramework\Http;
  *
  * Supported modules:
  * - reports: ReportsController
+ * - reports: TeamsController
+ * - reports: ProjectsController
+ * - reports: FinancesController
  */
 class ModulesController extends OCSController
 {
@@ -45,9 +50,10 @@ class ModulesController extends OCSController
     /**
      * Universal method for handling all module requests
      *
-     * @param string $module Module name
-     * @param string $method Method name in module
+     * @param string   $module  Module name
+     * @param string   $method  Method name in module
      * @param IRequest $request Request
+     *
      * @return JSONResponse
      */
     #[NoAdminRequired]
@@ -104,12 +110,12 @@ class ModulesController extends OCSController
                 ], Http::STATUS_FORBIDDEN);
             }
 
-            return $moduleController->$method($request);
+            return $moduleController->{$method}($request);
         } catch (\Exception $e) {
             return new JSONResponse([
                 'error'   => $this->translateService->getTranslate('Error executing module request'),
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'trace'   => $e->getTraceAsString(),
                 'module'  => $module,
                 'method'  => $method,
             ], Http::STATUS_INTERNAL_SERVER_ERROR);
@@ -119,8 +125,9 @@ class ModulesController extends OCSController
     /**
      * Universal handler for any module
      *
-     * @param string $module Module name
+     * @param string   $module  Module name
      * @param IRequest $request
+     *
      * @return JSONResponse
      */
     #[NoAdminRequired]

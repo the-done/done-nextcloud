@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPage data-id="ReportStaffPage">
@@ -114,6 +112,7 @@ import {
   NcListItemIcon,
   NcButton,
 } from "@nextcloud/vue";
+import { t } from "@nextcloud/l10n";
 
 import FileChart from "vue-material-design-icons/FileChart.vue";
 
@@ -145,14 +144,14 @@ import VExpandIconButton from "@/common/shared/components/VExpandIconButton/VExp
 import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
+import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { abortControllerMixin } from "@/admin/shared/lib/mixins/abortControllerMixin";
 
 import { redirectToUserStatistics } from "@/admin/shared/lib/helpers";
 import { getJoinString } from "@/common/shared/lib/helpers";
 import { initFilterDescriptor } from "@/common/shared/lib/filterHelpers";
 
 import { LOCALSTORAGE_REPORT_STAFF_RANGE_TYPE } from "@/common/shared/lib/constants";
-import { t } from "@nextcloud/l10n";
-import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {
   name: "ReportsCommonPage",
@@ -177,7 +176,11 @@ export default {
     VExpandIconButton,
     VLoader,
   },
-  mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
+  mixins: [
+    timeTrackingPageMixin,
+    contextualTranslationsMixin,
+    abortControllerMixin,
+  ],
   data() {
     return {
       context: "admin/users",
@@ -271,34 +274,19 @@ export default {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
 
+        this.resetAbortController();
+
         const { data } = await fetchUsersCommonStatistics({
           date_from,
           date_to,
+          signal: this.abortController.signal,
           ...filters,
         });
 
         this.modelData = this.transformDataForFront(data);
-      } catch (e) {
-        console.log(e);
-      } finally {
         this.isLoading = false;
-      }
-    },
-    async init() {
-      try {
-        const localActiveRangeType = localStorage.getItem(
-          this.localStorageActiveRangeTypeKey
-        );
-
-        if (localActiveRangeType) {
-          this.activeRangeType = localActiveRangeType;
-        }
-
-        await this.initFetchDataWithFilters();
       } catch (e) {
-        console.log(e);
-      } finally {
-        this.isInitLoading = false;
+        this.handleCatchAbortControllerError(e);
       }
     },
   },

@@ -139,6 +139,14 @@ OC.L10N.register(
       "Error al restablecer el orden de los campos",
     "Error saving fields ordering": "Error al guardar el orden de los campos",
     "Error while saving:": "Error al guardar: ",
+    "Export failed. Please try again.":
+      "Error en la exportación. Por favor, inténtelo de nuevo.",
+    "Export rate limit exceeded. Please wait before trying again.":
+      "Límite de tasa de exportación excedido. Por favor, espere antes de intentar de nuevo.",
+    "Export to CSV completed successfully":
+      "Exportación a CSV completada exitosamente",
+    "Export to Excel completed successfully":
+      "Exportación a Excel completada exitosamente",
     Expand: "Expandir",
     "Failed to change interface language:":
       "Error al cambiar el idioma de la interfaz: ",
@@ -175,14 +183,13 @@ OC.L10N.register(
     "Hide column": "Ocultar columna",
     "Hide empty fields in preview": "Ocultar campos vacíos en la vista previa",
     Hours: "Horas",
-    hours: "horas",
-    h: "h",
     "In development": "En desarrollo",
     "Insufficient permissions to perform the operation":
       "Permisos insuficientes para realizar la operación",
     Integer: "Número entero",
     "Internal user is missing": "Falta el usuario interno",
     "Invalid entity": "Entidad inválida",
+    "Invalid entity source": "Fuente de entidad inválida",
     "Invalid characters found in the field «{field}»":
       "Caracteres inválidos encontrados en el campo «{field}»",
     "Invalid gender specified": "Género especificado inválido",
@@ -416,6 +423,8 @@ OC.L10N.register(
     "This team is already attached to the selected project":
       "Este equipo ya está adjunto al proyecto seleccionado",
     Thursday: "Jueves",
+    "Too many rows to export. Maximum allowed: 10000":
+      "Demasiadas filas para exportar. Máximo permitido: 10000",
     "Time spent": "Tiempo gastado",
     "Time tracking": "Seguimiento del tiempo",
     "Time zone": "Zona horaria",
@@ -485,10 +494,14 @@ OC.L10N.register(
     "{quarter} quarter {year}": "{quarter} trimestre {year}",
     "{week} week {year} year": "{week} semana {year} año",
     "Reset sorting": "Restablecer orden",
-    "You do not have permission to export data.": "No tiene permisos para exportar datos.",
+    "You do not have permission to export data.":
+      "No tiene permisos para exportar datos.",
     Multiselect: "Selección múltiple",
     "No options available": "No hay opciones disponibles",
-    "Comment for field": "Comentario para el campo"
+    "Comment for field": "Comentario para el campo",
+    Profile: "Perfil",
+    "Enter your message": "Introduzca su mensaje",
+    Submit: "Enviar",
   },
   "es",
   "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"

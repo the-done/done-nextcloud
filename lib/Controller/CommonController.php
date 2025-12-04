@@ -5,31 +5,29 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OC_Template;
 use OCA\Done\AppInfo\Application;
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
+use OCA\Done\Models\PermissionsEntities_Model;
 use OCA\Done\Models\RolesPermissions_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCA\Done\Models\Times_Model;
 use OCA\Done\Models\TimesLog_Model;
+use OCA\Done\Models\User_Model;
+use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCA\Done\Models\UsersRolesInProjects_Model;
-use OCA\Talk\Exceptions\UnauthorizedException;
 use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUser;
-use OCP\AppFramework\Http\JSONResponse;
 use OCP\Server;
 
 class CommonController extends BaseController
@@ -37,14 +35,14 @@ class CommonController extends BaseController
     #[NoCSRFRequired]
     #[NoAdminRequired]
     #[FrontpageRoute(verb: 'GET', url: '/')]
-    public function index(): TemplateResponse|RedirectResponse
+    public function index(): RedirectResponse | TemplateResponse
     {
-        $appId          = Application::APP_ID;
+        $appId = Application::APP_ID;
         $currentUserObj = $this->userSession->getUser();
 
         if (!$currentUserObj instanceof IUser) {
             $urlGenerator = Server::get(IURLGenerator::class);
-            $redirectUrl  = $urlGenerator->linkToRoute('done.common.index');
+            $redirectUrl = $urlGenerator->linkToRoute('done.common.index');
 
             return new RedirectResponse(
                 $urlGenerator->linkToRouteAbsolute(
@@ -56,16 +54,16 @@ class CommonController extends BaseController
 
         \OCP\Util::addStyle($appId, 'main');
 
-        $currentUserUid  = $currentUserObj->getUID();
-        $currentUser     = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUserUid = $currentUserObj->getUID();
+        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
         $currentUserId = $currentUser['id'] ?? null;
 
         if ($currentUserId) {
-            \OCP\Util::addScript($appId, 'admin');
+            \OCP\Util::addScript($appId, 'main');
             \OCP\Util::addTranslations($appId);
         } else {
             $l = Server::get(\OCP\L10N\IFactory::class)->get('done');
-            OC_Template::printErrorPage(
+            \OC_Template::printErrorPage(
                 '403',
                 $l->t('Not enough permissions'),
                 403
@@ -73,7 +71,7 @@ class CommonController extends BaseController
         }
 
         return new TemplateResponse($appId, 'app/app', [
-            'l' => $this->translateService->l10n
+            'l' => $this->translateService->l10n,
         ]);
     }
 
@@ -83,18 +81,19 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserStatistics(IRequest $request): JSONResponse
     {
         $dateFrom = $request->getParam('date_from');
-        $dateTo   = $request->getParam('date_to');
+        $dateTo = $request->getParam('date_to');
         $projects = $request->getParam('projects');
 
         if (empty($dateFrom) || empty($dateTo)) {
             return new JSONResponse(
                 [
-                    'message' => $this->translateService->getTranslate('Select interval')
+                    'message' => $this->translateService->getTranslate('Select interval'),
                 ],
                 Http::STATUS_BAD_REQUEST
             );
@@ -114,15 +113,16 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveUserTimeInfo(
         IRequest $request
     ): JSONResponse {
-        $data           = $request->getParam('data');
+        $data = $request->getParam('data');
         $currentUserObj = $this->userSession->getUser();
         $currentUserUid = $currentUserObj?->getUID();
-        $currentUser    = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
 
         if (empty($currentUser)) {
             return new JSONResponse(
@@ -133,8 +133,8 @@ class CommonController extends BaseController
             );
         }
 
-        $timesModel        = new Times_Model();
-        $data['user_id']   = $currentUser['id'];
+        $timesModel = new Times_Model();
+        $data['user_id'] = $currentUser['id'];
         $data['status_id'] = Times_Model::SENT;
 
         [$data, $errors] = $timesModel->validateData(
@@ -176,6 +176,7 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function editUserTimeInfo(IRequest $request): JSONResponse
@@ -213,6 +214,7 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function editReportSort(IRequest $request): JSONResponse
@@ -248,6 +250,7 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function editReportSortMultiple(IRequest $request): JSONResponse
@@ -287,6 +290,7 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteUserTimeInfo(IRequest $request): JSONResponse
@@ -318,6 +322,7 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserTimeInfo(IRequest $request): JSONResponse
@@ -345,16 +350,17 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
 
-        $userSlug     = $input['slug'] ?? null;
+        $userSlug = $input['slug'] ?? null;
         $userSlugType = $input['slug_type'] ?? null;
 
-        $defaultRights  = GlobalRoles_Model::getUsersDefaultRights();
+        $defaultRights = GlobalRoles_Model::getUsersDefaultRights();
         $currentUserObj = $this->userSession->getUser();
 
         if (!$currentUserObj && empty($userSlug)) {
@@ -371,10 +377,10 @@ class CommonController extends BaseController
         $userModel = new User_Model();
 
         if (!empty($userSlug)) {
-            $userId  = $userModel->getItemIdBySlug($userSlug);
+            $userId = $userModel->getItemIdBySlug($userSlug);
         } else {
-            $currentUser    = $userModel->getUserByUuid($currentUserUid);
-            $userId       = $currentUser['id'] ?? null;
+            $currentUser = $userModel->getUserByUuid($currentUserUid);
+            $userId = $currentUser['id'] ?? null;
         }
 
         if (!$userId && $this->groupManager->isAdmin($currentUserUid)) {
@@ -383,9 +389,9 @@ class CommonController extends BaseController
 
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
 
-        $commonPermissions = $userId ?
-            (new UsersGlobalRoles_Model())->getRights($globalRoles) :
-            $defaultRights;
+        $commonPermissions = $userId
+            ? (new UsersGlobalRoles_Model())->getRights($globalRoles)
+            : $defaultRights;
 
         $fieldsPermissions = $userId ? (new RolesPermissions_Model())->getFieldsFullPermissions(
             ['global_role_id' => ['IN', $globalRoles]]
@@ -393,8 +399,9 @@ class CommonController extends BaseController
 
         return new JSONResponse(
             [
-                'common' => $commonPermissions,
-                'fields' => $fieldsPermissions,
+                'common'    => $commonPermissions,
+                'fields'    => $fieldsPermissions,
+                'isOfficer' => \in_array(GlobalRoles_Model::OFFICER, $globalRoles),
             ],
             Http::STATUS_OK
         );
@@ -406,21 +413,22 @@ class CommonController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function sendReportToNextStatus(IRequest $request): JSONResponse
     {
-        $reportId   = $request->getParam('reportId');
+        $reportId = $request->getParam('reportId');
         $nextStatusId = (int)$request->getParam('nextStatusId');
-        $comment      = '';
+        $comment = '';
 
-        $timesModel    = new Times_Model();
+        $timesModel = new Times_Model();
         $timesLogModel = new TimesLog_Model();
 
-        $currentStatusId   = $timesModel->getCurrentStatusId($reportId);
+        $currentStatusId = $timesModel->getCurrentStatusId($reportId);
         $availableStatuses = $timesModel->getAvailableNextStatuses($currentStatusId);
 
-        if (!in_array($nextStatusId, $availableStatuses)) {
+        if (!\in_array($nextStatusId, $availableStatuses)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('Unable to change status'),
@@ -466,6 +474,7 @@ class CommonController extends BaseController
      * Get projects user is assigned to
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserProjects(): JSONResponse
@@ -491,6 +500,7 @@ class CommonController extends BaseController
      * Get projects user is assigned to, sorted by last usage
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserProjectsForReport(): JSONResponse
@@ -515,11 +525,38 @@ class CommonController extends BaseController
     public function getTranslate(IRequest $request): JSONResponse
     {
         $key = $request->getParam('key');
-        $isPlural = $request->getParam('key');
-        $options   = $request->getParam('options');
+        $options = $request->getParam('options');
 
         return new JSONResponse(
-            $this->translateService->getTranslate($key, $isPlural, $options ?? []),
+            $this->translateService->getTranslate($key, $options ?? []),
+            Http::STATUS_OK
+        );
+    }
+
+    /**
+     * Get current user data
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    public function getMy(): JSONResponse
+    {
+        $userId = $this->userService->getCurrentUserId();
+        $source = PermissionsEntities_Model::USER_ENTITY;
+
+        if (empty($userId)) {
+            return new JSONResponse(
+                [
+                    'message' => $this->translateService->getTranslate('Not enough data'),
+                ],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        return new JSONResponse(
+            [
+                'data' => $this->entitiesService->getDataToViewEntity($source, $userId),
+                'slug' => $userId,
+            ],
             Http::STATUS_OK
         );
     }

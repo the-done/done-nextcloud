@@ -9,26 +9,44 @@ export const fetchCommonStatistics = async ({
   date_from,
   date_to,
   projects,
+  signal,
 }) => {
-  const { data } = await axios.post("/module/reports", {
-    date_from,
-    date_to,
-    projects,
-    method: 'getCommonStatistics'
-  });
+  const { data } = await axios.post(
+    "/module/reports",
+    {
+      date_from,
+      date_to,
+      projects,
+      method: "getCommonStatistics",
+    },
+    {
+      signal,
+    }
+  );
 
   return { data };
 };
 
-export const fetchProjectsStatistics = async ({ date_from, date_to, slug }) => {
+export const fetchProjectsStatistics = async ({
+  date_from,
+  date_to,
+  slug,
+  signal,
+}) => {
   const {
     data: { data, totals },
-  } = await axios.post("/module/reports", {
-    date_from,
-    date_to,
-    slug,
-    method: 'getProjectsStatistics'
-  });
+  } = await axios.post(
+    "/module/reports",
+    {
+      date_from,
+      date_to,
+      slug,
+      method: "getProjectsStatistics",
+    },
+    {
+      signal,
+    }
+  );
 
   return { data, totals };
 };
@@ -40,16 +58,23 @@ export const fetchUsersCommonStatistics = async ({
   teams,
   contract_types,
   directions,
+  signal,
 }) => {
-  const { data } = await axios.post("/module/reports", {
-    date_from,
-    date_to,
-    projects,
-    teams,
-    contract_types,
-    directions,
-    method: 'getUsersCommonStatistics'
-  });
+  const { data } = await axios.post(
+    "/module/reports",
+    {
+      date_from,
+      date_to,
+      projects,
+      teams,
+      contract_types,
+      directions,
+      method: "getUsersCommonStatistics",
+    },
+    {
+      signal,
+    }
+  );
 
   return { data };
 };

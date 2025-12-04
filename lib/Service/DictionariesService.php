@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -17,9 +16,9 @@ use OCA\Done\Models\Dictionaries\Direction_Model;
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\Dictionaries\Positions_Model;
 use OCA\Done\Models\Dictionaries\Roles_Model;
-use OCA\Done\Modules\Teams\Models\RolesInTeam_Model;
 use OCA\Done\Models\Dictionaries\Stages_Model;
 use OCA\Done\Modules\BaseModuleService;
+use OCA\Done\Modules\Teams\Models\RolesInTeam_Model;
 
 class DictionariesService
 {
@@ -34,23 +33,22 @@ class DictionariesService
     protected TranslateService $translateService;
 
     public function __construct(
-        Positions_Model   $positionsDictionary,
-        Contracts_Model   $contractsDictionary,
-        Roles_Model       $rolesDictionary,
+        Positions_Model $positionsDictionary,
+        Contracts_Model $contractsDictionary,
+        Roles_Model $rolesDictionary,
         GlobalRoles_Model $globalRolesDictionary,
-        Direction_Model   $directionDictionary,
-        Stages_Model      $stagesDictionary,
-        Customers_Model   $customersDictionary,
+        Direction_Model $directionDictionary,
+        Stages_Model $stagesDictionary,
+        Customers_Model $customersDictionary,
         TranslateService $translateService,
-    )
-    {
-        $this->positionsDictionary   = $positionsDictionary;
-        $this->contractsDictionary   = $contractsDictionary;
-        $this->rolesDictionary       = $rolesDictionary;
+    ) {
+        $this->positionsDictionary = $positionsDictionary;
+        $this->contractsDictionary = $contractsDictionary;
+        $this->rolesDictionary = $rolesDictionary;
         $this->globalRolesDictionary = $globalRolesDictionary;
-        $this->directionDictionary   = $directionDictionary;
-        $this->stagesDictionary      = $stagesDictionary;
-        $this->customersDictionary   = $customersDictionary;
+        $this->directionDictionary = $directionDictionary;
+        $this->stagesDictionary = $stagesDictionary;
+        $this->customersDictionary = $customersDictionary;
         $this->translateService = $translateService;
 
         if (BaseModuleService::moduleExists('teams')) {
@@ -60,18 +58,19 @@ class DictionariesService
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDictionary(string $dictTitle = ''): array
     {
-        $data            = [];
+        $data = [];
         $dictionaryModel = $this->getDictionaryModel($dictTitle);
 
         if (empty($dictionaryModel)) {
             return $data;
         }
 
-        $data['body']   = $this->getDictionaryBodyData($dictionaryModel);
+        $data['body'] = $this->getDictionaryBodyData($dictionaryModel);
         $data['header'] = $this->getDictionaryHeaderData($dictionaryModel->fields);
 
         return $data;
@@ -79,7 +78,6 @@ class DictionariesService
 
     private function getDictionaryBodyData(Base_Model $dictionaryModel): array
     {
-
         return $dictionaryModel->getListByFilter([], ['*'], ['sort', 'ASC'], ['name', 'ASC']);
     }
 
@@ -115,15 +113,15 @@ class DictionariesService
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDictionaryItem(
-        string          $dictTitle,
-        int|string|null $slug,
-        ?int            $slugType
-    ): array
-    {
-        $data            = [];
+        string $dictTitle,
+        int | string | null $slug,
+        ?int $slugType
+    ): array {
+        $data = [];
         $dictionaryModel = $this->getDictionaryModel($dictTitle);
 
         if (empty($dictionaryModel)) {

@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Models\Appearance\UserAppearance_Model;
@@ -34,12 +33,12 @@ class User_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'                => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Unique identifier for a user (employee)',
         ],
-        'user_id'           => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Nextcloud user uuid',
             'required'   => false,
@@ -55,10 +54,10 @@ class User_Model extends Base_Model
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'User display name (nickname)',
-            'show'             => true,
+            'db_comment' => 'User display name (nickname)',
+            'show'       => true,
         ],
-        'lastname'          => [
+        'lastname' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'User lastname',
             'required'         => false,
@@ -66,10 +65,10 @@ class User_Model extends Base_Model
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'User\'s last name',
-            'show'             => true,
+            'db_comment' => 'User\'s last name',
+            'show'       => true,
         ],
-        'name'              => [
+        'name' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'User name',
             'required'         => true,
@@ -77,10 +76,10 @@ class User_Model extends Base_Model
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'User\'s first name',
-            'show'             => true,
+            'db_comment' => 'User\'s first name',
+            'show'       => true,
         ],
-        'middle_name'       => [
+        'middle_name' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'User middle name',
             'required'         => false,
@@ -88,10 +87,10 @@ class User_Model extends Base_Model
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'User\'s middle name',
-            'show'             => true,
+            'db_comment' => 'User\'s middle name',
+            'show'       => true,
         ],
-        'position_id'       => [
+        'position_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Position',
             'required'   => false,
@@ -100,7 +99,7 @@ class User_Model extends Base_Model
             'db_comment' => 'Position ID. References oc_done_positions.id',
             'show'       => true,
         ],
-        'contract_type_id'  => [
+        'contract_type_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Contract type',
             'required'   => false,
@@ -109,18 +108,18 @@ class User_Model extends Base_Model
             'db_comment' => 'Contract type ID. References oc_done_contracts.id',
             'show'       => true,
         ],
-        'deleted'           => [
+        'deleted' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Deleted',
             'db_comment' => 'Soft-delete flag (1 - deleted, 0 - active). Deleted records should be excluded from queries.',
         ],
-        'created_at'        => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
             'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'        => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
@@ -135,7 +134,7 @@ class User_Model extends Base_Model
             'filter_field'  => 'user_id',
             'key_field'     => 'direction_id',
         ],
-        UsersGlobalRoles_Model::class  => [
+        UsersGlobalRoles_Model::class => [
             'title'         => 'Roles',
             'frontend_type' => 'roles',
             'filter_field'  => 'user_id',
@@ -152,7 +151,7 @@ class User_Model extends Base_Model
         array $data,
         bool $save = false,
         array $ignoreFields = [],
-        string|null $id = null
+        ?string $id = null
     ): array {
         $result = $errors = [];
 
@@ -162,13 +161,13 @@ class User_Model extends Base_Model
 
         if ($save) {
             foreach ($this->fields as $field => $params) {
-                if (in_array($field, $this->excludedKeys) || in_array($field, $ignoreFields)) {
+                if (\in_array($field, $this->excludedKeys) || \in_array($field, $ignoreFields)) {
                     continue;
                 }
 
                 $required = $params['required'] ?? false;
                 $needTrim = $params['validation_rules']['trim'] ?? false;
-                $title    = $params['title'];
+                $title = $params['title'];
 
                 $value = $data[$field] ?? null;
 
@@ -178,7 +177,7 @@ class User_Model extends Base_Model
                 }
 
                 if ($field == 'user_display_name') {
-                    if (!preg_match("/^[a-zA-Z0-9\-._]+$/", $value)) {
+                    if (!preg_match('/^[a-zA-Z0-9\-._]+$/', $value)) {
                         $errors[] = $this->translateService->getTranslate(
                             'Invalid characters found in field «%s»',
                             [$title]
@@ -194,7 +193,7 @@ class User_Model extends Base_Model
                     }
                 }
 
-                if ($field == 'gender' && !in_array($value, [0, 1, null])) {
+                if ($field == 'gender' && !\in_array($value, [0, 1, null])) {
                     $errors[] = $this->translateService->getTranslate('Invalid gender specified');
                     continue;
                 }
@@ -214,14 +213,14 @@ class User_Model extends Base_Model
         }
 
         foreach ($data as $key => $value) {
-            if (!isset($this->fields[$key]) || in_array($key, $this->excludedKeys) || in_array($key, $ignoreFields)) {
+            if (!isset($this->fields[$key]) || \in_array($key, $this->excludedKeys) || \in_array($key, $ignoreFields)) {
                 continue;
             }
 
-            $params   = $this->fields[$key];
+            $params = $this->fields[$key];
             $required = $params['required'] ?? false;
             $needTrim = $params['validation_rules']['trim'] ?? false;
-            $title    = $params['title'];
+            $title = $params['title'];
 
             $value = $value ?? null;
 
@@ -231,8 +230,10 @@ class User_Model extends Base_Model
             }
 
             if ($key == 'user_display_name') {
-                if (!preg_match("/^[a-zA-Z0-9\-._]+$/", $value)) {
-                    $errors[] = $this->translateService->getTranslate('Invalid characters found in field «%s»', [$title]
+                if (!preg_match('/^[a-zA-Z0-9\-._]+$/', $value)) {
+                    $errors[] = $this->translateService->getTranslate(
+                        'Invalid characters found in field «%s»',
+                        [$title]
                     );
                     continue;
                 }
@@ -245,7 +246,7 @@ class User_Model extends Base_Model
                 }
             }
 
-            if ($key == 'gender' && !in_array($value, [0, 1, null])) {
+            if ($key == 'gender' && !\in_array($value, [0, 1, null])) {
                 $errors[] = $this->translateService->getTranslate('Invalid gender specified');
                 continue;
             }
@@ -330,15 +331,15 @@ class User_Model extends Base_Model
         $contractsModel = new Contracts_Model();
 
         $contractTypesIds = BaseService::getField($users, 'contract_type_id');
-        $positionsIds     = BaseService::getField($users, 'position_id');
+        $positionsIds = BaseService::getField($users, 'position_id');
 
-        $positionsList = !empty($positionsIds) ?
-            $positionsModel->getIndexedListByFilter(
+        $positionsList = !empty($positionsIds)
+            ? $positionsModel->getIndexedListByFilter(
                 'id',
                 ['id' => ['IN', $positionsIds, IQueryBuilder::PARAM_STR_ARRAY]]
             ) : [];
-        $contractsList = !empty($contractTypesIds) ?
-            $contractsModel->getIndexedListByFilter(
+        $contractsList = !empty($contractTypesIds)
+            ? $contractsModel->getIndexedListByFilter(
                 'id',
                 ['id' => ['IN', $contractTypesIds, IQueryBuilder::PARAM_STR_ARRAY]]
             ) : [];
@@ -366,22 +367,19 @@ class User_Model extends Base_Model
         $positionsModel = new Positions_Model();
         $contractsModel = new Contracts_Model();
 
-        $contractTypesIds = [$user['contract_type_id']];
-        $positionsIds     = [$user['position_id']];
-
-        $positionsList = !empty($positionsIds) ?
-            $positionsModel->getIndexedListByFilter(
+        $positionsList = !empty($user['position_id'])
+            ? $positionsModel->getIndexedListByFilter(
                 'id',
-                ['id' => ['IN', $positionsIds, IQueryBuilder::PARAM_STR_ARRAY]]
-            ) :
-            [];
+                ['id' => ['IN', [$user['position_id']], IQueryBuilder::PARAM_STR_ARRAY]]
+            )
+            : [];
 
-        $contractsList = !empty($contractTypesIds) ?
-            $contractsModel->getIndexedListByFilter(
+        $contractsList = !empty($user['contract_type_id'])
+            ? $contractsModel->getIndexedListByFilter(
                 'id',
-                ['id' => ['IN', $contractTypesIds, IQueryBuilder::PARAM_STR_ARRAY]]
-            ) :
-            [];
+                ['id' => ['IN', [$user['contract_type_id']], IQueryBuilder::PARAM_STR_ARRAY]]
+            )
+            : [];
 
         return self::prepareUser($user, $positionsList, $contractsList);
     }
@@ -425,11 +423,11 @@ class User_Model extends Base_Model
         );
 
         foreach ($usersLinked as $user) {
-            $lastname   = $user['lastname'] ?? '';
-            $name       = $user['name'] ?? '';
+            $lastname = $user['lastname'] ?? '';
+            $name = $user['name'] ?? '';
             $middleName = $user['middle_name'] ?? '';
-            $position   = $user['position_id'] ?? '';
-            $position   = mb_strtolower($position);
+            $position = $user['position_id'] ?? '';
+            $position = mb_strtolower($position);
 
             $data[$user['id']] = [
                 'id'    => $user['id'],
@@ -449,14 +447,14 @@ class User_Model extends Base_Model
     {
         $result = [];
 
-        $users = (new User_Model())->getListByFilter(['id', 'name', 'lastname']);
+        $users = (new self())->getListByFilter([], ['id', 'name', 'lastname']);
 
         foreach ($users as $user) {
             $result[] = [
                 'id'        => $user['id'],
                 'slug'      => $user['slug'],
                 'slug_type' => $user['slug_type'],
-                'name'      => $user['name'].' '.$user['lastname'],
+                'name'      => $user['name'] . ' ' . $user['lastname'],
             ];
         }
 
@@ -480,8 +478,8 @@ class User_Model extends Base_Model
 
         $positionsIds = BaseService::getField($users, 'position_id');
 
-        $positionsList = !empty($positionsIds) ?
-            (new Positions_Model())->getIndexedListByFilter(
+        $positionsList = !empty($positionsIds)
+            ? (new Positions_Model())->getIndexedListByFilter(
                 'id',
                 ['id' => ['IN', $positionsIds, IQueryBuilder::PARAM_STR_ARRAY]]
             ) : [];
@@ -490,7 +488,7 @@ class User_Model extends Base_Model
             $position = $positionsList[$user['position_id']]['name'] ?? 'no position';
             $position = mb_strtolower($position);
             $fullName = $user['full_name'] ?? 'No name';
-            $item     = [
+            $item = [
                 'id'   => $user['id'],
                 'name' => "{$fullName}, {$position}",
             ];
@@ -512,7 +510,7 @@ class User_Model extends Base_Model
      *
      * @return array|bool
      */
-    public function getUserByUuid(string $uuid = null): array|bool
+    public function getUserByUuid(?string $uuid = null): array | bool
     {
         return $this->getItemByFilter(['user_id' => $uuid]);
     }
@@ -546,7 +544,7 @@ class User_Model extends Base_Model
      */
     public function addFirstUser(string $currentUserUid): string
     {
-        $data   = [
+        $data = [
             'user_id'           => $currentUserUid,
             'user_display_name' => 'admin',
             'lastname'          => 'admin',

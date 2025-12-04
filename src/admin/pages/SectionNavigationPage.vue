@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPage>
@@ -53,6 +51,7 @@ import BookOpenVariant from "vue-material-design-icons/BookOpenVariant.vue";
 import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
 
 import { useModulesStore } from "@/admin/app/store/modules";
+import { defaultNavigationMixin } from "@/admin/shared/lib/mixins/defaultNavigationMixin";
 import { settingsNavigationMixin } from "@/admin/shared/lib/mixins/settingsNavigationMixin";
 
 import {
@@ -67,7 +66,11 @@ import { mapState } from "pinia";
 
 export default {
   name: "DictionaryPositionsPage",
-  mixins: [contextualTranslationsMixin, settingsNavigationMixin],
+  mixins: [
+    contextualTranslationsMixin,
+    defaultNavigationMixin,
+    settingsNavigationMixin,
+  ],
   components: {
     NcBreadcrumbs,
     NcBreadcrumb,

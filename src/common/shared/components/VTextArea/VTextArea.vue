@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <div :class="['v-text-area', error && 'v-text-area--invalid']">
@@ -10,9 +8,14 @@
       <span v-if="required === true" class="v-color-error">*</span>
     </div>
     <NcTextArea
+      ref="input"
       :model-value="value"
       :placeholder="placeholder"
+      :disabled="disabled"
+      :input-class="inputClass"
       @update:modelValue="handleUpdateModelValue"
+      @keydown.enter.exact.prevent="handleKeydownEnter"
+      @keydown.enter.shift.exact.prevent="handleKeydownEnterShift"
     />
     <div v-if="error" class="v-caption v-color-error">
       {{ error }}
@@ -28,7 +31,7 @@ export default {
   components: {
     NcTextArea,
   },
-  emits: ["input"],
+  emits: ["input", "on-keydown-enter", "on-keydown-enter-shift"],
   props: {
     value: {
       type: [String, Number],
@@ -50,10 +53,24 @@ export default {
       type: String,
       default: "",
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    inputClass: {
+      type: [String, Object],
+      default: "",
+    },
   },
   methods: {
     handleUpdateModelValue(value) {
       this.$emit("input", value);
+    },
+    handleKeydownEnter() {
+      this.$emit("on-keydown-enter");
+    },
+    handleKeydownEnterShift() {
+      this.$emit("on-keydown-enter-shift");
     },
   },
 };

@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OCA\Done\Migration;
 
-use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\DynamicFields_Model;
@@ -36,12 +35,13 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
     }
 
     /**
-     * @param IOutput $output
-     * @param Closure(): ISchemaWrapper $schemaClosure
-     * @param array $options
+     * @param IOutput                    $output
+     * @param \Closure(): ISchemaWrapper $schemaClosure
+     * @param array                      $options
+     *
      * @throws SchemaException
      */
-    public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper
+    public function changeSchema(IOutput $output, \Closure $schemaClosure, array $options): ?ISchemaWrapper
     {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
@@ -95,7 +95,10 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
             $table = $schema->createTable('done_c_settings_data');
             $table->setComment('User application settings data: setting values, types, and user preferences.');
 
-            $table->addColumn('id', 'string', [
+            $table->addColumn(
+                'id',
+                'string',
+                [
                     'autoincrement' => false,
                     'notnull'       => true,
                     'comment'       => 'Internal unique key for a user',
@@ -668,7 +671,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'integer',
                 [
                     'notnull' => true,
-                    'comment' => 'Entity source identifier. See OCA\\Done\\Models\\PermissionsEntities_Model constants (e.g., 1 - Users, 2 - Projects).',
+                    'comment' => 'Entity source identifier. See OCA\Done\Models\PermissionsEntities_Model constants (e.g., 1 - Users, 2 - Projects).',
                 ]
             );
             $table->addColumn('field', 'string', ['notnull' => true])->setLength(255);
@@ -689,7 +692,10 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
         if (!$schema->hasTable('done_fields_orderings')) {
             $table = $schema->createTable('done_fields_orderings');
-            $table->addColumn('id', 'string', [
+            $table->addColumn(
+                'id',
+                'string',
+                [
                     'autoincrement' => false,
                     'notnull'       => true,
                     'comment'       => 'Internal unique key for a user',
@@ -892,7 +898,10 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
             $table = $schema->createTable('done_tables_filter');
             $table->setComment('Table filtering settings: saved user filters or global filters.');
 
-            $table->addColumn('id', 'string', [
+            $table->addColumn(
+                'id',
+                'string',
+                [
                     'autoincrement' => false,
                     'notnull'       => true,
                     'comment'       => 'Unique identifier for a filter setting',
@@ -986,7 +995,10 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                     'comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)',
                 ]
             );
-            $table->addColumn('column', 'string', ['notnull' => true, 'comment' => 'Technical name of the table column']
+            $table->addColumn(
+                'column',
+                'string',
+                ['notnull' => true, 'comment' => 'Technical name of the table column']
             )->setLength(255);
             $table->addColumn(
                 'ordering',
@@ -1583,12 +1595,12 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
         }
 
         if (
-            $schema->hasTable('done_projects') &&
-            $schema->hasTable('done_users_data') &&
-            $schema->hasTable('done_dynamic_fields')
+            $schema->hasTable('done_projects')
+            && $schema->hasTable('done_users_data')
+            && $schema->hasTable('done_dynamic_fields')
         ) {
             $dynamicFieldsModel = new DynamicFields_Model();
-            $fieldCommentModel  = new FieldComment_Model();
+            $fieldCommentModel = new FieldComment_Model();
 
             $dynFields = [
                 [

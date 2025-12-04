@@ -5,11 +5,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Service\BaseService;
-use OCA\Done\Service\DynFieldDDownDataService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -21,9 +19,9 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
      * Get dynamic field values by filter
      *
      * @param array<string, mixed> $filter
-     * @param array<int, string> $selectDynFields ,
-     * @param string[] $orderBy
-     * @param string[] $additionalOrderBy
+     * @param array<int, string>   $selectDynFields   ,
+     * @param string[]             $orderBy
+     * @param string[]             $additionalOrderBy
      *
      * @return array<string, mixed>
      */
@@ -52,11 +50,11 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
     /**
      * Get dynamic field values indexed by field by filter
      *
-     * @param string $indexField
+     * @param string               $indexField
      * @param array<string, mixed> $filter
-     * @param array<int, string> $selectDynFields ,
-     * @param string[] $orderBy
-     * @param string[] $additionalOrderBy
+     * @param array<int, string>   $selectDynFields   ,
+     * @param string[]             $orderBy
+     * @param string[]             $additionalOrderBy
      *
      * @return array<string, mixed>
      */
@@ -81,23 +79,23 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
      */
     public function getItems(array $list = []): array
     {
-        $result             = [];
+        $result = [];
         $dynamicFieldsModel = new DynamicFields_Model();
-        $dinFieldsIds       = BaseService::getField($list, 'dyn_field_id');
-        $dinFieldsIndexed   = $dynamicFieldsModel->getIndexedListByFilter(
+        $dinFieldsIds = BaseService::getField($list, 'dyn_field_id');
+        $dinFieldsIndexed = $dynamicFieldsModel->getIndexedListByFilter(
             'id',
             ['id' => ['IN', $dinFieldsIds, IQueryBuilder::PARAM_STR_ARRAY]]
         );
-        $dynDataIndexed     = BaseService::makeHash($list, 'dyn_field_id', true);
+        $dynDataIndexed = BaseService::makeHash($list, 'dyn_field_id', true);
 
         foreach ($dynDataIndexed as $dynFieldId => $data) {
-            $dynFieldMultiple = (bool)$dinFieldsIndexed[$dynFieldId]['multiple'] ?? false;
-            $dynFieldTitle    = $dinFieldsIndexed[$dynFieldId]['title'] ?? '';
-            $dynFieldType     = (int)$dinFieldsIndexed[$dynFieldId]['field_type'] ?? null;
+            $dynFieldMultiple = (bool)$dinFieldsIndexed[$dynFieldId]['multiple'];
+            $dynFieldTitle = $dinFieldsIndexed[$dynFieldId]['title'] ?? '';
+            $dynFieldType = (int)$dinFieldsIndexed[$dynFieldId]['field_type'];
 
             $dynFieldData = $dynFieldMultiple ? $data : $data[0] ?? null;
-            $id           = $dynFieldData['id'];
-            $recordId     = $dynFieldData['record_id'];
+            $id = $dynFieldData['id'];
+            $recordId = $dynFieldData['record_id'];
 
             $result[$id] = [
                 'title'          => $dynFieldTitle,
@@ -120,16 +118,16 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
      * Get dynamic field value by its type
      *
      * @param array<string, mixed> $item
-     * @param ?int $dynFieldType
-     * @param ?bool $dynFieldMultiple
+     * @param ?int                 $dynFieldType
+     * @param ?bool                $dynFieldMultiple
      *
-     * @return int|float|string|array|null
+     * @return null|array|float|int|string
      */
     public function getDynFieldValueByType(
         array $item,
         ?int $dynFieldType = null,
         ?bool $dynFieldMultiple = false,
-    ): int|float|string|array|null {
+    ): array | float | int | string | null {
         $value = null;
 
         if (!$dynFieldType) {
@@ -140,31 +138,37 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
             case DynamicFieldsTypes_Model::INTEGER:
                 $value = $item['int_val'];
                 break;
+
             case DynamicFieldsTypes_Model::FLOAT:
                 $value = $item['float_val'];
                 break;
+
             case DynamicFieldsTypes_Model::STRING:
                 $value = $item['string_val'];
                 break;
+
             case DynamicFieldsTypes_Model::TEXT:
                 $value = $item['text_val'];
                 break;
+
             case DynamicFieldsTypes_Model::DATE:
                 $value = $item['date_val'];
                 break;
+
             case DynamicFieldsTypes_Model::DATETIME:
                 $value = $item['datetime_val'];
                 break;
+
             case DynamicFieldsTypes_Model::DROPDOWN:
                 $values = [];
 
                 $optionsModel = new DynamicFieldDropdownOptions_Model();
-                $optionIds    = $dynFieldMultiple ? BaseService::getField(
+                $optionIds = $dynFieldMultiple ? BaseService::getField(
                     $item,
                     'option_id',
                     true
                 ) : [$item['option_id']];
-                $optionsList  = $optionsModel->getList($optionIds, ['id', 'option_label'], true);
+                $optionsList = $optionsModel->getList($optionIds, ['id', 'option_label'], true);
 
                 if ($dynFieldMultiple) {
                     foreach ($item as $dynFieldItem) {
@@ -183,14 +187,14 @@ abstract class DynamicFieldsDataAbstract_Model extends Base_Model
     public static function getColumnByType(?int $dynFieldType): ?string
     {
         return match ($dynFieldType) {
-            DynamicFieldsTypes_Model::INTEGER => 'int_val',
-            DynamicFieldsTypes_Model::FLOAT => 'float_val',
-            DynamicFieldsTypes_Model::STRING => 'string_val',
-            DynamicFieldsTypes_Model::TEXT => 'text_val',
-            DynamicFieldsTypes_Model::DATE => 'date_val',
+            DynamicFieldsTypes_Model::INTEGER  => 'int_val',
+            DynamicFieldsTypes_Model::FLOAT    => 'float_val',
+            DynamicFieldsTypes_Model::STRING   => 'string_val',
+            DynamicFieldsTypes_Model::TEXT     => 'text_val',
+            DynamicFieldsTypes_Model::DATE     => 'date_val',
             DynamicFieldsTypes_Model::DATETIME => 'datetime_val',
             DynamicFieldsTypes_Model::DROPDOWN => null,
-            default => '',
+            default                            => '',
         };
     }
 }

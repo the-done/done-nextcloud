@@ -17,7 +17,7 @@
           :style="{ margin: '0' }"
         >
           <template #icon>
-            <Account :size="20" />
+            <AccountMultiple :size="20" />
           </template>
           {{ contextTranslate("No available Nextcloud users.", context) }}
         </NcNoteCard>
@@ -84,7 +84,7 @@
 import { NcButton, NcNoteCard } from "@nextcloud/vue";
 import { t } from "@nextcloud/l10n";
 
-import Account from "vue-material-design-icons/Account.vue";
+import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import BookOpenVariant from "vue-material-design-icons/BookOpenVariant.vue";
 
 import {
@@ -125,7 +125,7 @@ export default {
     FormCreator,
     VToolbar,
     VLoader,
-    Account,
+    AccountMultiple,
     BookOpenVariant,
   },
   data: () => ({

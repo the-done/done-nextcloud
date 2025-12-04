@@ -1,10 +1,8 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
-  <VPage class="overflow-hidden">
+  <VPage class="overflow-hidden relative">
     <VToolbar>
       <NcBreadcrumbs>
         <NcBreadcrumb
@@ -34,6 +32,8 @@
         :active-date="activeDate"
         :rangeType="activeRangeType"
         :filter-descriptor="filterDescriptor"
+        :available-range-types="availableRangeTypes"
+        :limit-first-date="limitFirstDate"
         @update:activeDate="handleUpdateActiveDate"
         @update:rangeType="handleUpdateActiveRangeType"
         @update:filter="handleUpdateFilter"
@@ -100,8 +100,10 @@
 </template>
 
 <script>
-import { format } from "date-fns";
+import { format, startOfYear } from "date-fns";
 import { t } from "@nextcloud/l10n";
+import { mapState } from "pinia";
+
 import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 import {
@@ -116,13 +118,6 @@ import ClockTimeEightOutline from "vue-material-design-icons/ClockTimeEightOutli
 import Plus from "vue-material-design-icons/Plus.vue";
 import CalendarToday from "vue-material-design-icons/CalendarToday.vue";
 
-import { fetchUserStatistics } from "@/common/entities/statistics/api";
-import {
-  deleteUserTimeInfo,
-  editReportSortMultiple,
-} from "@/common/entities/timeInfo/api";
-import { fetchUserProjectsForReport } from "@/common/entities/users/api";
-
 import { VPage, VPageLayout, VPageContent } from "@/common/widgets/VPage";
 import { TimeTrackingView } from "@/common/widgets/TimeTrackingView";
 import { TimeTrackingAside } from "@/common/widgets/TimeTrackingAside";
@@ -133,7 +128,17 @@ import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 import VScrollArea from "@/common/shared/components/VScrollArea/VScrollArea.vue";
 import VLoader from "@/common/shared/components/VLoader/VLoader.vue";
 
+import { fetchUserStatistics } from "@/common/entities/statistics/api";
+import {
+  deleteUserTimeInfo,
+  editReportSortMultiple,
+} from "@/common/entities/timeInfo/api";
+import { fetchUserProjectsForReport } from "@/common/entities/users/api";
+
+import { usePermissionStore } from "@/admin/app/store/permission";
+
 import { timeTrackingPageMixin } from "@/common/shared/mixins/timeTrackingPageMixin";
+import { abortControllerMixin } from "@/admin/shared/lib/mixins/abortControllerMixin";
 
 import {
   transformDotsToDashDate,
@@ -170,11 +175,16 @@ export default {
     VScrollArea,
     VLoader,
   },
-  mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
+  mixins: [
+    timeTrackingPageMixin,
+    contextualTranslationsMixin,
+    abortControllerMixin,
+  ],
   data: () => ({
     context: "user/time-tracking",
     modelData: [],
     totals: {},
+    firstReportDate: null,
     isLoading: false,
     isFormActive: false,
     formDate: getFormatedTodayDate(),
@@ -196,8 +206,26 @@ export default {
      *
      * activeRangeType: "month",
      * activeDate: new Date()
+     * firstReportDate: null
      */
   }),
+  computed: {
+    ...mapState(usePermissionStore, ["isOfficer"]),
+    availableRangeTypes() {
+      if (this.isOfficer) {
+        return [];
+      }
+
+      return ["month", "week"];
+    },
+    limitFirstDate() {
+      if (this.firstReportDate) {
+        return startOfYear(this.firstReportDate);
+      }
+
+      return startOfYear(new Date());
+    },
+  },
   methods: {
     t,
     handleClickCreate() {
@@ -218,22 +246,26 @@ export default {
         const filters = payload?.filters || {};
         const { date_from, date_to, callback } = payload;
 
-        const { data, totals } = await fetchUserStatistics({
+        this.resetAbortController();
+
+        const { data, totals, firstReportDate } = await fetchUserStatistics({
           date_from,
           date_to,
+          signal: this.abortController.signal,
           ...filters,
         });
 
         this.modelData = data;
         this.totals = totals;
+        this.firstReportDate = firstReportDate || null;
 
         if (callback) {
           callback();
         }
-      } catch (e) {
-        console.log(e);
-      } finally {
+
         this.isLoading = false;
+      } catch (e) {
+        this.handleCatchAbortControllerError(e);
       }
     },
     handleCopy({ comment, date, description, minutes, project_id, task_link }) {
@@ -315,6 +347,30 @@ export default {
 
       this.scrollToDate(searchDate);
     },
+    setActiveRangeTypeFromLocalStorage() {
+      const activeRangeTypeKey = this.localStorageActiveRangeTypeKey;
+
+      if (!activeRangeTypeKey) {
+        return;
+      }
+
+      const localActiveRangeType = localStorage.getItem(activeRangeTypeKey);
+
+      if (!localActiveRangeType) {
+        return;
+      }
+
+      if (
+        this.isOfficer === false &&
+        ["year", "quarter"].includes(localActiveRangeType) === true
+      ) {
+        this.activeRangeType = "month";
+
+        return;
+      }
+
+      this.activeRangeType = localActiveRangeType;
+    },
     async init() {
       const {
         query: { searchDate },
@@ -322,9 +378,6 @@ export default {
 
       const localActiveDate = localStorage.getItem(
         this.localStorageActiveDateKey
-      );
-      const localActiveRangeType = localStorage.getItem(
-        this.localStorageActiveRangeTypeKey
       );
 
       if (searchDate) {
@@ -335,9 +388,7 @@ export default {
         this.activeDate = new Date(localActiveDate);
       }
 
-      if (localActiveRangeType) {
-        this.activeRangeType = localActiveRangeType;
-      }
+      this.setActiveRangeTypeFromLocalStorage();
 
       await this.initFetchDataWithFilters(); // timeTrackingPageMixin
 

@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use Exception;
 use OCA\Done\Models\CustomSettings_Model;
-use OCA\Done\Models\User_Model;
 use OCA\Done\Models\CustomSettingsData_Model;
-use OCP\IRequest;
-use OCP\AppFramework\Http\JSONResponse;
+use OCA\Done\Models\User_Model;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\IRequest;
 
 class CustomSettingsController extends CommonController
 {
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getCustomSettingsList(): JSONResponse
@@ -30,17 +30,18 @@ class CustomSettingsController extends CommonController
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserCustomSettings(IRequest $request): JSONResponse
     {
-        $userSlug           = $request->getParam('user_slug');
-        $settingId          = $request->getParam('setting_id');
-        $filter             = [];
+        $userSlug = $request->getParam('user_slug');
+        $settingId = $request->getParam('setting_id');
+        $filter = [];
         $customSettingsData = new CustomSettingsData_Model();
 
         if (!empty($userSlug)) {
-            $userId          = (new User_Model())->getItemIdBySlug($userSlug);
+            $userId = (new User_Model())->getItemIdBySlug($userSlug);
             $filter['user_id'] = $userId;
         }
 
@@ -53,6 +54,7 @@ class CustomSettingsController extends CommonController
 
         // Add current user language from Nextcloud (dynamically, without saving to DB)
         $user = $this->userSession->getUser();
+
         if ($user) {
             $currentLanguage = $this->config->getUserValue($user->getUID(), 'core', 'lang', 'en');
 
@@ -74,13 +76,14 @@ class CustomSettingsController extends CommonController
      * Save user settings
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveUserSettings(IRequest $request): JSONResponse
     {
         $settings = $request->getParam('settings');
 
-        if (empty($settings) || !is_array($settings)) {
+        if (empty($settings) || !\is_array($settings)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('There was an error saving settings'),
@@ -89,18 +92,17 @@ class CustomSettingsController extends CommonController
             );
         }
 
-        $currentUserId    = $this->userService->getCurrentUserId();
+        $currentUserId = $this->userService->getCurrentUserId();
         $customSettingsData = new CustomSettingsData_Model();
-        $results            = [];
+        $results = [];
 
         foreach ($settings as $setting) {
             $settingId = $setting['setting_id'] ?? null;
-            $value     = $setting['value'] ?? null;
-            $slug      = $setting['slug'] ?? null;
-            $typeId    = $setting['type_id'] ?? null;
+            $value = $setting['value'] ?? null;
+            $slug = $setting['slug'] ?? null;
+            $typeId = $setting['type_id'] ?? null;
 
             if (empty($settingId) || empty($typeId)) {
-
                 $results[] = [
                     'setting_id' => $settingId,
                     'message'    => $this->translateService->getTranslate('Missing required parameters'),
@@ -114,13 +116,14 @@ class CustomSettingsController extends CommonController
                 if ($settingId == CustomSettings_Model::USER_LANGUAGE) {
                     // For language use special Nextcloud API
                     $user = $this->userSession->getUser();
+
                     if ($user) {
                         $this->config->setUserValue($user->getUID(), 'core', 'lang', $value);
                         $results[] = [
                             'setting_id' => $settingId,
                             'success'    => true,
                             'slug'       => 'virtual_language_setting',
-                            'message' => $this->translateService->getTranslate('Language changed'),
+                            'message'    => $this->translateService->getTranslate('Language changed'),
                         ];
                     } else {
                         $results[] = [
@@ -154,7 +157,7 @@ class CustomSettingsController extends CommonController
                         'message'    => $this->translateService->getTranslate('Setting saved'),
                     ];
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $results[] = [
                     'setting_id' => $settingId,
                     'success'    => false,
@@ -176,6 +179,7 @@ class CustomSettingsController extends CommonController
      * Get list of available languages
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getAvailableLanguages(): JSONResponse
@@ -198,6 +202,7 @@ class CustomSettingsController extends CommonController
             foreach ($languages['allLanguages'] as $lang) {
                 // Check if language is not already added
                 $exists = false;
+
                 foreach ($languageOptions as $existing) {
                     if ($existing['value'] === $lang['code']) {
                         $exists = true;
@@ -215,7 +220,7 @@ class CustomSettingsController extends CommonController
         }
 
         // Sort by name
-        usort($languageOptions, function ($a, $b) {
+        usort($languageOptions, static function ($a, $b) {
             return strcmp($a['label'], $b['label']);
         });
 
@@ -226,12 +231,14 @@ class CustomSettingsController extends CommonController
      * Change user language
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function changeUserLanguage(string $language): JSONResponse
     {
         try {
             $user = $this->userSession->getUser();
+
             if (!$user) {
                 return new JSONResponse(['error' => $this->translateService->getTranslate('User not found')], Http::STATUS_NOT_FOUND);
             }
@@ -243,7 +250,7 @@ class CustomSettingsController extends CommonController
                 'success' => true,
                 'message' => $this->translateService->getTranslate('Language changed successfully'),
             ], Http::STATUS_OK);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
         }
     }

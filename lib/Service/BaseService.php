@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -28,7 +27,7 @@ class BaseService
         IUserManager $userManager,
         TranslateService $translateService,
     ) {
-        $this->userManager      = $userManager;
+        $this->userManager = $userManager;
         $this->translateService = $translateService;
     }
 
@@ -41,48 +40,48 @@ class BaseService
      */
     public function getTimeView(int $minutes): string
     {
-        $hoursValue   = floor($minutes / 60);
-        $hoursView    = $hoursValue > 0 ? $hoursValue.' '.$this->translateService->getTranslate('h').' ' : '';
+        $hoursValue = floor($minutes / 60);
+        $hoursView = $hoursValue > 0 ? $hoursValue . ' ' . $this->translateService->getTranslate('h') . ' ' : '';
         $minutesValue = ($minutes - floor($minutes / 60) * 60);
-        $minutesView  = $minutesValue > 0 ? $minutesValue.' '.$this->translateService->getTranslate('min') : '';
+        $minutesView = $minutesValue > 0 ? $minutesValue . ' ' . $this->translateService->getTranslate('min') : '';
 
-        return $hoursView.$minutesView;
+        return $hoursView . $minutesView;
     }
 
     /**
      * Converts list to tree structure.
      *
-     * @param array $list
-     * @param string|null $firstParentId
-     * @param string|null $parent
-     * @param string|null $parentType
-     * @param string|null $parentOfParent
-     * @param string $childName
-     * @param string $firstParentType
+     * @param array       $list
+     * @param null|string $firstParentId
+     * @param null|string $parent
+     * @param null|string $parentType
+     * @param null|string $parentOfParent
+     * @param string      $childName
+     * @param string      $firstParentType
      *
      * @return array
      */
     public static function toTree(
         array &$list,
-        string $firstParentId = null,
-        string $parent = null,
-        string $parentType = null,
-        string $parentOfParent = null,
+        ?string $firstParentId = null,
+        ?string $parent = null,
+        ?string $parentType = null,
+        ?string $parentOfParent = null,
         string $childName = 'children',
         string $firstParentType = 'year',
     ): array {
         $result = [];
 
         foreach ($list as $idx => $item) {
-            $itemId        = $item['id'];
-            $parentId      = $item['parent'];
+            $itemId = $item['id'];
+            $parentId = $item['parent'];
             $parentTypeVal = $item['parent_type'];
 
             if (
-                $parentId === $parent &&
-                $parentTypeVal === $parentType &&
-                $item["parent_{$firstParentType}"] === $firstParentId &&
-                $item['type'] !== 'day'
+                $parentId === $parent
+                && $parentTypeVal === $parentType
+                && $item["parent_{$firstParentType}"] === $firstParentId
+                && $item['type'] !== 'day'
             ) {
                 $childs = self::toTree(
                     $list,
@@ -95,13 +94,13 @@ class BaseService
                 );
 
                 $item[$childName] = $childs;
-                $result[]         = $item;
+                $result[] = $item;
                 unset($list[$idx]);
             } elseif (
-                $parentId === $parent &&
-                $parentTypeVal === $parentType &&
-                $item["parent_{$firstParentType}"] === $firstParentId &&
-                $item['type'] == 'day' && $item['parent_month'] == $parentOfParent
+                $parentId === $parent
+                && $parentTypeVal === $parentType
+                && $item["parent_{$firstParentType}"] === $firstParentId
+                && $item['type'] == 'day' && $item['parent_month'] == $parentOfParent
             ) {
                 $result[] = $item;
             }
@@ -116,8 +115,9 @@ class BaseService
 
         foreach ($this->userManager->getBackends() as $backend) {
             $backendUsers = $backend->getUsers('');
+
             foreach ($backendUsers as $uid) {
-                if ((!empty($notIn) && in_array($uid, $notIn)) || (!empty($in) && !in_array($uid, $in))) {
+                if ((!empty($notIn) && \in_array($uid, $notIn)) || (!empty($in) && !\in_array($uid, $in))) {
                     continue;
                 }
 
@@ -149,28 +149,29 @@ class BaseService
      * makeHash
      * Change array keys to value of one of array fields with ability to group by it.
      *
-     * @param array $arr
-     * @param string $field
-     * @param bool $group
-     * @param string|null $subKey
-     * @param bool $subGroup
+     * @param array       $arr
+     * @param string      $field
+     * @param bool        $group
+     * @param null|string $subKey
+     * @param bool        $subGroup
+     *
      * @return array
      */
     public static function makeHash(
         array $arr,
         string $field = 'id',
         bool $group = false,
-        string $subKey = null,
+        ?string $subKey = null,
         bool $subGroup = false
     ): array {
         $result = [];
 
-        if (count($arr) == 0) {
+        if (\count($arr) == 0) {
             return $result;
         }
         $row = current($arr);
 
-        if (!array_key_exists($field, $row)) {
+        if (!\array_key_exists($field, $row)) {
             return [];
         }
 
@@ -196,14 +197,14 @@ class BaseService
     public static function makeMd5Hash(string $string): string
     {
         $currentDateTime = date('Y-m-d H:i:s');
-        $chars           = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $randomString    = substr(str_shuffle($chars), 0, 15);
-        $preparedString  = "{$string}-{$randomString}-{$currentDateTime}";
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $randomString = substr(str_shuffle($chars), 0, 15);
+        $preparedString = "{$string}-{$randomString}-{$currentDateTime}";
 
         return md5($preparedString);
     }
 
-    public static function getQuarter(\DateTime|\DateTimeImmutable $dateTime)
+    public static function getQuarter(\DateTime | \DateTimeImmutable $dateTime)
     {
         return ceil($dateTime->format('m') / 3);
     }
@@ -224,7 +225,7 @@ class BaseService
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(BaseService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;

@@ -1,20 +1,19 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <div
     data-component-id="TimeTrackingAside"
     :class="[
       'flex-[0_0_auto] flex flex-col w-full',
-      'overflow-auto shadow-md z-500',
+      'shadow-md z-500',
       'md:w-auto md:max-w-[340px] md:min-w-[300px] md:border-r md:border-(--color-border) md:shadow-none',
     ]"
   >
     <div class="flex flex-col gap-2 px-4 py-2">
       <div class="flex items-center justify-between gap-2">
         <NcButton
+          :disabled="isPrevButtonDisabled"
           aria-label="Back"
           class="flex-[0_0_auto]"
           @click="() => handleChangeDate('sub')"
@@ -97,6 +96,7 @@ import {
   getQuarter,
   getWeek,
   getMonth,
+  isBefore,
 } from "date-fns";
 import {
   NcActions,
@@ -166,32 +166,53 @@ export default {
       type: Array,
       default: () => [],
     },
+    availableRangeTypes: {
+      type: Array,
+      default: () => [],
+    },
+    limitFirstDate: {
+      type: Date,
+      default: null,
+    },
   },
   data: () => ({
     context: "user/time-tracking",
-    dateRanges: {
-      year: {
-        label: t("done", "Year"),
-        icon: ViewComfy,
-      },
-      quarter: {
-        label: t("done", "Quarter"),
-        icon: ViewModule,
-      },
-      month: {
-        label: t("done", "Month"),
-        icon: ViewGrid,
-      },
-      week: {
-        label: t("done", "Week"),
-        icon: ViewDay,
-      },
-    },
     isExpanded: true,
     showDatepicker: false,
     filterIsActive: false,
   }),
   computed: {
+    dateRanges() {
+      const rangeTypes = {
+        week: {
+          label: t("done", "Week"),
+          icon: ViewDay,
+        },
+        month: {
+          label: t("done", "Month"),
+          icon: ViewGrid,
+        },
+        quarter: {
+          label: t("done", "Quarter"),
+          icon: ViewModule,
+        },
+        year: {
+          label: t("done", "Year"),
+          icon: ViewComfy,
+        },
+      };
+
+      if (!this.availableRangeTypes?.length) {
+        return rangeTypes;
+      }
+
+      return this.availableRangeTypes.reduce((accum, key) => {
+        return {
+          ...accum,
+          [key]: rangeTypes[key],
+        };
+      }, {});
+    },
     activeRangeIcon() {
       const activeRangeType = this.dateRanges[this.rangeType];
 
@@ -224,6 +245,39 @@ export default {
           const year = getYear(this.activeDate);
 
           return t("done", "{week} week {year} year", { week, year });
+        }
+      }
+    },
+    isPrevButtonDisabled() {
+      if (!this.limitFirstDate) {
+        return false;
+      }
+
+      switch (this.rangeType) {
+        case "year": {
+          const nextDate = sub(this.activeDate, { years: 1 });
+
+          return isBefore(nextDate, this.limitFirstDate);
+        }
+        case "quarter": {
+          const nextDate = subQuarters(this.activeDate, 1);
+
+          return isBefore(nextDate, this.limitFirstDate);
+        }
+        case "month": {
+          const nextDate = sub(this.activeDate, { months: 1 });
+
+          return isBefore(nextDate, this.limitFirstDate);
+        }
+        case "week": {
+          const nextDate = sub(this.activeDate, { weeks: 1 });
+
+          return isBefore(nextDate, this.limitFirstDate);
+        }
+        default: {
+          console.log("Type not allowed.");
+
+          return false;
         }
       }
     },

@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
@@ -28,19 +27,19 @@ class UsersGlobalRoles_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Unique identifier for a global role assignment to a user',
         ],
-        'user_id'    => [
+        'user_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'User',
             'link'       => User_Model::class,
             'required'   => true,
             'db_comment' => 'User ID. References oc_done_users_data.id',
         ],
-        'role_id'    => [
+        'role_id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Global role',
             'link'       => GlobalRoles_Model::class,
@@ -88,9 +87,9 @@ class UsersGlobalRoles_Model extends Base_Model
      */
     public function getRights(array $globalRoles): array
     {
-        $rightsMap     = GlobalRoles_Model::getUsersRightsMap();
+        $rightsMap = (new GlobalRoleActionRights_Model())->getUsersRightsMap();
         $defaultRights = GlobalRoles_Model::getUsersDefaultRights();
-        $rights        = $result = [];
+        $rights = $result = [];
 
         foreach ($globalRoles as $role) {
             $rights = array_merge($rights, $rightsMap[$role]);
@@ -99,7 +98,7 @@ class UsersGlobalRoles_Model extends Base_Model
         $rights = array_unique($rights);
 
         foreach ($defaultRights as $right => $can) {
-            $result[$right] = in_array($right, $rights);
+            $result[$right] = \in_array($right, $rights);
         }
 
         return $result;

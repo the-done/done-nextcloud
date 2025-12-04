@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -35,14 +34,14 @@ class TableService
         UserService $userService,
         TranslateService $translateService,
     ) {
-        $this->userService      = $userService;
+        $this->userService = $userService;
         $this->translateService = $translateService;
     }
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(TableService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -52,16 +51,17 @@ class TableService
      * Get table
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getTable(Base_Model $commonModel, int $source, string $userId): array
     {
-        $dynamicFieldsModel    = new DynamicFields_Model();
+        $dynamicFieldsModel = new DynamicFields_Model();
         $rolesPermissionsModel = new RolesPermissions_Model();
 
-        $commonFields  = $commonModel->fields;
+        $commonFields = $commonModel->fields;
         $dynamicFields = BaseService::makeHash($dynamicFieldsModel->getDynamicFieldsForSource($source), 'id');
-        $globalRoles   = $this->userService->getUserGlobalRoles($userId);
+        $globalRoles = $this->userService->getUserGlobalRoles($userId);
 
         $filter = [
             'entity_id'      => $source,
@@ -103,11 +103,11 @@ class TableService
             $canReadFields
         );
 
-        $commonFields  = array_intersect_key($commonFields, array_flip($selectCommonColumns));
+        $commonFields = array_intersect_key($commonFields, array_flip($selectCommonColumns));
         $dynamicFields = array_intersect_key($dynamicFields, array_flip($selectDynColumns));
 
-        $allColumns               = [...$commonFields, ...$dynamicFields];
-        $filterInner              = [...$commonColumnsFilter, ...$dynamicColumnsFilter];
+        $allColumns = [...$commonFields, ...$dynamicFields];
+        $filterInner = [...$commonColumnsFilter, ...$dynamicColumnsFilter];
         $allFieldsWithoutOrdering = array_fill_keys(array_keys($allColumns), 0);
 
         $allColumnsOrdering = $this->sortFields(
@@ -138,7 +138,7 @@ class TableService
      */
     private function getCanReadFields(array $permissions): array
     {
-        return array_keys(array_filter($permissions, fn($value) => (bool)$value));
+        return array_keys(array_filter($permissions, static fn ($value) => (bool)$value));
     }
 
     /**
@@ -165,14 +165,14 @@ class TableService
     public function getTableSettings(string $userId, int $source): array
     {
         $tableColumnViewSettingsModel = new TableColumnViewSettings_Model();
-        $tableSortColumnsModel        = new TableSortColumns_Model();
-        $tableSortWithinColumnsModel  = new TableSortWithinColumns_Model();
-        $tableFilterModel             = new TableFilter_Model();
+        $tableSortColumnsModel = new TableSortColumns_Model();
+        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
+        $tableFilterModel = new TableFilter_Model();
 
-        $tableColumnView        = $tableColumnViewSettingsModel->getData($userId, $source);
-        $tableSortColumns       = $tableSortColumnsModel->getData($userId, $source);
+        $tableColumnView = $tableColumnViewSettingsModel->getData($userId, $source);
+        $tableSortColumns = $tableSortColumnsModel->getData($userId, $source);
         $tableSortWithinColumns = $tableSortWithinColumnsModel->getData($userId, $source);
-        $tableFilter            = $tableFilterModel->getData($userId, $source);
+        $tableFilter = $tableFilterModel->getData($userId, $source);
 
         return [$tableColumnView, $tableSortColumns, $tableSortWithinColumns, $tableFilter];
     }
@@ -195,8 +195,8 @@ class TableService
 
     public static function prepareFields(array $commonFields, array $dynamicFields, array $tableRules): array
     {
-        $commonColumnsFilter = $dynamicColumnsFilter = $allColumnsOrdering =
-        $commonColumnsSortWithinColumns = $dynamicColumnsSortWithinColumns = [];
+        $commonColumnsFilter = $dynamicColumnsFilter = $allColumnsOrdering
+        = $commonColumnsSortWithinColumns = $dynamicColumnsSortWithinColumns = [];
 
         $commonFields = self::processFieldSet(
             $commonFields,
@@ -253,7 +253,7 @@ class TableService
 
             // Process sorting within columns
             if (isset($fieldRules['sort_settings']['sort'])) {
-                $sortOrdering                            = $fieldRules['sort_settings']['sort_ordering'] ?? 0;
+                $sortOrdering = $fieldRules['sort_settings']['sort_ordering'] ?? 0;
                 $columnsSortWithinColumns[$sortOrdering] = [
                     $fieldName,
                     $fieldRules['sort_settings']['sort'],
@@ -283,7 +283,7 @@ class TableService
         $result = [];
 
         if (isset($rules['filter_settings'])) {
-            $result['filter_settings']         = $rules['filter_settings']['filterPublic'];
+            $result['filter_settings'] = $rules['filter_settings']['filterPublic'];
             $result['filter_settings']['slug'] = $rules['filter_settings']['slug'] ?? '';
         }
 
@@ -311,7 +311,7 @@ class TableService
     ): array {
         $result = [];
 
-        uasort($fieldsWithOrdering, function ($a, $b) use ($fieldsWithOrdering) {
+        uasort($fieldsWithOrdering, static function ($a, $b) use ($fieldsWithOrdering) {
             if ($a != $b) {
                 return $a - $b;
             }
@@ -322,11 +322,11 @@ class TableService
             return strcmp($keyA, $keyB);
         });
 
-        $fieldsWithOrdering = array_values(array_keys($fieldsWithOrdering));
-        $maxOrdering        = array_key_last($fieldsWithOrdering) ?? 0;
+        $fieldsWithOrdering = array_keys($fieldsWithOrdering);
+        $maxOrdering = array_key_last($fieldsWithOrdering) ?? 0;
 
         foreach ($allFieldsWithoutOrdering as $fieldName => $ordering) {
-            if (in_array($fieldName, $fieldsWithOrdering)) {
+            if (\in_array($fieldName, $fieldsWithOrdering)) {
                 continue;
             }
 
@@ -341,8 +341,8 @@ class TableService
 
             $result[$idx] = [
                 'key'    => $fieldName,
-                'hidden' => in_array($fieldName, $hideFields),
-                'title'  => $this->translateService->getTranslate($allColumns[$fieldName]['title']) ?? '',
+                'hidden' => \in_array($fieldName, $hideFields),
+                'title'  => $this->translateService->getTranslate($allColumns[$fieldName]['title']),
                 'rules'  => $allColumns[$fieldName]['rules'] ?? null,
                 'info'   => $tableColumnView[$fieldName] ?? null,
             ];
@@ -359,6 +359,7 @@ class TableService
 
         foreach ($tableColumnView as $column => $items) {
             $item = self::getFirstAvailableItem($items);
+
             if ($item === null) {
                 continue;
             }
@@ -385,11 +386,12 @@ class TableService
     ): array {
         foreach ($tableSortColumns as $column => $items) {
             $item = self::getFirstAvailableItem($items);
+
             if ($item === null) {
                 continue;
             }
 
-            $columnItem          = $tableRules[$column] ?? [];
+            $columnItem = $tableRules[$column] ?? [];
             $tableRules[$column] = [
                 ...$columnItem,
                 'ordering_settings' => [
@@ -408,11 +410,12 @@ class TableService
     ): array {
         foreach ($tableSortWithinColumns as $column => $items) {
             $item = self::getFirstAvailableItem($items);
+
             if ($item === null) {
                 continue;
             }
 
-            $columnItem          = $tableRules[$column] ?? [];
+            $columnItem = $tableRules[$column] ?? [];
             $tableRules[$column] = [
                 ...$columnItem,
                 'sort_settings' => [
@@ -432,6 +435,7 @@ class TableService
     ): array {
         foreach ($tableFilter as $column => $items) {
             $item = self::getFirstAvailableItem($items);
+
             if ($item === null) {
                 continue;
             }

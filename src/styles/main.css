@@ -9,10 +9,6 @@
 @import "./variables.css";
 
 /* --- Global components --- */
-.v-app-layout {
-  display: flex;
-  width: 100%;
-}
 
 /* VTable */
 .v-table-wrap {

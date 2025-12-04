@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -14,11 +13,9 @@ use OCA\Done\Models\Base_Model;
 use OCA\Done\Models\CustomSettings_Model;
 use OCA\Done\Models\CustomSettingsData_Model;
 use OCA\Done\Models\DynamicFieldDropdownData_Model;
-use OCA\Done\Models\DynamicFieldDropdownOptions_Model;
 use OCA\Done\Models\DynamicFields_Model;
 use OCA\Done\Models\DynamicFieldsData_Model;
 use OCA\Done\Models\PermissionsEntities_Model;
-use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Server;
 
 class EntitiesService
@@ -30,14 +27,13 @@ class EntitiesService
         $this->translateService = TranslateService::getInstance();
     }
 
-
     /** @var EntitiesService */
     private static EntitiesService $instance;
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(EntitiesService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -46,54 +42,52 @@ class EntitiesService
     /**
      * Get entity data
      *
-     * @param int $source
+     * @param int    $source
      * @param string $slug
      *
      * @return array
-     *
      */
     public function getDataToViewEntity(int $source, string $slug): array
     {
-        $userService                   = UserService::getInstance();
-        $customSettingsData            = new CustomSettingsData_Model();
-        $dynFieldsModel                = new DynamicFields_Model();
-        $dynFieldsDataModel            = new DynamicFieldsData_Model();
+        $userService = UserService::getInstance();
+        $customSettingsData = new CustomSettingsData_Model();
+        $dynFieldsModel = new DynamicFields_Model();
+        $dynFieldsDataModel = new DynamicFieldsData_Model();
         $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
-        $optionsModel                  = new DynamicFieldDropdownOptions_Model();
-        $fieldsOrderingService         = FieldsOrderingService::getInstance();
-        $sourceData                    = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model                         = new $sourceData[$source]['model']();
-        $model->needPrepareDates       = false;
-        $modelFields                   = $model->fields;
+        $fieldsOrderingService = FieldsOrderingService::getInstance();
+        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model = new $sourceData[$source]['model']();
+        $model->needPrepareDates = false;
+        $modelFields = $model->fields;
 
         $hideEmptyFields = (bool)$customSettingsData->getItemByFilter(
             [
                 'user_id'    => $userService->getCurrentUserId(),
                 'setting_id' => CustomSettings_Model::HIDE_EMPTY_FIELDS_IN_PREVIEW,
             ]
-        )['value'] ?? false;
+        )['value'];
 
         $itemId = $model->getItemIdBySlug($slug);
-        $item   = $model->getLinkedItem($itemId);
+        $item = $model->getLinkedItem($itemId);
 
         $entityDynFields = $dynFieldsModel->getIndexedListByFilter(filter: ['source' => $source]);
-        $dynFieldsData   = $dynFieldsDataModel->getIndexedDataByFilter(filter: ['record_id' => $itemId]);
+        $dynFieldsData = $dynFieldsDataModel->getIndexedDataByFilter(filter: ['record_id' => $itemId]);
         $dynDropdownData = $dynamicFieldDropdownDataModel->getIndexedDataByFilter(filter: ['record_id' => $itemId]);
 
         foreach ($dynFieldsData as $key => $dynFieldData) {
-            $item[$key]        = $dynFieldData['value'] ?? '';
+            $item[$key] = $dynFieldData['value'] ?? '';
             $modelFields[$key] = $dynFieldData;
         }
 
         foreach ($dynDropdownData as $key => $dynFieldData) {
-            $item[$key]        = $dynFieldData['value'] ?? '';
+            $item[$key] = $dynFieldData['value'] ?? '';
             $modelFields[$key] = $dynFieldData;
         }
 
         $item = $model->prepareDataBeforeSend($item, $source);
 
         // Check for user field ordering at the beginning
-        $fieldsOrdering    = $fieldsOrderingService->getFieldsOrdering($source);
+        $fieldsOrdering = $fieldsOrderingService->getFieldsOrdering($source);
         $hasCustomOrdering = !empty($fieldsOrdering);
 
         $entityData = $this->addModelData(
@@ -107,9 +101,8 @@ class EntitiesService
         );
 
         $entityData = $this->addExternalData($model, $entityData, $itemId);
-        $entityData = $this->addAppearanceData($model, $entityData, $sourceData, $source, $itemId);
 
-        return $entityData;
+        return $this->addAppearanceData($model, $entityData, $sourceData, $source, $itemId);
     }
 
     /**
@@ -118,13 +111,14 @@ class EntitiesService
      * Sorts the model data array using user-defined field ordering.
      * Fields with custom ordering are prioritized, others maintain original order.
      *
-     * @param array $modelData Array of model data items
+     * @param array $modelData   Array of model data items
      * @param array $orderingMap Map of field names to their ordering values
+     *
      * @return array Sorted model data with original_index removed
      */
     public function sortModelData(array $modelData, array $orderingMap = []): array
     {
-        usort($modelData, function ($a, $b) use ($orderingMap) {
+        usort($modelData, static function ($a, $b) use ($orderingMap) {
             $aHasOrdering = isset($orderingMap[$a['field']]);
             $bHasOrdering = isset($orderingMap[$b['field']]);
 
@@ -142,11 +136,11 @@ class EntitiesService
             }
 
             // If only one field has ordering
-            if ($aHasOrdering && !$bHasOrdering) {
+            if ($aHasOrdering) {
                 return -1; // Field with ordering goes first
             }
 
-            if (!$aHasOrdering && $bHasOrdering) {
+            if ($bHasOrdering) {
                 return 1; // Field with ordering goes first
             }
 
@@ -168,20 +162,21 @@ class EntitiesService
      * Processes linked models and adds their data to the entity data.
      * Used for displaying related entities (e.g., user roles, project teams).
      *
-     * @param Base_Model $model The base model instance
-     * @param array $entityData Current entity data array
-     * @param string|int $itemId Item identifier
+     * @param Base_Model $model      The base model instance
+     * @param array      $entityData Current entity data array
+     * @param int|string $itemId     Item identifier
+     *
      * @return array Entity data with external_data section
      */
     public function addExternalData(
         Base_Model $model,
         array $entityData,
-        string|int $itemId
+        int | string $itemId
     ): array {
         foreach ($model->linkedModels as $linkedModel => $params) {
-            $filterField  = $params['filter_field'];
-            $keyField     = $params['key_field'];
-            $sourceTitle  = $params['title'];
+            $filterField = $params['filter_field'];
+            $keyField = $params['key_field'];
+            $sourceTitle = $params['title'];
             $frontendType = $params['frontend_type'];
 
             $filter = [
@@ -206,11 +201,12 @@ class EntitiesService
      * Retrieves appearance-related fields (colors, images, etc.) from the
      * appearance model and adds them to the entity data.
      *
-     * @param Base_Model $model The base model instance
-     * @param array $entityData Current entity data array
-     * @param array $sourceData Source entity configuration
-     * @param int $source Source entity ID
-     * @param string|int $itemId Item identifier
+     * @param Base_Model $model      The base model instance
+     * @param array      $entityData Current entity data array
+     * @param array      $sourceData Source entity configuration
+     * @param int        $source     Source entity ID
+     * @param int|string $itemId     Item identifier
+     *
      * @return array Entity data with appearance_data section
      */
     public function addAppearanceData(
@@ -218,13 +214,13 @@ class EntitiesService
         array $entityData,
         array $sourceData,
         int $source,
-        string|int $itemId
+        int | string $itemId
     ): array {
         if ($model->appearanceModel !== '') {
             $appearanceModel = new $model->appearanceModel();
 
-            $modelFields              = $appearanceModel->fields;
-            $appearanceFields         = $appearanceModel->appearanceFields;
+            $modelFields = $appearanceModel->fields;
+            $appearanceFields = $appearanceModel->appearanceFields;
             $appearanceFieldsWithFile = $appearanceModel->appearanceFieldsWithFile;
 
             $appearances = $appearanceModel->getItemByFilter([$sourceData[$source]['foreign_key'] => $itemId]);
@@ -232,14 +228,15 @@ class EntitiesService
             foreach ($appearances as $field => $value) {
                 $title = $modelFields[$field]['title'] ?? '';
 
-                $isFileField = in_array($field, $appearanceFieldsWithFile);
+                $isFileField = \in_array($field, $appearanceFieldsWithFile);
 
                 $fileUrl = '';
+
                 if ($isFileField && !empty($value)) {
-                    $fileUrl = '/apps/done/file/'.$itemId.'/'.$field.'/'.$value;
+                    $fileUrl = '/apps/done/file/' . $itemId . '/' . $field . '/' . $value;
                 }
 
-                if (!in_array($field, $appearanceFields) || empty($title)) {
+                if (!\in_array($field, $appearanceFields) || empty($title)) {
                     continue;
                 }
 
@@ -262,13 +259,14 @@ class EntitiesService
      * Processes model fields, applies user field ordering, handles dynamic fields,
      * and filters empty fields based on user preferences.
      *
-     * @param array $modelFields Model field definitions
-     * @param array $item Item data from database
-     * @param array $fieldsOrdering User-defined field ordering
-     * @param array $entityDynFields Dynamic fields for the entity
-     * @param array $dynFieldsData Dynamic field values
-     * @param bool $hasCustomOrdering Whether user has custom field ordering
-     * @param bool $hideEmptyFields Whether to hide empty fields
+     * @param array $modelFields       Model field definitions
+     * @param array $item              Item data from database
+     * @param array $fieldsOrdering    User-defined field ordering
+     * @param array $entityDynFields   Dynamic fields for the entity
+     * @param array $dynFieldsData     Dynamic field values
+     * @param bool  $hasCustomOrdering Whether user has custom field ordering
+     * @param bool  $hideEmptyFields   Whether to hide empty fields
+     *
      * @return array Entity data with model_data section
      */
     public function addModelData(
@@ -295,6 +293,7 @@ class EntitiesService
 
         // Form model_data with adding a field key and original position
         $originalIndex = 0;
+
         foreach ($item as $field => $value) {
             $title = $modelFields[$field]['title'] ?? '';
 
@@ -323,9 +322,9 @@ class EntitiesService
             $fieldsInModelData[] = $modelData['field'];
         }
 
-        if (empty($dynFieldsData) || count($dynFieldsData) < count($availableDynEntityFields)) {
+        if (empty($dynFieldsData) || \count($dynFieldsData) < \count($availableDynEntityFields)) {
             foreach ($availableDynEntityFields as $key => $availableDynField) {
-                if (!in_array($availableDynField, $fieldsInModelData)) {
+                if (!\in_array($availableDynField, $fieldsInModelData)) {
                     $entityData['model_data'][] = [
                         'title'          => $entityDynFields[$availableDynField]['title'],
                         'value'          => '',

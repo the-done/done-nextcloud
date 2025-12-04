@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Modules\Projects\Models;
 
 use OCA\Done\Models\Base_Model;
@@ -35,32 +34,32 @@ class Project_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'                 => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Unique identifier for a project',
         ],
-        'name'               => [
+        'name' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Title',
             'required'         => true,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Project name',
-            'show'             => true,
+            'db_comment' => 'Project name',
+            'show'       => true,
         ],
-        'nickname'           => [
+        'nickname' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'Short project name',
             'required'         => false,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Short name or codename for the project',
-            'show'             => true,
+            'db_comment' => 'Short name or codename for the project',
+            'show'       => true,
         ],
-        'direction_id'       => [
+        'direction_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Direction',
             'link'       => Direction_Model::class,
@@ -69,7 +68,7 @@ class Project_Model extends Base_Model
             'db_comment' => 'Direction ID. References oc_done_directions.id',
             'show'       => true,
         ],
-        'owner_id'           => [
+        'owner_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Project owner',
             'link'       => User_Model::class,
@@ -78,7 +77,7 @@ class Project_Model extends Base_Model
             'db_comment' => 'Project owner ID. References oc_done_users_data.id',
             'show'       => true,
         ],
-        'stage_id'           => [
+        'stage_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Project stage',
             'link'       => Stages_Model::class,
@@ -87,7 +86,7 @@ class Project_Model extends Base_Model
             'db_comment' => 'Project stage ID. References oc_done_stages.id',
             'show'       => true,
         ],
-        'customer_id'        => [
+        'customer_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Customer',
             'link'       => Customers_Model::class,
@@ -105,7 +104,7 @@ class Project_Model extends Base_Model
             'db_comment' => 'Project manager ID. References oc_done_users_data.id',
             'show'       => true,
         ],
-        'project_head_id'    => [
+        'project_head_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Project head',
             'link'       => User_Model::class,
@@ -114,19 +113,19 @@ class Project_Model extends Base_Model
             'db_comment' => 'Project head ID. References oc_done_users_data.id',
             'show'       => true,
         ],
-        'created_at'         => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Project created at',
             'required'   => false,
             'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'         => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Project updated at',
             'required'   => false,
             'db_comment' => 'Record last update timestamp in UTC',
         ],
-        'deleted'            => [
+        'deleted' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Deleted',
             'db_comment' => 'Soft-delete flag (1 - deleted, 0 - active). Deleted records should be excluded from queries.',
@@ -151,7 +150,7 @@ class Project_Model extends Base_Model
     {
         [$data, $errors] = parent::validateData($data, $save, $ignoreFields);
 
-        if (isset($data['nickname']) && !preg_match("/^[a-zA-Z0-9\-._]+$/", $data['nickname'])) {
+        if (isset($data['nickname']) && !preg_match('/^[a-zA-Z0-9\-._]+$/', $data['nickname'])) {
             $errors[] = $this->translateService->getTranslate(
                 'Invalid characters found in field «%s»',
                 ['nickname']
@@ -170,18 +169,18 @@ class Project_Model extends Base_Model
      */
     public function getProject(string $projectId): array
     {
-        $usersIds   = $directionsIds = $stagesIds = $customersIds = [];
+        $usersIds = $directionsIds = $stagesIds = $customersIds = [];
         $projectIds = [];
 
         $project = $this->getItem($projectId);
 
-        $directionsIds[$project['direction_id']]  ??= $project['direction_id'];
-        $usersIds[$project['owner_id']]           ??= $project['owner_id'];
-        $usersIds[$project['project_manager_id']] ??= $project['project_manager_id'];
-        $usersIds[$project['project_head_id']]    ??= $project['project_head_id'];
-        $stagesIds[$project['stage_id']]          ??= $project['stage_id'];
-        $customersIds[$project['customer_id']]    ??= $project['customer_id'];
-        $projectIds[]                             = $projectId;
+        $directionsIds[$project['direction_id']] = $project['direction_id'];
+        $usersIds[$project['owner_id']] = $project['owner_id'];
+        $usersIds[$project['project_manager_id']] = $project['project_manager_id'];
+        $usersIds[$project['project_head_id']] = $project['project_head_id'];
+        $stagesIds[$project['stage_id']] = $project['stage_id'];
+        $customersIds[$project['customer_id']] = $project['customer_id'];
+        $projectIds[] = $projectId;
 
         [
             $directions,
@@ -194,27 +193,27 @@ class Project_Model extends Base_Model
         $project['direction_name'] = $directions[$project['direction_id']]['name'] ?? $this->translateService->getTranslate(
             'Without direction'
         );
-        $project['owner_name']     = $users[$project['owner_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+        $project['owner_name'] = $users[$project['owner_id']]['user_display_name'] ?? $this->translateService->getTranslate(
             'Without owner'
         );
-        $project['pm_name']        = $users[$project['project_manager_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+        $project['pm_name'] = $users[$project['project_manager_id']]['user_display_name'] ?? $this->translateService->getTranslate(
             'Without a project manager'
         );
-        $project['ph_name']        = $users[$project['project_head_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+        $project['ph_name'] = $users[$project['project_head_id']]['user_display_name'] ?? $this->translateService->getTranslate(
             'Without head'
         );
-        $project['stage_name']     = $stages[$project['stage_id']]['name'] ?? $this->translateService->getTranslate(
+        $project['stage_name'] = $stages[$project['stage_id']]['name'] ?? $this->translateService->getTranslate(
             'Without stage'
         );
-        $project['customer_name']  = $customers[$project['customer_id']]['name'] ?? $this->translateService->getTranslate(
+        $project['customer_name'] = $customers[$project['customer_id']]['name'] ?? $this->translateService->getTranslate(
             'Without customer'
         );
 
-        $appearance          = $appearances[$projectId] ?? [];
-        $project['avatar']   = $appearance['avatar'] ?? null;
-        $project['symbol']   = $appearance['symbol'] ?? null;
+        $appearance = $appearances[$projectId] ?? [];
+        $project['avatar'] = $appearance['avatar'] ?? null;
+        $project['symbol'] = $appearance['symbol'] ?? null;
         $project['bg_image'] = $appearance['bg_image'] ?? null;
-        $project['color']    = $appearance['color'] ?? null;
+        $project['color'] = $appearance['color'] ?? null;
 
         return $project;
     }
@@ -226,19 +225,19 @@ class Project_Model extends Base_Model
      */
     public function getProjects(): array
     {
-        $usersIds   = $directionsIds = $stagesIds = $customersIds = [];
+        $usersIds = $directionsIds = $stagesIds = $customersIds = [];
         $projectIds = [];
 
         $projects = $this->getListByFilter([], ['*'], ['name', 'ASC']);
 
         foreach ($projects as $project) {
-            $directionsIds[$project['direction_id']]  ??= $project['direction_id'];
-            $usersIds[$project['owner_id']]           ??= $project['owner_id'];
+            $directionsIds[$project['direction_id']] ??= $project['direction_id'];
+            $usersIds[$project['owner_id']] ??= $project['owner_id'];
             $usersIds[$project['project_manager_id']] ??= $project['project_manager_id'];
-            $usersIds[$project['project_head_id']]    ??= $project['project_head_id'];
-            $stagesIds[$project['stage_id']]          ??= $project['stage_id'];
-            $customersIds[$project['customer_id']]    ??= $project['customer_id'];
-            $projectIds[]                             = $project['id'];
+            $usersIds[$project['project_head_id']] ??= $project['project_head_id'];
+            $stagesIds[$project['stage_id']] ??= $project['stage_id'];
+            $customersIds[$project['customer_id']] ??= $project['customer_id'];
+            $projectIds[] = $project['id'];
         }
 
         [
@@ -253,27 +252,27 @@ class Project_Model extends Base_Model
             $projects[$idx]['direction_name'] = $directions[$project['direction_id']]['name'] ?? $this->translateService->getTranslate(
                 'Without direction'
             );
-            $projects[$idx]['owner_name']     = $users[$project['owner_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+            $projects[$idx]['owner_name'] = $users[$project['owner_id']]['user_display_name'] ?? $this->translateService->getTranslate(
                 'Without owner'
             );
-            $projects[$idx]['pm_name']        = $users[$project['project_manager_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+            $projects[$idx]['pm_name'] = $users[$project['project_manager_id']]['user_display_name'] ?? $this->translateService->getTranslate(
                 'Without a project manager'
             );
-            $projects[$idx]['ph_name']        = $users[$project['project_head_id']]['user_display_name'] ?? $this->translateService->getTranslate(
+            $projects[$idx]['ph_name'] = $users[$project['project_head_id']]['user_display_name'] ?? $this->translateService->getTranslate(
                 'Without head'
             );
-            $projects[$idx]['stage_name']     = $stages[$project['stage_id']]['name'] ?? $this->translateService->getTranslate(
+            $projects[$idx]['stage_name'] = $stages[$project['stage_id']]['name'] ?? $this->translateService->getTranslate(
                 'Without stage'
             );
-            $projects[$idx]['customer_name']  = $customers[$project['customer_id']]['name'] ?? $this->translateService->getTranslate(
+            $projects[$idx]['customer_name'] = $customers[$project['customer_id']]['name'] ?? $this->translateService->getTranslate(
                 'Without customer'
             );
 
-            $appearance                 = $appearances[$project['id']] ?? [];
-            $projects[$idx]['avatar']   = $appearance['avatar'] ?? null;
-            $projects[$idx]['symbol']   = $appearance['symbol'] ?? null;
+            $appearance = $appearances[$project['id']] ?? [];
+            $projects[$idx]['avatar'] = $appearance['avatar'] ?? null;
+            $projects[$idx]['symbol'] = $appearance['symbol'] ?? null;
             $projects[$idx]['bg_image'] = $appearance['bg_image'] ?? null;
-            $projects[$idx]['color']    = $appearance['color'] ?? null;
+            $projects[$idx]['color'] = $appearance['color'] ?? null;
 
             $projects[$idx] = $this->addSlugToItem($projects[$idx]);
         }
@@ -290,7 +289,7 @@ class Project_Model extends Base_Model
      * @param string[] $customersIds
      * @param string[] $projectIds
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public function getAuxiliaryData(
         array $directionsIds,

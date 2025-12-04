@@ -5,13 +5,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
-use Doctrine\DBAL\Types\Types;
-use OCA\Done\Service\BaseService;
 use OCA\Done\Service\DynFieldDDownDataService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\DB\Types;
 
 /**
  * Class DynamicFieldsData_Model.
@@ -35,7 +33,7 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
     ];
 
     public array $fields = [
-        'id'           => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
             'db_comment' => 'Internal unique key for a record containing a dynamic field value',
@@ -46,43 +44,43 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
             'required'   => true,
             'db_comment' => 'Dynamic field ID. References oc_done_dynamic_fields.id',
         ],
-        'record_id'    => [
+        'record_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Record id',
             'required'   => true,
             'db_comment' => 'Polymorphic reference to the record ID to which the value is linked. The entity type is determined by the `source` field in the `oc_done_dynamic_fields` table',
         ],
-        'int_val'      => [
+        'int_val' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Integer',
             'required'   => false,
             'db_comment' => 'Integer value (used if the field type in `oc_done_dynamic_fields` is INTEGER)',
         ],
-        'float_val'    => [
+        'float_val' => [
             'type'       => Types::DECIMAL,
             'title'      => 'Float',
             'required'   => false,
             'db_comment' => 'Float value (used if the field type in `oc_done_dynamic_fields` is FLOAT)',
         ],
-        'string_val'   => [
+        'string_val' => [
             'type'             => IQueryBuilder::PARAM_STR,
             'title'            => 'String',
             'required'         => false,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'String value (used if the field type in `oc_done_dynamic_fields` is STRING)',
+            'db_comment' => 'String value (used if the field type in `oc_done_dynamic_fields` is STRING)',
         ],
-        'text_val'     => [
+        'text_val' => [
             'type'             => IQueryBuilder::PARAM_LOB,
             'title'            => 'Text',
             'required'         => false,
             'validation_rules' => [
                 'trim' => true,
             ],
-            'db_comment'       => 'Text value (used if the field type in `oc_done_dynamic_fields` is TEXT)',
+            'db_comment' => 'Text value (used if the field type in `oc_done_dynamic_fields` is TEXT)',
         ],
-        'date_val'     => [
+        'date_val' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Date',
             'required'   => false,
@@ -94,13 +92,13 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
             'required'   => false,
             'db_comment' => 'Datetime value (used if the field type in `oc_done_dynamic_fields` is DATETIME)',
         ],
-        'created_at'   => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
             'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'   => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATE_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
@@ -112,17 +110,17 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
         int $dynFieldType,
         string $dynFieldId,
         string $recordId,
-        int|float|string|array|null $value,
+        array | float | int | string | null $value,
         bool $isSave,
-        string $slug = null,
-    ): array|string {
+        ?string $slug = null,
+    ): array | string {
         if (empty($slug)) {
             $dynFieldData = $this->getItemByFilter(
                 ['dyn_field_id' => $dynFieldId, 'record_id' => $recordId],
             );
 
             if (!empty($dynFieldData)) {
-                $slug   = $dynFieldData['id'];
+                $slug = $dynFieldData['id'];
                 $isSave = false;
             }
         }
@@ -140,57 +138,71 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
     /**
      * Save dynamic field value
      *
-     * @param string $dynFieldId
-     * @param string $recordId
-     * @param int $dynFieldType
-     * @param int|float|string|array|null $value
-     * @param bool $isSave
-     * @param ?string $slug
+     * @param string                      $dynFieldId
+     * @param string                      $recordId
+     * @param int                         $dynFieldType
+     * @param null|array|float|int|string $value
+     * @param bool                        $isSave
+     * @param ?string                     $slug
      *
      * @return array|string
+     *
      * @throws \Exception
      */
     public function saveDynamicFieldsData(
         string $dynFieldId,
         string $recordId,
         int $dynFieldType,
-        int|float|string|array|null $value,
+        array | float | int | string | null $value,
         bool $isSave,
-        string $slug = null,
-    ): array|string {
+        ?string $slug = null,
+    ): array | string {
         $data = [
             'dyn_field_id' => $dynFieldId,
             'record_id'    => $recordId,
         ];
 
+        if ($dynFieldType == DynamicFieldsTypes_Model::DROPDOWN) {
+            $this->deleteByFilter(['record_id' => $recordId, 'dyn_field_id' => $dynFieldId]);
+        } else {
+            $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
+            $dynamicFieldDropdownDataModel->deleteByFilter(['record_id' => $recordId, 'dyn_field_id' => $dynFieldId]);
+        }
+
         switch ($dynFieldType) {
             case DynamicFieldsTypes_Model::INTEGER:
                 $data['int_val'] = (int)$value ?: null;
                 break;
+
             case DynamicFieldsTypes_Model::FLOAT:
                 $data['float_val'] = (float)$value ?: null;
                 break;
+
             case DynamicFieldsTypes_Model::STRING:
                 $data['string_val'] = (string)$value ?: null;
                 break;
+
             case DynamicFieldsTypes_Model::TEXT:
                 $data['text_val'] = (string)$value ?: null;
                 break;
+
             case DynamicFieldsTypes_Model::DATE:
                 $data['date_val'] = !empty($value) ? (new \DateTimeImmutable($value)) : null;
                 break;
+
             case DynamicFieldsTypes_Model::DATETIME:
                 $data['datetime_val'] = !empty($value) ? (new \DateTimeImmutable($value)) : null;
                 break;
+
             case DynamicFieldsTypes_Model::DROPDOWN:
                 $dropdownService = DynFieldDDownDataService::getInstance();
-                $result          = $dropdownService->saveDropdownData($dynFieldId, $recordId, $value);
+                $result = $dropdownService->saveDropdownData($dynFieldId, $recordId, $value);
 
                 if ($result['success']) {
                     return $result['data'] ?? [];
-                } else {
-                    return [];
                 }
+
+                return [];
         }
 
         if (!$isSave) {
@@ -214,7 +226,7 @@ class DynamicFieldsData_Model extends DynamicFieldsDataAbstract_Model
         $regularData = $this->getRegularDataForRecord($recordId);
 
         $dropdownService = DynFieldDDownDataService::getInstance();
-        $dropdownData    = $dropdownService->getDropdownDataForRecord($recordId);
+        $dropdownData = $dropdownService->getDropdownDataForRecord($recordId);
 
         return array_merge($regularData, $dropdownData);
     }

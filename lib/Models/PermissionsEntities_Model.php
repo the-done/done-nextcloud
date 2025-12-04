@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Modules\BaseModuleService;
@@ -23,10 +22,10 @@ class PermissionsEntities_Model
     public const TEAM_ENTITY = 3;
     public const PAYMENTS_ENTITY = 4;
 
-    public static function getPermissionsEntities(int $source = null): array
+    public static function getPermissionsEntities(?int $source = null): array
     {
         $entities = [
-            self::USER_ENTITY    => [
+            self::USER_ENTITY => [
                 'slug'        => 'user_card',
                 'foreign_key' => 'user_id',
                 'entity_name' => 'User card',
@@ -58,16 +57,16 @@ class PermissionsEntities_Model
             ];
         }
 
-        if (isset($source) && array_key_exists($source, $entities)) {
+        if (isset($source) && \array_key_exists($source, $entities)) {
             return [$source => $entities[$source]];
         }
 
         return $entities;
     }
 
-    public static function entityExists(int $source = null): bool
+    public static function entityExists(?int $source = null): bool
     {
-        return in_array($source, [
+        return \in_array($source, [
             self::USER_ENTITY,
             self::PROJECT_ENTITY,
             self::TEAM_ENTITY,

@@ -24,18 +24,14 @@
             forceIconText
           >
             <template #icon>
-              <Cash />
+              <CashMultiple />
             </template>
           </NcBreadcrumb>
           <NcBreadcrumb
             :name="contextTranslate('Payments', context)"
-            :to="{ name: 'finances-payments' }"
+            :to="{ name: 'finances-payments-table' }"
             forceIconText
-          >
-            <template #icon>
-              <Cash />
-            </template>
-          </NcBreadcrumb>
+          />
         </NcBreadcrumbs>
       </template>
       <template #toolbar-controls>
@@ -102,7 +98,7 @@ import {
 } from "@nextcloud/vue";
 import { mapState } from "pinia";
 
-import Cash from "vue-material-design-icons/Cash.vue";
+import CashMultiple from "vue-material-design-icons/CashMultiple.vue";
 import Plus from "vue-material-design-icons/Plus.vue";
 import Pencil from "vue-material-design-icons/Pencil.vue";
 import TrashCanOutline from "vue-material-design-icons/TrashCanOutline.vue";
@@ -133,7 +129,7 @@ export default {
     NcButton,
     NcActions,
     NcActionButton,
-    Cash,
+    CashMultiple,
     Plus,
     Pencil,
     TrashCanOutline,

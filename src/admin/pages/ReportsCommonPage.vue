@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPage data-id="ReportsCommonPage">
@@ -118,6 +116,7 @@ import { LOCALSTORAGE_REPORT_COMMON_RANGE_TYPE } from "@/common/shared/lib/const
 
 import { t } from "@nextcloud/l10n";
 import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
+import { abortControllerMixin } from "@/admin/shared/lib/mixins/abortControllerMixin";
 
 export default {
   name: "ReportsCommonPage",
@@ -138,7 +137,11 @@ export default {
     VEmptyState,
     VLoader,
   },
-  mixins: [timeTrackingPageMixin, contextualTranslationsMixin],
+  mixins: [
+    timeTrackingPageMixin,
+    contextualTranslationsMixin,
+    abortControllerMixin,
+  ],
   data() {
     return {
       isLoading: false,
@@ -172,34 +175,19 @@ export default {
         const filters = payload?.filters || {};
         const { date_from, date_to } = payload;
 
+        this.resetAbortController();
+
         const { data } = await fetchCommonStatistics({
           date_from,
           date_to,
+          signal: this.abortController.signal,
           ...filters,
         });
 
         this.modelData = data;
-      } catch (e) {
-        console.log(e);
-      } finally {
         this.isLoading = false;
-      }
-    },
-    async init() {
-      try {
-        const localActiveRangeType = localStorage.getItem(
-          this.localStorageActiveRangeTypeKey
-        );
-
-        if (localActiveRangeType) {
-          this.activeRangeType = localActiveRangeType;
-        }
-
-        await this.initFetchDataWithFilters(); // timeTrackingPageMixin
       } catch (e) {
-        console.log(e);
-      } finally {
-        this.isInitLoading = false;
+        this.handleCatchAbortControllerError(e);
       }
     },
   },

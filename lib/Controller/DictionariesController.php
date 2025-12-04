@@ -5,10 +5,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\User_Model;
 use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCA\Done\Service\BaseService;
@@ -34,21 +32,22 @@ class DictionariesController extends OCSController
         DictionariesService $dictionariesService,
     ) {
         parent::__construct($appName, $request);
-        $this->userSession         = $userSession;
+        $this->userSession = $userSession;
         $this->dictionariesService = $dictionariesService;
-        $this->translateService    = TranslateService::getInstance();
+        $this->translateService = TranslateService::getInstance();
     }
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveDict(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
-        $data      = $request->getParam('data');
-        $slug      = $request->getParam('slug');
-        $slugType  = $request->getParam('slug_type');
+        $data = $request->getParam('data');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
 
         $dictionaryModel = $this->dictionariesService->getDictionaryModel($dictTitle);
 
@@ -79,13 +78,14 @@ class DictionariesController extends OCSController
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteDictItem(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
-        $slug      = $request->getParam('slug');
-        $slugType  = $request->getParam('slug_type');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
 
         if (empty($dictTitle) || (empty($slug) && empty($slugType))) {
             return new JSONResponse(
@@ -97,7 +97,7 @@ class DictionariesController extends OCSController
         }
 
         $dictionaryModel = $this->dictionariesService->getDictionaryModel($dictTitle);
-        $itemId          = $dictionaryModel->getItemIdBySlug($slug);
+        $itemId = $dictionaryModel->getItemIdBySlug($slug);
 
         $dictionaryModel->delete($itemId);
 
@@ -111,6 +111,7 @@ class DictionariesController extends OCSController
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDictionaryData(IRequest $request): JSONResponse
@@ -136,13 +137,14 @@ class DictionariesController extends OCSController
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDictionaryItemData(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
-        $slug      = $request->getParam('slug');
-        $slugType  = $request->getParam('slug_type');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
 
         if (empty($dictTitle) || (empty($slug) && empty($slugType))) {
             return new JSONResponse(
@@ -161,6 +163,7 @@ class DictionariesController extends OCSController
 
     /**
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getGlobalRoles(): JSONResponse
@@ -175,11 +178,12 @@ class DictionariesController extends OCSController
      * Get specific user roles
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUserGlobalRoles(IRequest $request): JSONResponse
     {
-        $slug     = $request->getParam('slug');
+        $slug = $request->getParam('slug');
         $slugType = $request->getParam('slug_type');
 
         $userId = (new User_Model())->getItemIdBySlug($slug);
@@ -193,11 +197,11 @@ class DictionariesController extends OCSController
             );
         }
 
-        $data  = (new UsersGlobalRoles_Model())->getListByFilter(['user_id' => ['=', $userId]]);
+        $data = (new UsersGlobalRoles_Model())->getListByFilter(['user_id' => ['=', $userId]]);
         $roles = $this->dictionariesService->globalRolesDictionary->getIndexedListByFilter('id', [], ['id', 'name']);
 
         foreach ($data as $idx => $item) {
-            $roleId              = $item['role_id'];
+            $roleId = $item['role_id'];
             $data[$idx]['rname'] = $roles[$roleId]['name'];
         }
 
@@ -211,11 +215,12 @@ class DictionariesController extends OCSController
      * Get users by global role
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getUsersByGlobalRole(IRequest $request): JSONResponse
     {
-        $slug     = $request->getParam('slug');
+        $slug = $request->getParam('slug');
         $slugType = $request->getParam('slug_type');
 
         $roleId = $this->dictionariesService->globalRolesDictionary->getItemIdBySlug($slug);
@@ -229,14 +234,14 @@ class DictionariesController extends OCSController
             );
         }
 
-        $data     = (new UsersGlobalRoles_Model())->getListByFilter(['role_id' => ['=', $roleId]]);
+        $data = (new UsersGlobalRoles_Model())->getListByFilter(['role_id' => ['=', $roleId]]);
         $usersIds = BaseService::getField($data, 'user_id');
-        $users    = (new User_Model())
+        $users = (new User_Model())
             ->getIndexedUsersFullNameWithPosition(['id' => ['IN', $usersIds, IQueryBuilder::PARAM_STR_ARRAY]]);
 
         foreach ($data as $idx => $item) {
-            $userId              = $item['user_id'];
-            $user                = $users[$userId] ?? [];
+            $userId = $item['user_id'];
+            $user = $users[$userId] ?? [];
 
             if (empty($user)) {
                 continue;
@@ -255,6 +260,7 @@ class DictionariesController extends OCSController
      * Get next sort number in dictionary
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getNextSortInDict(IRequest $request): JSONResponse
@@ -282,7 +288,7 @@ class DictionariesController extends OCSController
         }
 
         $lastSortItem = $model->getItemByFilter([], ['id', 'sort'], ['sort', 'DESC']);
-        $nextSort     = !empty($lastSortItem) ? $lastSortItem['sort'] + 1 : 0;
+        $nextSort = !empty($lastSortItem) ? $lastSortItem['sort'] + 1 : 0;
 
         return new JSONResponse(
             $nextSort,

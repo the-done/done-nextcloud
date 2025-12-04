@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
@@ -28,15 +27,15 @@ class DynFieldDDownOptionsService
         TranslateService $translateService,
         IDBConnection $db
     ) {
-        $this->userService      = $userService;
+        $this->userService = $userService;
         $this->translateService = $translateService;
-        $this->db               = $db;
+        $this->db = $db;
     }
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(DynFieldDDownOptionsService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -45,10 +44,11 @@ class DynFieldDDownOptionsService
     /**
      * Save dropdown option (add or update)
      *
-     * @param string $dynFieldId
-     * @param string $optionLabel
-     * @param int|null $ordering
-     * @param string|null $slug
+     * @param string      $dynFieldId
+     * @param string      $optionLabel
+     * @param null|int    $ordering
+     * @param null|string $slug
+     *
      * @return array
      */
     public function saveOption(
@@ -77,6 +77,7 @@ class DynFieldDDownOptionsService
             }
 
             $excludeOptionId = null;
+
             if (!empty($slug)) {
                 $excludeOptionId = (new DynamicFieldDropdownOptions_Model())->getItemIdBySlug($slug);
             }
@@ -90,7 +91,7 @@ class DynFieldDDownOptionsService
             }
 
             $isSave = empty($slug);
-            $model  = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptions_Model();
 
             if ($isSave && $ordering === null) {
                 $validatedData['ordering'] = $model->getNextOrdering($dynFieldId);
@@ -98,7 +99,7 @@ class DynFieldDDownOptionsService
 
             if ($isSave) {
                 $optionId = $model->addData($validatedData);
-                $message  = $this->translateService->getTranslate('Option created successfully');
+                $message = $this->translateService->getTranslate('Option created successfully');
             } else {
                 $optionId = $model->getItemIdBySlug($slug);
                 $model->update($validatedData, $optionId);
@@ -115,7 +116,7 @@ class DynFieldDDownOptionsService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error saving option').': '.$e->getMessage(),
+                'message' => $this->translateService->getTranslate('Error saving option') . ': ' . $e->getMessage(),
                 'data'    => [],
             ];
         }
@@ -125,12 +126,13 @@ class DynFieldDDownOptionsService
      * Delete dropdown option
      *
      * @param string $slug
+     *
      * @return array
      */
     public function deleteOption(string $slug): array
     {
         try {
-            $model    = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptions_Model();
             $optionId = $model->getItemIdBySlug($slug);
 
             if (empty($optionId)) {
@@ -151,7 +153,7 @@ class DynFieldDDownOptionsService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error deleting option').': '.$e->getMessage(),
+                'message' => $this->translateService->getTranslate('Error deleting option') . ': ' . $e->getMessage(),
                 'data'    => [],
             ];
         }
@@ -161,12 +163,13 @@ class DynFieldDDownOptionsService
      * Get options for dynamic field
      *
      * @param string $dynFieldId
+     *
      * @return array
      */
     public function getOptionsForField(string $dynFieldId): array
     {
         try {
-            $model   = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptions_Model();
             $options = $model->getOptionsForField($dynFieldId);
 
             return [
@@ -177,7 +180,7 @@ class DynFieldDDownOptionsService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error getting options').': '.$e->getMessage(),
+                'message' => $this->translateService->getTranslate('Error getting options') . ': ' . $e->getMessage(),
                 'data'    => [],
             ];
         }
@@ -187,7 +190,8 @@ class DynFieldDDownOptionsService
      * Reorder options
      *
      * @param string $dynFieldId
-     * @param array $optionIds
+     * @param array  $optionIds
+     *
      * @return array
      */
     public function reorderOptions(string $dynFieldId, array $optionIds): array
@@ -195,7 +199,7 @@ class DynFieldDDownOptionsService
         try {
             $this->db->beginTransaction();
 
-            $model    = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptions_Model();
             $ordering = 1;
 
             foreach ($optionIds as $optionId) {
@@ -215,7 +219,7 @@ class DynFieldDDownOptionsService
 
             return [
                 'success' => false,
-                'message' => $this->translateService->getTranslate('Error reordering options').': '.$e->getMessage(),
+                'message' => $this->translateService->getTranslate('Error reordering options') . ': ' . $e->getMessage(),
                 'data'    => [],
             ];
         }
@@ -226,7 +230,7 @@ class DynFieldDDownOptionsService
      *
      * @param string $dynFieldId
      * @param string $optionLabel
-     * @param string|null $slug
+     *
      * @return array
      */
     private function validateOptionData(string $dynFieldId, string $optionLabel): array
@@ -253,12 +257,13 @@ class DynFieldDDownOptionsService
      * Validate field exists
      *
      * @param string $dynFieldId
+     *
      * @return bool
      */
     private function validateFieldExists(string $dynFieldId): bool
     {
         $dynamicFieldsModel = new DynamicFields_Model();
-        $field              = $dynamicFieldsModel->getItem($dynFieldId);
+        $field = $dynamicFieldsModel->getItem($dynFieldId);
 
         return !empty($field);
     }
@@ -266,9 +271,10 @@ class DynFieldDDownOptionsService
     /**
      * Validate option uniqueness
      *
-     * @param string $dynFieldId
-     * @param string $optionLabel
-     * @param string|null $excludeOptionId
+     * @param string      $dynFieldId
+     * @param string      $optionLabel
+     * @param null|string $excludeOptionId
+     *
      * @return bool
      */
     private function validateOptionUniqueness(
@@ -276,7 +282,7 @@ class DynFieldDDownOptionsService
         string $optionLabel,
         ?string $excludeOptionId = null
     ): bool {
-        $model          = new DynamicFieldDropdownOptions_Model();
+        $model = new DynamicFieldDropdownOptions_Model();
         $existingOption = $model->getOptionByFieldAndLabel($dynFieldId, $optionLabel);
 
         if (empty($existingOption)) {

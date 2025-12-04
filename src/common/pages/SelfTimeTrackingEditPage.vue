@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <VPage>
@@ -58,14 +56,6 @@ import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTr
 import Plus from "vue-material-design-icons/Plus.vue";
 
 import {
-  fetchUserTimeInfo,
-  createUserTimeInfo,
-  updateUserTimeInfo,
-} from "@/common/entities/timeInfo/api";
-
-import { fetchUserStatistics } from "@/common/entities/statistics/api";
-
-import {
   VPage,
   VPageLayout,
   VPageContent,
@@ -78,13 +68,19 @@ import VToolbar from "@/common/shared/components/VToolbar/VToolbar.vue";
 import VForm from "@/common/shared/components/VForm/VForm.vue";
 import VDatePicker from "@/common/shared/components/VDatePicker/VDatePicker.vue";
 
+import {
+  fetchUserTimeInfo,
+  createUserTimeInfo,
+  updateUserTimeInfo,
+} from "@/common/entities/timeInfo/api";
+import { fetchUserStatistics } from "@/common/entities/statistics/api";
+import { fetchUserProjectsForReport } from "@/common/entities/users/api";
+
 import { timeTrackingFormMixin } from "@/common/shared/mixins/timeTrackingFormMixin";
 
 import { handleRestErrors } from "@/common/shared/lib/helpers";
+
 import { SUBMIT_DATE_FORMAT } from "@/common/shared/lib/constants";
-//TODO: Why we need this?
-import { useModulesStore } from "@/admin/app/store/modules";
-import {mapState} from "pinia";
 
 export default {
   name: "DictionaryPositionsPage",
@@ -108,13 +104,11 @@ export default {
     /** timeTrackingFormMixin
      *
      *  formValues
-     *  projectOptions
      */
     statisticsData: [],
     statisticsTotals: {},
   }),
   computed: {
-    ...mapState(useModulesStore, ["moduleExist"]),
     slug() {
       return this.$route.params.slug;
     },

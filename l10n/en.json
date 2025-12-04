@@ -458,15 +458,7 @@
     "Payee": "Payee",
     "Payer": "Payer",
     "INN": "INN",
-    "Description": "Description",
-    "Employee": "Employee",
-    "Customer": "Customer",
-    "Comment": "Comment",
-    "Save": "Save",
     "Update": "Update",
-    "Cancel": "Cancel",
-    "Title": "Title",
-    "Annotation": "Annotation",
     "Reset sorting": "Reset sorting",
     "You do not have permission to export data.": "You do not have permission to export data.",
     "Multiselect": "Multiselect",
@@ -477,7 +469,10 @@
     "Comment must be at least 3 characters": "Comment must be at least 3 characters",
     "Comment already exists for this field": "Comment already exists for this field",
     "No options available": "No options available",
-    "Comment for field": "Comment for field"
+    "Comment for field": "Comment for field",
+    "Profile": "Profile",
+    "Enter your message": "Enter your message",
+    "Submit": "Submit"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

@@ -5,10 +5,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 return [
     'routes' => [
-        //////// USERS ////////
+        // ////// USERS ////////
         [
             'name' => 'users#getUsersData',
             'url'  => '/ajax/getUsersData',
@@ -75,7 +74,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// HUMAN RESOURCES ////////
+        // ////// HUMAN RESOURCES ////////
 
         [
             'name' => 'human_resources#savePersonnel',
@@ -93,7 +92,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// TEAMS ////////
+        // ////// TEAMS ////////
 
         [
             'name' => 'teams#getTeamsTableData',
@@ -171,7 +170,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// ADMIN ////////
+        // ////// ADMIN ////////
 
         [
             'name' => 'admin#getNextcloudUsersData',
@@ -199,20 +198,20 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// MODULES CONTROLLER ////////
+        // ////// MODULES CONTROLLER ////////
 
         [
             'name' => 'modules#module',
-            'url' => '/ajax/module/{module}',
+            'url'  => '/ajax/module/{module}',
             'verb' => 'POST',
         ],
         [
             'name' => 'modules#getAvailableModules',
-            'url' => '/ajax/getAvailableModules',
+            'url'  => '/ajax/getAvailableModules',
             'verb' => 'POST',
         ],
 
-        //////// FILE CONTROLLER ////////
+        // ////// FILE CONTROLLER ////////
 
         [
             'name' => 'file#getEntityFile',
@@ -220,7 +219,7 @@ return [
             'verb' => 'GET',
         ],
 
-        ////// ENTITY ////////////////
+        // //// ENTITY ////////////////
         [
             'name' => 'entity#getDataToViewEntity',
             'url'  => '/ajax/getDataToViewEntity',
@@ -257,7 +256,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// DICTIONARIES ////////
+        // ////// DICTIONARIES ////////
 
         [
             'name' => 'dictionaries#getDictionaryData',
@@ -300,11 +299,16 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// COMMON ////////
+        // ////// COMMON ////////
 
         [
             'name' => 'common#getUserStatistics',
             'url'  => '/ajax/getUserStatistics',
+            'verb' => 'POST',
+        ],
+        [
+            'name' => 'common#getMy',
+            'url'  => '/ajax/getMy',
             'verb' => 'POST',
         ],
         [
@@ -796,7 +800,7 @@ return [
             'postfix' => 'errors.404',
         ],
 
-        //////// PERMISSIONS ////////
+        // ////// PERMISSIONS ////////
 
         [
             'name' => 'permissions#getGlobalRolesPermissions',
@@ -813,8 +817,18 @@ return [
             'url'  => '/ajax/editGlobalRolesPermissions',
             'verb' => 'POST',
         ],
+        [
+            'name' => 'permissions#getGlobalRoleActionRights',
+            'url'  => '/ajax/getGlobalRoleActionRights',
+            'verb' => 'POST',
+        ],
+        [
+            'name' => 'permissions#saveGlobalRoleActionRights',
+            'url'  => '/ajax/saveGlobalRoleActionRights',
+            'verb' => 'POST',
+        ],
 
-        //////// DYNAMIC FIELDS ////////
+        // ////// DYNAMIC FIELDS ////////
 
         [
             'name' => 'dynamic_fields#saveDynamicFieldsData',
@@ -852,7 +866,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// DYNAMIC FIELDS OPTIONS ////////
+        // ////// DYNAMIC FIELDS OPTIONS ////////
 
         [
             'name' => 'dynamic_fields_option#saveDropdownOption',
@@ -875,7 +889,7 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// TABLE ////////
+        // ////// TABLE ////////
 
         [
             'name' => 'table#saveTableFilter',
@@ -933,35 +947,35 @@ return [
             'verb' => 'POST',
         ],
 
-        //////// CUSTOM SETTINGS ////////
+        // ////// CUSTOM SETTINGS ////////
 
         [
             'name' => 'custom_settings#getCustomSettingsList',
             'url'  => '/ajax/getCustomSettingsList',
-            'verb' => 'POST'
+            'verb' => 'POST',
         ],
         [
             'name' => 'custom_settings#getUserCustomSettings',
             'url'  => '/ajax/getUserCustomSettings',
-            'verb' => 'POST'
+            'verb' => 'POST',
         ],
         [
             'name' => 'custom_settings#saveUserSettings',
             'url'  => '/ajax/saveUserSettings',
-            'verb' => 'POST'
+            'verb' => 'POST',
         ],
         [
             'name' => 'custom_settings#getAvailableLanguages',
             'url'  => '/ajax/getAvailableLanguages',
-            'verb' => 'GET'
+            'verb' => 'GET',
         ],
         [
             'name' => 'custom_settings#changeUserLanguage',
             'url'  => '/ajax/changeUserLanguage',
-            'verb' => 'POST'
+            'verb' => 'POST',
         ],
 
-        //////// FIELD COMMENTS ////////
+        // ////// FIELD COMMENTS ////////
 
         [
             'name' => 'field_comments#getFieldComments',
@@ -981,6 +995,14 @@ return [
         [
             'name' => 'field_comments#getFieldCommentsBySource',
             'url'  => '/ajax/getFieldCommentsBySource',
+            'verb' => 'POST',
+        ],
+
+        // ////// API ////////
+
+        [
+            'name' => 'api#generateJwtToken',
+            'url'  => '/api/generateJwtToken',
             'verb' => 'POST',
         ],
     ],

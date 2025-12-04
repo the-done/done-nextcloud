@@ -5,10 +5,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
-use OCA\Done\Service\BaseService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -31,43 +29,42 @@ class FieldsOrdering_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'         => [
-            'type'     => IQueryBuilder::PARAM_STR,
+        'id' => [
+            'type'       => IQueryBuilder::PARAM_STR,
             'db_comment' => 'Internal unique key for a user\'s custom fields orderings',
-            'required' => true,
+            'required'   => true,
         ],
         'user_id' => [
-            'type'     => IQueryBuilder::PARAM_STR,
+            'type'       => IQueryBuilder::PARAM_STR,
             'db_comment' => 'User ID. References oc_done_users_data.id',
-            'link'     => User_Model::class,
-            'required' => true,
+            'link'       => User_Model::class,
+            'required'   => true,
         ],
         'entity_id' => [
-            'type'     => IQueryBuilder::PARAM_INT,
+            'type'       => IQueryBuilder::PARAM_INT,
             'db_comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)',
-            'required' => true,
+            'required'   => true,
         ],
         'field' => [
-            'type'     => IQueryBuilder::PARAM_STR,
+            'type'       => IQueryBuilder::PARAM_STR,
             'db_comment' => 'Technical name of the column from the table indicated by `entity_id` (e.g., `name` from `oc_done_projects`)',
-            'required' => true,
+            'required'   => true,
         ],
-        'ordering'      => [
-            'type'     => IQueryBuilder::PARAM_INT,
+        'ordering' => [
+            'type'       => IQueryBuilder::PARAM_INT,
             'db_comment' => 'Ordering number of the field in the entity card',
-            'required' => false,
+            'required'   => false,
         ],
-        'created_at'         => [
-            'type'     => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
+        'created_at' => [
+            'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'db_comment' => 'Record creation timestamp in UTC',
-            'required' => false
+            'required'   => false,
         ],
-        'updated_at'         => [
-            'type'     => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
+        'updated_at' => [
+            'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'db_comment' => 'Record last update timestamp in UTC',
-            'required' => false
+            'required'   => false,
         ],
-
     ];
 
     /**

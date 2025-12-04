@@ -28,3 +28,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Formatting headers in the Statistics section
+
+## 1.2.0 – 2025-12-04
+
+### Added
+- User profile page with customizable appearance and image uploads
+- Virtual scrolling for statistics tables (improved performance with large
+  datasets)
+- Sticky headers in statistics views
+- Smart date range filtering based on user permissions
+- Responsive sidebar navigation with mode switching
+
+### Changed
+- Refactored navigation structure for better consistency
+- Improved time tracking interface and data loading
+- Enhanced layout system with better Nextcloud integration
+
+### Fixed
+- Duplicate records when changing dynamic field types
+- Issues with dynamic field deletion
+- Sticky header behavior in statistics preview
+- Various UI edge cases

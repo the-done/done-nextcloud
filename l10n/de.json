@@ -442,7 +442,10 @@
     "Comment must be at least 3 characters": "Der Kommentar muss mindestens 3 Zeichen lang sein.",
     "Comment already exists for this field": "Für dieses Feld ist bereits ein Kommentar vorhanden",
     "No options available": "Keine Optionen verfügbar",
-    "Comment for field": "Kommentar zum Feld"
+    "Comment for field": "Kommentar zum Feld",
+    "Profile": "Profil",
+    "Enter your message": "Geben Sie Ihre Nachricht ein",
+    "Submit": "Senden"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -21,43 +20,43 @@ class TimesHistory_Model extends Base_Model
     public string $dbTableComment = 'Change history for time reports: logs for auditing and tracking modifications.';
 
     public array $fields = [
-        'id'         => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'ID',
             'required'   => true,
             'db_comment' => 'Unique identifier for a change history record',
         ],
-        'report_id'  => [
+        'report_id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Report ID',
             'required'   => true,
             'db_comment' => 'Time report ID. References oc_done_times_data.id',
         ],
-        'datetime'   => [
+        'datetime' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Date',
             'required'   => true,
             'db_comment' => 'Timestamp of the change in UTC',
         ],
-        'action'     => [
+        'action' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Action',
             'required'   => true,
             'db_comment' => 'Type of action (e.g., update, delete)',
         ],
-        'field'      => [
+        'field' => [
             'type'       => IQueryBuilder::PARAM_LOB,
             'title'      => 'Field',
             'required'   => true,
             'db_comment' => 'Name of the modified field',
         ],
-        'valold'     => [
+        'valold' => [
             'type'       => IQueryBuilder::PARAM_LOB,
             'title'      => 'Old value',
             'required'   => true,
             'db_comment' => 'Old value of the field',
         ],
-        'valnew'     => [
+        'valnew' => [
             'type'       => IQueryBuilder::PARAM_LOB,
             'title'      => 'New value',
             'required'   => true,

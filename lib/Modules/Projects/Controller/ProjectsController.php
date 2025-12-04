@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Modules\Projects\Controller;
@@ -14,10 +13,10 @@ use OCA\Done\Attribute\RequireRole;
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\Dictionaries\Roles_Model;
 use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Modules\Projects\Models\Project_Model;
 use OCA\Done\Models\User_Model;
 use OCA\Done\Models\UsersRolesInProjects_Model;
 use OCA\Done\Modules\BaseModuleController;
+use OCA\Done\Modules\Projects\Models\Project_Model;
 use OCA\Done\Service\TableService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -36,7 +35,7 @@ class ProjectsController extends BaseModuleController
     {
         parent::__construct($appName, $request);
 
-        $this->tableService             = TableService::getInstance();
+        $this->tableService = TableService::getInstance();
         $this->setAllowedRoles([GlobalRoles_Model::OFFICER, GlobalRoles_Model::HEAD]);
     }
 
@@ -65,8 +64,8 @@ class ProjectsController extends BaseModuleController
     #[RequireRole([GlobalRoles_Model::OFFICER])]
     public function getProjectsData(IRequest $request): JSONResponse
     {
-        $slug         = $request->getParam('slug');
-        $slugType     = $request->getParam('slug_type');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
         $projectModel = new Project_Model();
 
         $projectId = $projectModel->getItemIdBySlug($slug);
@@ -99,8 +98,8 @@ class ProjectsController extends BaseModuleController
     #[RequireRole([GlobalRoles_Model::OFFICER])]
     public function getProjectPublicData(IRequest $request): JSONResponse
     {
-        $slug         = $request->getParam('slug');
-        $slugType     = $request->getParam('slug_type');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
         $projectModel = new Project_Model();
 
         $projectId = $projectModel->getItemIdBySlug($slug);
@@ -127,11 +126,11 @@ class ProjectsController extends BaseModuleController
     #[NoCSRFRequired]
     public function getUserRolesInProject(IRequest $request): JSONResponse
     {
-        $slug     = $request->getParam('slug');
+        $slug = $request->getParam('slug');
         $slugType = $request->getParam('slug_type');
 
         $projectModel = new Project_Model();
-        $projectId    = $projectModel->getItemIdBySlug($slug);
+        $projectId = $projectModel->getItemIdBySlug($slug);
 
         if (empty($projectId)) {
             return new JSONResponse(
@@ -156,10 +155,10 @@ class ProjectsController extends BaseModuleController
     #[RequireRole([GlobalRoles_Model::OFFICER])]
     public function saveProject(IRequest $request): JSONResponse
     {
-        $data         = $request->getParam('data');
-        $slug         = $request->getParam('slug');
-        $slugType     = $request->getParam('slug_type');
-        $isSave       = empty($slug);
+        $data = $request->getParam('data');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
+        $isSave = empty($slug);
         $projectModel = new Project_Model();
 
         [$data, $errors] = $projectModel->validateData($data, $isSave);
@@ -180,8 +179,8 @@ class ProjectsController extends BaseModuleController
             $message = $this->translateService->getTranslate('Project edited successfully');
         } else {
             $projectId = $projectModel->addData($data);
-            $slug      = $projectModel->getItemSlug([], $projectId);
-            $message   = $this->translateService->getTranslate('Project created successfully');
+            $slug = $projectModel->getItemSlug([], $projectId);
+            $message = $this->translateService->getTranslate('Project created successfully');
         }
 
         return new JSONResponse(
@@ -196,15 +195,14 @@ class ProjectsController extends BaseModuleController
 
     /**
      * Delete project
-     *
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[RequireRole([GlobalRoles_Model::OFFICER])]
     public function deleteProject(IRequest $request): JSONResponse
     {
-        $slug         = $request->getParam('slug');
-        $slugType     = $request->getParam('slug_type');
+        $slug = $request->getParam('slug');
+        $slugType = $request->getParam('slug_type');
         $projectModel = new Project_Model();
 
         $projectId = $projectModel->getItemIdBySlug($slug);
@@ -230,7 +228,6 @@ class ProjectsController extends BaseModuleController
 
     /**
      * Save user role in project
-     *
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
@@ -239,21 +236,21 @@ class ProjectsController extends BaseModuleController
     {
         $input = $request->getParams();
 
-        $projectSlug     = $input['project']['slug'] ?? null;
+        $projectSlug = $input['project']['slug'] ?? null;
         $projectSlugType = $input['project']['slug_type'] ?? null;
-        $userSlug        = $input['user']['slug'] ?? null;
-        $userSlugType    = $input['user']['slug_type'] ?? null;
-        $roleSlug        = $input['role']['slug'] ?? null;
-        $roleSlugType    = $input['role']['slug_type'] ?? null;
+        $userSlug = $input['user']['slug'] ?? null;
+        $userSlugType = $input['user']['slug_type'] ?? null;
+        $roleSlug = $input['role']['slug'] ?? null;
+        $roleSlugType = $input['role']['slug_type'] ?? null;
 
-        $projectModel    = new Project_Model();
-        $userModel       = new User_Model();
-        $rolesModel      = new Roles_Model();
+        $projectModel = new Project_Model();
+        $userModel = new User_Model();
+        $rolesModel = new Roles_Model();
         $usersRolesModel = (new UsersRolesInProjects_Model());
 
         $projectId = $projectModel->getItemIdBySlug($projectSlug);
-        $userId    = $userModel->getItemIdBySlug($userSlug);
-        $roleId    = $rolesModel->getItemIdBySlug($roleSlug);
+        $userId = $userModel->getItemIdBySlug($userSlug);
+        $roleId = $rolesModel->getItemIdBySlug($roleSlug);
 
         if (empty($projectId) || empty($userId) || empty($roleId)) {
             return new JSONResponse(
@@ -294,7 +291,6 @@ class ProjectsController extends BaseModuleController
 
     /**
      * Delete user role in project
-     *
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
@@ -332,24 +328,24 @@ class ProjectsController extends BaseModuleController
     {
         $input = $request->getParams();
 
-        $slug            = $input['slug'] ?? null;
-        $slugType        = $input['slug_type'] ?? null;
-        $projectSlug     = $input['project']['slug'] ?? null;
+        $slug = $input['slug'] ?? null;
+        $slugType = $input['slug_type'] ?? null;
+        $projectSlug = $input['project']['slug'] ?? null;
         $projectSlugType = $input['project']['slug_type'] ?? null;
-        $userSlug        = $input['user']['slug'] ?? null;
-        $userSlugType    = $input['user']['slug_type'] ?? null;
-        $roleSlug        = $input['role']['slug'] ?? null;
-        $roleSlugType    = $input['role']['slug_type'] ?? null;
+        $userSlug = $input['user']['slug'] ?? null;
+        $userSlugType = $input['user']['slug_type'] ?? null;
+        $roleSlug = $input['role']['slug'] ?? null;
+        $roleSlugType = $input['role']['slug_type'] ?? null;
 
-        $projectModel    = new Project_Model();
-        $userModel       = new User_Model();
-        $rolesModel      = new Roles_Model();
+        $projectModel = new Project_Model();
+        $userModel = new User_Model();
+        $rolesModel = new Roles_Model();
         $usersRolesModel = (new UsersRolesInProjects_Model());
 
-        $itemId    = $usersRolesModel->getItemIdBySlug($slug);
+        $itemId = $usersRolesModel->getItemIdBySlug($slug);
         $projectId = $projectModel->getItemIdBySlug($projectSlug);
-        $userId    = $userModel->getItemIdBySlug($userSlug);
-        $roleId    = $rolesModel->getItemIdBySlug($roleSlug);
+        $userId = $userModel->getItemIdBySlug($userSlug);
+        $roleId = $rolesModel->getItemIdBySlug($roleSlug);
 
         if (empty($itemId) && (empty($projectId) && empty($userId) && empty($roleId))) {
             return new JSONResponse(

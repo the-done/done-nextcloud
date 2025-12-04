@@ -5,15 +5,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
 use OCA\Done\Models\PermissionsEntities_Model;
 use OCA\Done\Modules\Projects\Models\ProjectAppearance_Model;
-use OCA\Done\Service\FileService;
-use OCA\Done\Service\TranslateService;
 use OCP\Server;
 
 /**
@@ -26,22 +23,20 @@ class AppearanceService
     /** @var FileService */
     private FileService $fileService;
 
-    /** @var TranslateService */
-    private TranslateService $translateService;
+    /** @var ProjectAppearance_Model */
+    private ProjectAppearance_Model $appearanceModel;
 
     public function __construct(
         FileService $fileService,
-        TranslateService $translateService
     ) {
-        $this->fileService      = $fileService;
-        $this->translateService = $translateService;
-        $this->appearanceModel  = new ProjectAppearance_Model();
+        $this->fileService = $fileService;
+        $this->appearanceModel = new ProjectAppearance_Model();
     }
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(AppearanceService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -51,17 +46,18 @@ class AppearanceService
      * Save project color
      *
      * @param string $entitySlug
-     * @param string $color Color in hex format (#RRGGBB or #RGB)
-     * @param int $source
+     * @param string $color      Color in hex format (#RRGGBB or #RGB)
+     * @param int    $source
+     *
      * @return array Operation result
      */
     public function saveEntityColor(string $entitySlug, string $color, int $source): array
     {
-        $sourceData      = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model           = new $sourceData[$source]['model']();
-        $entityKey       = $sourceData[$source]['foreign_key'];
+        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model = new $sourceData[$source]['model']();
+        $entityKey = $sourceData[$source]['foreign_key'];
         $appearanceModel = new $model->appearanceModel();
-        $entityId        = $model->getItemIdBySlug($entitySlug);
+        $entityId = $model->getItemIdBySlug($entitySlug);
 
         if (!$this->validateColor($color)) {
             return [
@@ -94,18 +90,19 @@ class AppearanceService
     /**
      * Method for saving project images
      *
-     * @param string $projectId Project hash
-     * @param array $uploadedFile Uploaded file
-     * @param string $imageField File field in DB table // 'avatar', 'bg_image', 'symbol'
+     * @param string $slug
+     * @param array  $uploadedFile Uploaded file
+     * @param string $imageField   File field in DB table // 'avatar', 'bg_image', 'symbol'
+     * @param int    $source
      *
      * @return array Operation result
      */
     public function saveEntityImage(string $slug, array $uploadedFile, string $imageField, int $source): array
     {
-        $sourceData      = PermissionsEntities_Model::getPermissionsEntities($source);
-        $model           = new $sourceData[$source]['model']();
-        $entityKey       = $sourceData[$source]['foreign_key'];
-        $entityId        = $model->getItemIdBySlug($slug);
+        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $model = new $sourceData[$source]['model']();
+        $entityKey = $sourceData[$source]['foreign_key'];
+        $entityId = $model->getItemIdBySlug($slug);
         $appearanceModel = new $model->appearanceModel();
 
         // 1. File validation (only images)
@@ -118,7 +115,7 @@ class AppearanceService
 
         // 2. Get existing record
         $existingRecord = $this->getExistingRecord($entityId, $entityKey);
-        $oldFileName    = null;
+        $oldFileName = null;
 
         // Remember old file name for subsequent deletion
         if (!empty($existingRecord) && !empty($existingRecord[$imageField])) {
@@ -172,9 +169,9 @@ class AppearanceService
      * @param string $projectId Project ID
      * @param string $entityKey Entity key
      *
-     * @return array|null Existing record or null
+     * @return array Existing record or null
      */
-    private function getExistingRecord(string $projectId, string $entityKey): ?array
+    private function getExistingRecord(string $projectId, string $entityKey): array
     {
         return $this->appearanceModel->getItemByFilter([$entityKey => $projectId]);
     }
@@ -199,7 +196,7 @@ class AppearanceService
      * @param string $fileType File type // 'avatar', 'bg_image', 'symbol'
      * @param string $fileName File name
      *
-     * @return array|null File data or null
+     * @return null|array File data or null
      */
     public function getEntityFile(string $entityId, string $fileType, string $fileName): ?array
     {

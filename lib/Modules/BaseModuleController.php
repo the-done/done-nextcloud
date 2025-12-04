@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Modules;
@@ -13,6 +12,7 @@ namespace OCA\Done\Modules;
 use OCA\Done\Models\User_Model;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
@@ -31,9 +31,8 @@ abstract class BaseModuleController extends OCSController
     protected IUserSession $userSession;
     protected array $allowedRoles = [];
     public string $moduleName = '';
-    /**
-     * @var mixed|null
-     */
+
+    /** @var null|mixed */
     protected mixed $currentUserId = null;
 
     public function __construct(
@@ -41,9 +40,9 @@ abstract class BaseModuleController extends OCSController
         IRequest $request,
     ) {
         parent::__construct($appName, $request);
-        $this->userSession      = Server::get(IUserSession::class);
+        $this->userSession = Server::get(IUserSession::class);
         $this->translateService = TranslateService::getInstance();
-        $this->userService      = UserService::getInstance();
+        $this->userService = UserService::getInstance();
         $this->setCurrentUserId();
     }
 
@@ -59,9 +58,9 @@ abstract class BaseModuleController extends OCSController
         }
 
         $allowedRoles = $this->getAllowedRoles();
-        $userRoles    = $this->userService->getUserGlobalRoles($currentUserId);
+        $userRoles = $this->userService->getUserGlobalRoles($currentUserId);
 
-        if (empty(array_intersect($allowedRoles, $userRoles))) {
+        if (empty(array_intersect($allowedRoles, $userRoles)) && !\in_array('ALL', $allowedRoles)) {
             return false;
         }
 
@@ -85,8 +84,8 @@ abstract class BaseModuleController extends OCSController
         $currentUserObj = $this->userSession->getUser();
 
         if ($currentUserObj instanceof IUser) {
-            $currentUserUid        = $currentUserObj->getUID();
-            $currentUser           = (new User_Model())->getUserByUuid($currentUserUid);
+            $currentUserUid = $currentUserObj->getUID();
+            $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
             $this->currentUserId = $currentUser['id'] ?? null;
         }
     }
@@ -117,15 +116,20 @@ abstract class BaseModuleController extends OCSController
 
     /**
      * Common method for formatting module response
+     *
+     * @param mixed          $data
+     * @param Http::STATUS_* $status
+     *
+     * @return JSONResponse
      */
-    protected function formatModuleResponse($data, int $status = 200): JSONResponse
+    protected function formatModuleResponse(mixed $data, int $status = Http::STATUS_OK): JSONResponse
     {
-//        $response = [
-//            'success'   => $status < 400,
-//            'data'      => $data,
-//            'timestamp' => time(),
-//            'module'    => $this->getModuleName(),
-//        ];
+        //        $response = [
+        //            'success'   => $status < 400,
+        //            'data'      => $data,
+        //            'timestamp' => time(),
+        //            'module'    => $this->getModuleName(),
+        //        ];
 
         return new JSONResponse($data, $status);
     }
@@ -143,7 +147,7 @@ abstract class BaseModuleController extends OCSController
         return $this->formatModuleResponse([
             'error' => $e->getMessage(),
             'code'  => $e->getCode(),
-        ], 500);
+        ], Http::STATUS_INTERNAL_SERVER_ERROR);
     }
 
     /**

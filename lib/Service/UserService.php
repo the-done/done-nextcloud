@@ -5,15 +5,15 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Modules\Projects\Models\Project_Model;
+use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\Times_Model;
 use OCA\Done\Models\User_Model;
 use OCA\Done\Models\UsersGlobalRoles_Model;
+use OCA\Done\Modules\Projects\Models\Project_Model;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IUserSession;
 use OCP\Server;
@@ -23,6 +23,7 @@ class UserService extends EntitiesService
     protected BaseService $baseService;
     protected IUserSession $userSession;
     protected TranslateService $translateService;
+
     /** @var UserService */
     private static UserService $instance;
 
@@ -31,15 +32,15 @@ class UserService extends EntitiesService
         IUserSession $userSession,
         TranslateService $translateService,
     ) {
-        $this->userSession      = $userSession;
+        $this->userSession = $userSession;
         $this->translateService = $translateService;
-        $this->baseService      = $baseService;
+        $this->baseService = $baseService;
     }
 
     public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(UserService::class);
+            self::$instance = Server::get(self::class);
         }
 
         return self::$instance;
@@ -47,17 +48,18 @@ class UserService extends EntitiesService
 
     public function getUserStatistics(string $dateFrom, string $dateTo, string $userId, array $projects = []): array
     {
-        $dateFrom      = (new \DateTimeImmutable($dateFrom))->format('Y-m-d');
-        $dateTo        = (new \DateTimeImmutable($dateTo))->format('Y-m-d');
-        $timesModel    = new Times_Model();
+        $dateFrom = (new \DateTimeImmutable($dateFrom))->format('Y-m-d');
+        $dateTo = (new \DateTimeImmutable($dateTo))->format('Y-m-d');
+        $timesModel = new Times_Model();
         $currentUserId = $this->getCurrentUserId();
-        $days          = BaseService::getWeekDays();
+        $days = BaseService::getWeekDays();
 
         $periodsPrepared = $checked = $weeks = [];
 
         $totals = $this->getTotalsForUserStatistics($dateFrom, $dateTo, $userId, $projects);
         [$data, $projectsIds] = $timesModel->getTimeData($dateFrom, $dateTo, $userId, $projects);
         $lastProjectId = !empty($userId) ? $timesModel->getLastProjectId($userId) : '';
+        $firstReportDate = !empty($userId) ? $timesModel->getFirstReportDate($userId) : '';
 
         $projects = (new Project_Model())->getIndexedListByFilter(
             'id',
@@ -73,24 +75,24 @@ class UserService extends EntitiesService
 
         // Build hierarchy
         foreach ($period as $date) {
-            $year    = (string)$date->format('Y');
+            $year = (string)$date->format('Y');
             $quarter = (string)BaseService::getQuarter($date);
-            $month   = (string)$date->format('m');
-            $week    = $date->format('o_W');
-            $day     = (string)$date->format('d');
+            $month = (string)$date->format('m');
+            $week = $date->format('o_W');
+            $day = (string)$date->format('d');
 
             $dateFormatted = $date->format('Y-m-d\TH:i:s.v\Z');
 
-            $yearKey    = "{$year}";
+            $yearKey = "{$year}";
             $quarterKey = "{$year}-{$quarter}";
-            $monthKey   = "{$year}-{$quarter}-{$month}";
-            $weekKey    = "{$year}-{$quarter}-{$month}-{$week}";
-            $dayKey     = "{$year}-{$quarter}-{$month}-{$week}-{$day}";
+            $monthKey = "{$year}-{$quarter}-{$month}";
+            $weekKey = "{$year}-{$quarter}-{$month}-{$week}";
+            $dayKey = "{$year}-{$quarter}-{$month}-{$week}-{$day}";
 
             $items = $data[$dateFormatted] ?? [];
 
             if (!empty($items)) {
-                usort($items, fn($a, $b) => (($a['sort'] ?? 999) <=> ($b['sort'] ?? 999)));
+                usort($items, static fn ($a, $b) => (($a['sort'] ?? 999) <=> ($b['sort'] ?? 999)));
             }
 
             foreach ($items as $idx => $item) {
@@ -99,10 +101,10 @@ class UserService extends EntitiesService
                     $item['user_id'] ?? 0,
                     $currentUserId,
                 );
-                $minutes          = $item['minutes'] ?? 0;
+                $minutes = $item['minutes'] ?? 0;
 
-                $items[$idx]['time']              = $this->baseService->getTimeView($minutes);
-                $items[$idx]['pname']             = $projects[$item['project_id']]['name'] ?? '';
+                $items[$idx]['time'] = $this->baseService->getTimeView($minutes);
+                $items[$idx]['pname'] = $projects[$item['project_id']]['name'] ?? '';
                 $items[$idx]['available_actions'] = $availableActions;
             }
 
@@ -119,7 +121,7 @@ class UserService extends EntitiesService
             }
 
             if (!isset($checked[$quarterKey])) {
-                $periodsPrepared[]    = [
+                $periodsPrepared[] = [
                     'id'          => $quarter,
                     'type'        => 'quarter',
                     'parent'      => $year,
@@ -130,7 +132,7 @@ class UserService extends EntitiesService
             }
 
             if (!isset($checked[$monthKey])) {
-                $periodsPrepared[]  = [
+                $periodsPrepared[] = [
                     'id'          => $month,
                     'type'        => 'month',
                     'parent'      => $quarter,
@@ -154,7 +156,7 @@ class UserService extends EntitiesService
                     'isHiddenTitle' => isset($weeks[$week]),
                 ];
                 $checked[$weekKey] = $weekKey;
-                $weeks[$week]      = $week;
+                $weeks[$week] = $week;
             }
 
             if (!isset($checked[$dayKey])) {
@@ -175,7 +177,12 @@ class UserService extends EntitiesService
 
         $result = BaseService::toTree($periodsPrepared);
 
-        return ['data' => $result, 'totals' => $totals, 'lastProjectId' => $lastProjectId];
+        return [
+            'data'            => $result,
+            'totals'          => $totals,
+            'lastProjectId'   => $lastProjectId,
+            'firstReportDate' => $firstReportDate,
+        ];
     }
 
     public function getUserGlobalRoles(string $currentUserId): array
@@ -197,7 +204,7 @@ class UserService extends EntitiesService
         }
 
         $currentUserUid = $currentUserObj->getUID();
-        $currentUser    = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
 
         return $currentUser['id'] ?? '';
     }
@@ -205,9 +212,9 @@ class UserService extends EntitiesService
     /**
      * Get user statistics totals
      *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @param string $userId
+     * @param string   $dateFrom
+     * @param string   $dateTo
+     * @param string   $userId
      * @param string[] $projects
      *
      * @return array
@@ -221,7 +228,7 @@ class UserService extends EntitiesService
         $totals = [];
 
         $yearFrom = (new \DateTimeImmutable($dateFrom))->format('Y');
-        $yearTo   = (new \DateTimeImmutable($dateTo))->format('Y');
+        $yearTo = (new \DateTimeImmutable($dateTo))->format('Y');
 
         $totalData = (new Times_Model())->getTimeData(
             "{$yearFrom}-01-01",
@@ -233,32 +240,32 @@ class UserService extends EntitiesService
         );
 
         foreach ($totalData as $item) {
-            $date    = new \DateTime($item['date']);
+            $date = new \DateTime($item['date']);
             $minutes = $item['minutes'] ?? 0;
 
-            $year    = $date->format('Y');
+            $year = $date->format('Y');
             $quarter = (string)BaseService::getQuarter($date);
-            $month   = $date->format('m');
-            $week    = $date->format('o_W');
-            $day     = $date->format('d');
+            $month = $date->format('m');
+            $week = $date->format('o_W');
+            $day = $date->format('d');
 
-            $yearKey    = "{$year}";
+            $yearKey = "{$year}";
             $quarterKey = "{$year}-{$quarter}";
-            $monthKey   = "{$year}-{$quarter}-{$month}";
-            $weekKey    = "{$year}-week-{$week}";
-            $dayKey     = "{$year}-{$quarter}-{$month}-{$week}-{$day}";
+            $monthKey = "{$year}-{$quarter}-{$month}";
+            $weekKey = "{$year}-week-{$week}";
+            $dayKey = "{$year}-{$quarter}-{$month}-{$week}-{$day}";
 
-            $totals[$yearKey]    ??= 0;
+            $totals[$yearKey] ??= 0;
             $totals[$quarterKey] ??= 0;
-            $totals[$monthKey]   ??= 0;
-            $totals[$weekKey]    ??= 0;
-            $totals[$dayKey]     ??= 0;
+            $totals[$monthKey] ??= 0;
+            $totals[$weekKey] ??= 0;
+            $totals[$dayKey] ??= 0;
 
-            $totals[$yearKey]    += $minutes;
+            $totals[$yearKey] += $minutes;
             $totals[$quarterKey] += $minutes;
-            $totals[$monthKey]   += $minutes;
-            $totals[$weekKey]    += $minutes;
-            $totals[$dayKey]     += $minutes;
+            $totals[$monthKey] += $minutes;
+            $totals[$weekKey] += $minutes;
+            $totals[$dayKey] += $minutes;
         }
 
         return $totals;
@@ -282,5 +289,34 @@ class UserService extends EntitiesService
         $globalRoles = $this->getUserGlobalRoles($currentUserId);
 
         return !empty(array_intersect($requirementRoles, $globalRoles));
+    }
+
+    /**
+     * Check if user has required permission
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    public function canDoAction(string $action = ''): bool
+    {
+        $availableActions = $this->getActionsAvailableToUser();
+
+        return $availableActions[$action] ?? false;
+    }
+
+    /**
+     * Get the actions available to the user
+     *
+     * @return array
+     */
+    public function getActionsAvailableToUser(): array
+    {
+        $currentUserId = $this->getCurrentUserId();
+        $defaultRights = GlobalRoles_Model::getUsersDefaultRights();
+
+        return $currentUserId
+            ? (new UsersGlobalRoles_Model())->getRights($this->getUserGlobalRoles($currentUserId))
+            : $defaultRights;
     }
 }

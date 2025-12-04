@@ -185,8 +185,6 @@ OC.L10N.register(
     "Hide column": "Masquer la colonne",
     "Hide empty fields in preview": "Masquer les champs vides dans l'aperçu",
     Hours: "Heures",
-    hours: "heures",
-    h: "h",
     "In development": "En développement",
     "Insufficient permissions to perform the operation":
       "Permissions insuffisantes pour effectuer l'opération",
@@ -500,6 +498,9 @@ OC.L10N.register(
     Multiselect: "Sélection multiple",
     "No options available": "Aucune option disponible",
     "Comment for field": "Commentaire pour le champ",
+    Profile: "Profil",
+    "Enter your message": "Entrez votre message",
+    Submit: "Envoyer",
   },
   "fr",
   "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"

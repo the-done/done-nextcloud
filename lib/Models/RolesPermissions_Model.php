@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 namespace OCA\Done\Models;
 
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
@@ -29,71 +28,71 @@ class RolesPermissions_Model extends Base_Model
     ];
 
     public array $fields = [
-        'id'                 => [
+        'id' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'ID',
-            'db_comment' => 'Unique identifier for a permission record'
+            'db_comment' => 'Unique identifier for a permission record',
         ],
         'global_role_id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Global role ID',
             'link'       => GlobalRoles_Model::class,
             'required'   => true,
-            'db_comment' => 'Global role identifier. References oc_done_global_roles.id'
+            'db_comment' => 'Global role identifier. References oc_done_global_roles.id',
         ],
-        'entity_id'      => [
+        'entity_id' => [
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Entity',
             'required'   => true,
-            'db_comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)'
+            'db_comment' => 'Identifier of the application section. Possible values: 1 (Users), 2 (Projects), 3 (Teams), 4 (Payments)',
         ],
-        'field'          => [
+        'field' => [
             'type'       => IQueryBuilder::PARAM_STR,
             'title'      => 'Field name',
             'required'   => true,
-            'db_comment' => 'Technical name of the column from the table indicated by `entity_id` (e.g., `name` from `oc_done_projects`)'
+            'db_comment' => 'Technical name of the column from the table indicated by `entity_id` (e.g., `name` from `oc_done_projects`)',
         ],
-        'can_view'       => [
+        'can_view' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Can view the field',
             'required'   => false,
-            'db_comment' => 'Permission to view the field (1 - yes, 0 - no). If `can_view=1` and `can_read=0`, the user sees the field but not its value'
+            'db_comment' => 'Permission to view the field (1 - yes, 0 - no). If `can_view=1` and `can_read=0`, the user sees the field but not its value',
         ],
-        'can_read'       => [
+        'can_read' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Can read field value',
             'required'   => false,
-            'db_comment' => 'Permission to read the field\'s value (1 - yes, 0 - no). Requires `can_view=1`'
+            'db_comment' => 'Permission to read the field\'s value (1 - yes, 0 - no). Requires `can_view=1`',
         ],
-        'can_write'      => [
+        'can_write' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Can write field',
             'required'   => false,
-            'db_comment' => 'Permission to change the field\'s value (1 - yes, 0 - no)'
+            'db_comment' => 'Permission to change the field\'s value (1 - yes, 0 - no)',
         ],
-        'can_delete'     => [
+        'can_delete' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Can delete field value',
             'required'   => false,
-            'db_comment' => 'Permission to delete the field\'s value (1 - yes, 0 - no)'
+            'db_comment' => 'Permission to delete the field\'s value (1 - yes, 0 - no)',
         ],
         'can_view_add_info' => [
             'type'       => IQueryBuilder::PARAM_BOOL,
             'title'      => 'Can view additional field info',
             'required'   => false,
-            'db_comment' => '[DEPRECATED] Permission to view additional information about the field (1 - yes, 0 - no)'
+            'db_comment' => '[DEPRECATED] Permission to view additional information about the field (1 - yes, 0 - no)',
         ],
-        'created_at'     => [
+        'created_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Created at',
             'required'   => false,
-            'db_comment' => 'Record creation timestamp in UTC'
+            'db_comment' => 'Record creation timestamp in UTC',
         ],
-        'updated_at'     => [
+        'updated_at' => [
             'type'       => IQueryBuilder::PARAM_DATETIME_IMMUTABLE,
             'title'      => 'Updated at',
             'required'   => false,
-            'db_comment' => 'Record last update timestamp in UTC'
+            'db_comment' => 'Record last update timestamp in UTC',
         ],
     ];
 
@@ -108,11 +107,11 @@ class RolesPermissions_Model extends Base_Model
     /**
      * Get existing installed role permissions
      *
-     * @param int|null $source
+     * @param null|int $source
      *
      * @return array<int, array<string, mixed>>
      */
-    public function getPermissions(int $source = null): array
+    public function getPermissions(?int $source = null): array
     {
         $result = $filter = [];
 
@@ -123,12 +122,12 @@ class RolesPermissions_Model extends Base_Model
         $permissions = $this->getListByFilter($filter);
 
         foreach ($permissions as $permission) {
-            $roleId   = $permission['global_role_id'];
+            $roleId = $permission['global_role_id'];
             $entityId = $permission['entity_id'];
-            $field    = $permission['field'];
-            $id       = $permission['id'];
+            $field = $permission['field'];
+            $id = $permission['id'];
 
-            $result[$roleId][$entityId][$field]['slug']   = $id;
+            $result[$roleId][$entityId][$field]['slug'] = $id;
             $result[$roleId][$entityId][$field]['values'] = [
                 'can_view'          => $permission['can_view'] ?? false,
                 'can_read'          => $permission['can_read'] ?? false,
@@ -171,8 +170,8 @@ class RolesPermissions_Model extends Base_Model
     public function getFieldsFullPermissions(array $filter): array
     {
         $permissionEntities = PermissionsEntities_Model::getPermissionsEntities();
-        $permissions        = $this->getListByFilter($filter);
-        $permissions        = BaseService::makeHash($permissions, 'entity_id', true);
+        $permissions = $this->getListByFilter($filter);
+        $permissions = BaseService::makeHash($permissions, 'entity_id', true);
 
         return $this->preparePermissions(
             $permissionEntities,
@@ -183,25 +182,25 @@ class RolesPermissions_Model extends Base_Model
     /**
      * Get entity field read permissions for role
      *
-     * @param int $entityId
+     * @param int                  $entityId
      * @param array<string, mixed> $filter
      *
      * @return array
      */
     public function getFieldsReadPermissions(int $entityId, array $filter): array
     {
-        $result             = [];
+        $result = [];
         $permissionEntities = PermissionsEntities_Model::getPermissionsEntities();
-        $entity             = $permissionEntities[$entityId];
-        $modelName          = $entity['model'];
+        $entity = $permissionEntities[$entityId];
+        $modelName = $entity['model'];
 
         if (!class_exists($modelName)) {
             return [];
         }
 
-        $model       = new $modelName();
-        $fields      = $model->fields;
-        $permissions = (new RolesPermissions_Model())->getListByFilter($filter);
+        $model = new $modelName();
+        $fields = $model->fields;
+        $permissions = (new self())->getListByFilter($filter);
 
         foreach ($permissions as $permission) {
             $fieldName = $permission['field'];
@@ -212,15 +211,15 @@ class RolesPermissions_Model extends Base_Model
                 continue;
             }
 
-            $result[$fieldName] = (bool)$permission['can_read'] ?? false;
+            $result[$fieldName] = (bool)$permission['can_read'];
         }
 
         foreach ($fields as $fieldName => $params) {
-            $needPermission = $params['permission'] ?? false;
+            $needPermission = (bool)$params['permission'];
 
             if ($needPermission && !isset($result[$fieldName])) {
                 $result[$fieldName] = false;
-            } elseif (!$needPermission && !isset($result[$fieldName]) && !in_array($fieldName, $this->excludedKeys)) {
+            } elseif (!$needPermission && !isset($result[$fieldName]) && !\in_array($fieldName, $this->excludedKeys)) {
                 $result[$fieldName] = true;
             }
         }
@@ -242,7 +241,7 @@ class RolesPermissions_Model extends Base_Model
 
         foreach ($permissionEntities as $entityId => $permissionEntity) {
             $entitySlug = $permissionEntity['slug'];
-            $modelName  = $permissionEntity['model'];
+            $modelName = $permissionEntity['model'];
 
             if (!class_exists($modelName)) {
                 continue;
@@ -254,27 +253,27 @@ class RolesPermissions_Model extends Base_Model
                 $fieldName = $permission['field'];
 
                 if (isset($result[$entitySlug][$fieldName])) {
-                    $canView        = $result[$entitySlug][$fieldName]['can_view'] ?: $permission['can_view'];
-                    $canRead        = $result[$entitySlug][$fieldName]['can_read'] ?: $permission['can_read'];
-                    $canWrite       = $result[$entitySlug][$fieldName]['can_write'] ?: $permission['can_write'];
-                    $canDelete      = $result[$entitySlug][$fieldName]['can_delete'] ?: $permission['can_delete'];
+                    $canView = $result[$entitySlug][$fieldName]['can_view'] ?: $permission['can_view'];
+                    $canRead = $result[$entitySlug][$fieldName]['can_read'] ?: $permission['can_read'];
+                    $canWrite = $result[$entitySlug][$fieldName]['can_write'] ?: $permission['can_write'];
+                    $canDelete = $result[$entitySlug][$fieldName]['can_delete'] ?: $permission['can_delete'];
                     $canViewAddInfo = $result[$entitySlug][$fieldName]['can_view_add_info'] ?: $permission['can_view_add_info'];
 
-                    $result[$entitySlug][$fieldName]['can_view']          = (bool)$canView;
-                    $result[$entitySlug][$fieldName]['can_read']          = (bool)$canRead;
-                    $result[$entitySlug][$fieldName]['can_write']         = (bool)$canWrite;
-                    $result[$entitySlug][$fieldName]['can_delete']        = (bool)$canDelete;
+                    $result[$entitySlug][$fieldName]['can_view'] = (bool)$canView;
+                    $result[$entitySlug][$fieldName]['can_read'] = (bool)$canRead;
+                    $result[$entitySlug][$fieldName]['can_write'] = (bool)$canWrite;
+                    $result[$entitySlug][$fieldName]['can_delete'] = (bool)$canDelete;
                     $result[$entitySlug][$fieldName]['can_view_add_info'] = (bool)$canViewAddInfo;
 
                     continue;
                 }
 
                 $result[$entitySlug][$fieldName] = [
-                    'can_view'          => (bool)$permission['can_view'] ?? false,
-                    'can_read'          => (bool)$permission['can_read'] ?? false,
-                    'can_write'         => (bool)$permission['can_write'] ?? false,
-                    'can_delete'        => (bool)$permission['can_delete'] ?? false,
-                    'can_view_add_info' => (bool)$permission['can_view_add_info'] ?? false,
+                    'can_view'          => (bool)$permission['can_view'],
+                    'can_read'          => (bool)$permission['can_read'],
+                    'can_write'         => (bool)$permission['can_write'],
+                    'can_delete'        => (bool)$permission['can_delete'],
+                    'can_view_add_info' => (bool)$permission['can_view_add_info'],
                 ];
             }
         }
@@ -285,7 +284,7 @@ class RolesPermissions_Model extends Base_Model
     /**
      * Enrich existing role permissions with remaining (not granted) permissions
      *
-     * @param array<int, mixed> $permissionEntities
+     * @param array<int, mixed>    $permissionEntities
      * @param array<string, mixed> $result
      *
      * @return array
@@ -294,13 +293,13 @@ class RolesPermissions_Model extends Base_Model
     {
         foreach ($permissionEntities as $permissionEntity) {
             $entitySlug = $permissionEntity['slug'];
-            $modelName  = $permissionEntity['model'];
+            $modelName = $permissionEntity['model'];
 
             if (!class_exists($modelName)) {
                 continue;
             }
 
-            $model  = new $modelName();
+            $model = new $modelName();
             $fields = $model->fields;
 
             foreach ($fields as $fieldName => $params) {

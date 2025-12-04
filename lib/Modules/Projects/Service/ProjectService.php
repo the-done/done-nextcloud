@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Modules\Projects\Service;
@@ -19,22 +18,24 @@ class ProjectService extends EntitiesService
 {
     protected BaseService $baseService;
     protected TranslateService $translateService;
+
     /** @var ProjectService */
     private static ProjectService $instance;
 
     public function __construct(
         TranslateService $translateService,
         BaseService $baseService
-    )
-    {
+    ) {
         $this->translateService = $translateService;
         $this->baseService = $baseService;
     }
 
-    public static function getInstance(): self {
+    public static function getInstance(): self
+    {
         if (!isset(self::$instance)) {
-            self::$instance = Server::get(ProjectService::class);
+            self::$instance = Server::get(self::class);
         }
+
         return self::$instance;
     }
 }

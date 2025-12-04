@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
@@ -15,8 +14,8 @@ use OCA\Done\Models\Table\TableFilter_Model;
 use OCA\Done\Models\Table\TableSortColumns_Model;
 use OCA\Done\Models\Table\TableSortWithinColumns_Model;
 use OCP\AppFramework\Http;
-use OCP\IRequest;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IRequest;
 
 class TableController extends AdminController
 {
@@ -24,16 +23,17 @@ class TableController extends AdminController
      * Save table column view
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableColumnView(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
         $column = $request->getParam('column');
-        $width  = $request->getParam('width');
-        $hide   = $request->getParam('hide', false);
+        $width = $request->getParam('width');
+        $hide = $request->getParam('hide', false);
         $forAll = $request->getParam('for_all', false);
-        $slug   = $request->getParam('slug');
+        $slug = $request->getParam('slug');
         $isSave = empty($slug);
 
         if (empty($width)) {
@@ -46,7 +46,7 @@ class TableController extends AdminController
         }
 
         $tableColumnViewSettingsModel = new TableColumnViewSettings_Model();
-        $userId                       = $this->userService->getCurrentUserId();
+        $userId = $this->userService->getCurrentUserId();
 
         $data = [
             'user_id' => $userId,
@@ -91,19 +91,20 @@ class TableController extends AdminController
      * Save table column sorting
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableSortColumns(IRequest $request): JSONResponse
     {
-        $source   = $request->getParam('source');
-        $column   = $request->getParam('column');
+        $source = $request->getParam('source');
+        $column = $request->getParam('column');
         $ordering = $request->getParam('ordering');
-        $forAll   = $request->getParam('for_all', false);
-        $slug     = $request->getParam('slug');
-        $isSave   = empty($slug);
+        $forAll = $request->getParam('for_all', false);
+        $slug = $request->getParam('slug');
+        $isSave = empty($slug);
 
         $tableSortColumnsModel = new TableSortColumns_Model();
-        $userId                = $this->userService->getCurrentUserId();
+        $userId = $this->userService->getCurrentUserId();
 
         $data = [
             'user_id'  => $userId,
@@ -144,14 +145,15 @@ class TableController extends AdminController
      * Save table column sorting
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableSortColumnsMultiple(IRequest $request): JSONResponse
     {
-        $sortData              = $request->getParam('sort_data');
-        $source                = $request->getParam('source');
-        $forAll                = (bool)$request->getParam('for_all', false);
-        $userId                = $this->userService->getCurrentUserId();
+        $sortData = $request->getParam('sort_data');
+        $source = $request->getParam('source');
+        $forAll = (bool)$request->getParam('for_all', false);
+        $userId = $this->userService->getCurrentUserId();
         $tableSortColumnsModel = new TableSortColumns_Model();
 
         foreach ($sortData as $idx => $column) {
@@ -191,21 +193,22 @@ class TableController extends AdminController
      * Save table sorting within columns
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableSortWithinColumns(IRequest $request): JSONResponse
     {
-        $source       = $request->getParam('source');
-        $column       = $request->getParam('column');
-        $sort         = $request->getParam('sort', 'ASC');
+        $source = $request->getParam('source');
+        $column = $request->getParam('column');
+        $sort = $request->getParam('sort', 'ASC');
         $sortOrdering = $request->getParam('sort_ordering');
-        $forAll       = (bool)$request->getParam('for_all', false);
-        $slug         = $request->getParam('slug');
-        $isSave       = empty($slug);
+        $forAll = (bool)$request->getParam('for_all', false);
+        $slug = $request->getParam('slug');
+        $isSave = empty($slug);
 
         $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
-        $userId                      = $this->userService->getCurrentUserId();
-        $sort                        = $sort === 'ASC';
+        $userId = $this->userService->getCurrentUserId();
+        $sort = $sort === 'ASC';
 
         $data = [
             'user_id'       => $userId,
@@ -250,20 +253,21 @@ class TableController extends AdminController
      * Multiple save table sorting within columns
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableSortWithinColumnsMultiple(IRequest $request): JSONResponse
     {
-        $sortData                    = $request->getParam('sort_data');
-        $source                      = $request->getParam('source');
-        $userId                      = $this->userService->getCurrentUserId();
+        $sortData = $request->getParam('sort_data');
+        $source = $request->getParam('source');
+        $userId = $this->userService->getCurrentUserId();
         $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
 
         foreach ($sortData as $idx => $data) {
             $sortOrdering = $idx + 1;
-            $column       = $data['column'];
-            $sort         = $data['sort'] ?? 'ASC';
-            $forAll       = (bool)$data['for_all'] ?? false;
+            $column = $data['column'];
+            $sort = $data['sort'] ?? 'ASC';
+            $forAll = (bool)$data['for_all'];
 
             $sort = $sort === 'ASC';
 
@@ -302,22 +306,23 @@ class TableController extends AdminController
      * Save table filter
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveTableFilter(IRequest $request): JSONResponse
     {
-        $source    = $request->getParam('source');
-        $column    = $request->getParam('column');
+        $source = $request->getParam('source');
+        $column = $request->getParam('column');
         $condition = $request->getParam('condition');
-        $value     = $request->getParam('value');
-        $forAll    = $request->getParam('for_all', false);
-        $slug      = $request->getParam('slug');
-        $isSave    = empty($slug);
+        $value = $request->getParam('value');
+        $forAll = $request->getParam('for_all', false);
+        $slug = $request->getParam('slug');
+        $isSave = empty($slug);
 
         $tableFilterModel = new TableFilter_Model();
-        $userId           = $this->userService->getCurrentUserId();
+        $userId = $this->userService->getCurrentUserId();
 
-        if (in_array(
+        if (\in_array(
             $condition,
             [TableFilter_Model::CONTAINS_CONDITION, TableFilter_Model::DOES_NOT_CONTAIN_CONDITION]
         )
@@ -365,6 +370,7 @@ class TableController extends AdminController
      * Delete table column view
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteTableColumnView(IRequest $request): JSONResponse
@@ -394,14 +400,15 @@ class TableController extends AdminController
      * Delete table column sorting
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteTableSortColumns(IRequest $request): JSONResponse
     {
-        $slug                  = $request->getParam('slug');
-        $source                = $request->getParam('source');
+        $slug = $request->getParam('slug');
+        $source = $request->getParam('source');
         $tableSortColumnsModel = new TableSortColumns_Model();
-        $currentUserId         = $this->userService->getCurrentUserId();
+        $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
             $tableSortColumnsModel->deleteByFilter(['user_id' => $currentUserId, 'source' => $source]);
@@ -428,14 +435,15 @@ class TableController extends AdminController
      * Delete table sorting within columns
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteTableSortWithinColumns(IRequest $request): JSONResponse
     {
-        $slug                        = $request->getParam('slug');
-        $source                      = $request->getParam('source');
+        $slug = $request->getParam('slug');
+        $source = $request->getParam('source');
         $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
-        $currentUserId               = $this->userService->getCurrentUserId();
+        $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
             $tableSortWithinColumnsModel->deleteByFilter(['user_id' => $currentUserId, 'source' => $source]);
@@ -462,14 +470,15 @@ class TableController extends AdminController
      * Delete table filter
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteTableFilter(IRequest $request): JSONResponse
     {
-        $slug             = $request->getParam('slug');
-        $source           = $request->getParam('source');
+        $slug = $request->getParam('slug');
+        $source = $request->getParam('source');
         $tableFilterModel = new TableFilter_Model();
-        $currentUserId    = $this->userService->getCurrentUserId();
+        $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
             $tableFilterModel->deleteByFilter(['user_id' => $currentUserId, 'source' => $source]);
@@ -496,6 +505,7 @@ class TableController extends AdminController
      * Get filter conditions
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getConditionsForFilter(): JSONResponse

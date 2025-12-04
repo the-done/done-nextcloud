@@ -5,15 +5,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCA\Done\Models\User_Model;
+use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -24,6 +23,7 @@ class AdminController extends BaseController
      * Get Nextcloud users
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getNextcloudUsersData(): JSONResponse
@@ -38,18 +38,17 @@ class AdminController extends BaseController
      * Add global role to user
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function saveGlobalRoleToUser(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
 
-        $userSlug     = $input['user']['slug'] ?? null;
-        $userSlugType = $input['user']['slug_type'] ?? null;
-        $roleSlug     = $input['role']['slug'] ?? null;
-        $roleSlugType = $input['role']['slug_type'] ?? null;
+        $userSlug = $input['user']['slug'] ?? null;
+        $roleSlug = $input['role']['slug'] ?? null;
 
-        if (!$this->userService->can([GlobalRoles_Model::ADMIN])) {
+        if (!$this->userService->canDoAction(GlobalRoles_Model::CAN_EDIT_USERS_GLOBAL_ROLES)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate(
@@ -60,7 +59,7 @@ class AdminController extends BaseController
             );
         }
 
-        $userModel        = new User_Model();
+        $userModel = new User_Model();
         $globalRolesModel = new GlobalRoles_Model();
 
         $userId = $userModel->getItemIdBySlug($userSlug);
@@ -112,6 +111,7 @@ class AdminController extends BaseController
      * Remove global role from user
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function deleteGlobalRoleFromUser(IRequest $request): JSONResponse
@@ -143,12 +143,13 @@ class AdminController extends BaseController
      * @return JSONResponse
      *
      * @NoAdminRequired
+     *
      * @NoCSRFRequired
      */
     public function getDataToViewEntity(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
-        $slug   = $request->getParam('slug');
+        $slug = $request->getParam('slug');
 
         if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
             return new JSONResponse(

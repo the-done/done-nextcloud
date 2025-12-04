@@ -13,7 +13,7 @@
           forceIconText
         >
           <template #icon>
-            <Account />
+            <AccountMultiple />
           </template>
         </NcBreadcrumb>
         <NcBreadcrumb :name="pageTitle" />
@@ -55,7 +55,7 @@ import {
   NcActionButton,
 } from "@nextcloud/vue";
 
-import Account from "vue-material-design-icons/Account.vue";
+import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import Pencil from "vue-material-design-icons/Pencil.vue";
 
 import { getDataToViewEntity } from "@/admin/entities/common/api";
@@ -85,7 +85,7 @@ export default {
     NcBreadcrumb,
     NcActions,
     NcActionButton,
-    Account,
+    AccountMultiple,
     Pencil,
     VPage,
     VPageLayout,

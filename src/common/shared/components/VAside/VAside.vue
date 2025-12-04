@@ -14,7 +14,7 @@
     ]"
   >
     <div
-      class="flex items-center justify-center gap-4 px-4 py-2 border-b border-(--color-border) md:justify-start"
+      class="flex items-center justify-center min-h-[52px] gap-4 px-4 py-2 md:justify-start"
     >
       <NcButton
         :aria-label="contextTranslate('Close', context)"
@@ -29,7 +29,7 @@
         <slot name="title" />
       </span>
     </div>
-    <div class="overflow-auto flex-[1_1_auto]">
+    <div class="overflow-auto flex-[1_1_auto] border-t border-(--color-border)">
       <slot />
     </div>
   </div>
@@ -37,8 +37,10 @@
 
 <script>
 import { NcButton } from "@nextcloud/vue";
-import Close from "vue-material-design-icons/Close.vue";
 import { t } from "@nextcloud/l10n";
+
+import Close from "vue-material-design-icons/Close.vue";
+
 import { contextualTranslationsMixin } from "@/common/shared/mixins/contextualTranslationsMixin";
 
 export default {

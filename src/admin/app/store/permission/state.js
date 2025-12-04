@@ -6,6 +6,7 @@
 export const state = () => {
   return {
     list: null,
-    isFetched: false
+    isOfficer: false,
+    isFetched: false,
   };
 };
