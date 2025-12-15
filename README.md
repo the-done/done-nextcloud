@@ -143,8 +143,13 @@ Upcoming features include:
 ## 🛠️ Installation
 
 ### From Nextcloud App Store
-Coming soon!  
-(Once published, Done will be available directly in your **Nextcloud App Store** under *Productivity* and *Integration* categories.)
+The easiest way to install **Done** is directly from the Nextcloud App Store:
+1. Navigate to your Nextcloud instance.
+2. Go to `Apps` (or `Applications`).
+3. Search for "Done".
+4. Click `Enable`.
+
+You can also find **Done** published on the official Nextcloud App Store [here](https://apps.nextcloud.com/apps/done).
 
 ### Manual Installation
 1. Clone the repository:
