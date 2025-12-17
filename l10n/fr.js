@@ -501,6 +501,17 @@ OC.L10N.register(
     Profile: "Profil",
     "Enter your message": "Entrez votre message",
     Submit: "Envoyer",
+    "Chat with AI": "Ouvrir le chat IA",
+    Collapse: "Réduire",
+    "Clear history": "Effacer l'historique",
+    aiChatWelcomeMessage:
+      "Bonjour ! Je suis un assistant virtuel. Comment puis-je vous être utile ?",
+    aiChatErrorMessage:
+      "Bonjour ! Je suis votre assistant bot. Une maintenance technique est actuellement en cours. Veuillez réessayer un peu plus tard. Merci de votre compréhension.",
+      Restore: "Restaurer",
+      "Restore employee": "Réintégrer l'employé",
+      Deleted: "Supprimé",
+      "Do you really want to restore the employee?": "Souhaitez-vous vraiment réintégrer l'employé?"
   },
   "fr",
   "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"

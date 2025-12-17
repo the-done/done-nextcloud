@@ -30,6 +30,8 @@ class RequireRole
 
     /**
      * Get array of required roles
+     *
+     * @return array<int, int|string>
      */
     public function getRequiredRoles(): array
     {

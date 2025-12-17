@@ -509,6 +509,17 @@ OC.L10N.register(
     Profile: "Profil",
     "Enter your message": "Geben Sie Ihre Nachricht ein",
     Submit: "Senden",
+    "Chat with AI": "KI-Chat öffnen",
+    Collapse: "Zuklappen",
+    "Clear history": "Verlauf löschen",
+    aiChatWelcomeMessage:
+      "Hi! Ich bin der Bot-Helfer. Was kann ich für Sie tun?",
+    aiChatErrorMessage:
+      "Guten Tag! Hier spricht Ihr Bot-Assistent. Der Dienst wird gerade gewartet und ist vorübergehend nicht verfügbar. Bitte haben Sie etwas Geduld und versuchen Sie es in Kürze erneut.",
+      Restore: "Wiederherstellen",
+      "Restore employee": "Mitarbeiter wiederherstellen",
+      Deleted: "Gelöscht",
+      "Do you really want to restore the employee?": "Wollen Sie den Mitarbeiter wirklich wieder einstellen?"
   },
   "de",
   "nplurals=2; plural=(n != 1);"

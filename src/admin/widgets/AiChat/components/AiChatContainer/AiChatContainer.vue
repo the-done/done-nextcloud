@@ -229,13 +229,13 @@ export default {
     handleAddWelcomeMessage() {
       this.handleAddNewMessage({
         sender: "bot",
-        text: "Привет! Я бот-помощник. Чем могу помочь?",
+        text: this.contextTranslate("aiChatWelcomeMessage"),
       });
     },
     handleAddErrorMessage() {
       this.handleAddNewMessage({
         sender: "bot",
-        text: "Привет! Я бот-помощник. К сожалению, прямо сейчас ведутся технические работы. Пожалуйста, попробуйте позже.",
+        text: this.contextTranslate("aiChatErrorMessage"),
       });
     },
     handleSetErrorState() {
@@ -245,9 +245,13 @@ export default {
     },
     async handleFetchToken() {
       try {
-        const { token } = await fetchToken();
+        const data = await fetchToken();
 
-        this.setToken(token);
+        if (data?.ocs?.meta?.status === 'failure') {
+          throw new Error(data.ocs.meta.message);
+        }
+
+        this.setToken(data.token);
       } catch (e) {
         console.log(e);
 
@@ -315,7 +319,11 @@ export default {
       try {
         this.messages = [];
 
-        this.handleAddWelcomeMessage();
+        if (this.isErrorState === true) {
+          this.handleAddErrorMessage();
+        } else {
+          this.handleAddWelcomeMessage();
+        }
 
         await resetHistory();
       } catch (e) {

@@ -20,6 +20,8 @@ use OCA\Done\Models\UsersToDirections_Model;
 use OCA\Done\Modules\Projects\Models\Project_Model;
 use OCA\Done\Service\BaseService;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IRequest;
@@ -28,19 +30,16 @@ class UsersController extends AdminController
 {
     /**
      * Get user/users data
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUsersData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
         $userModel = new User_Model();
         $userModel->needPrepareFields = false;
 
-        $userId = $userModel->getItemIdBySlug($slug);
+        $userId = $userModel->getItemIdBySlug($slug, true);
 
         if (!empty($userId)) {
             $data = $userModel->prepareUserItem($userModel->getItem($userId));
@@ -59,17 +58,18 @@ class UsersController extends AdminController
 
     /**
      * Get dynamic table for users
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
-    public function getUsersTableData(): JSONResponse
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    public function getUsersTableData(IRequest $request): JSONResponse
     {
+        $needDeleted = $request->getParam('need_deleted', false);
+
         $tableData = $this->tableService->getTableDataForEntity(
             new User_Model(),
             PermissionsEntities_Model::USER_ENTITY,
-            $this->userService->getCurrentUserId()
+            $this->userService->getCurrentUserId(),
+            $needDeleted
         );
 
         return new JSONResponse($tableData, Http::STATUS_OK);
@@ -77,15 +77,12 @@ class UsersController extends AdminController
 
     /**
      * Get users for adding to project
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUsersForProject(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
 
         $projectModel = new Project_Model();
         $projectId = $projectModel->getItemIdBySlug($slug);
@@ -122,15 +119,12 @@ class UsersController extends AdminController
 
     /**
      * Get user public data
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserPublicData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
         $userModel = new User_Model();
         $positionsModel = new Positions_Model();
 
@@ -143,11 +137,13 @@ class UsersController extends AdminController
             );
         }
 
-        $userId = $userModel->getItemIdBySlug($slug);
+        $userId = $userModel->getItemIdBySlug($slug, true);
 
         $user = $userModel->getItemByFilter(
             ['id' => ['=', $userId]],
-            ['id', 'name', 'middle_name', 'lastname', 'position_id']
+            ['id', 'name', 'middle_name', 'lastname', 'position_id'],
+            [],
+            true
         );
 
         if (empty($user)) {
@@ -176,11 +172,9 @@ class UsersController extends AdminController
 
     /**
      * Get missing Nextcloud users
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getFreeNextcloudUsers(): JSONResponse
     {
         $userModel = new User_Model();
@@ -198,11 +192,9 @@ class UsersController extends AdminController
 
     /**
      * Save user
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function saveUser(IRequest $request): JSONResponse
     {
         $data = $request->getParam('data');
@@ -234,7 +226,7 @@ class UsersController extends AdminController
         }
 
         if (!$isSave) {
-            $userId = $userModel->getItemIdBySlug($slug);
+            $userId = $userModel->getItemIdBySlug($slug, true);
 
             $userModel->update($data, $userId);
         } else {
@@ -255,11 +247,9 @@ class UsersController extends AdminController
 
     /**
      * Delete user
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function deleteUser(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -293,17 +283,14 @@ class UsersController extends AdminController
      * @param IRequest $request
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getStatisticsByUser(IRequest $request): JSONResponse
     {
         $dateFrom = $request->getParam('date_from');
         $dateTo = $request->getParam('date_to');
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
         $projects = $request->getParam('projects');
 
         $userModel = new User_Model();
@@ -331,11 +318,9 @@ class UsersController extends AdminController
 
     /**
      * Get users in format [id: 1, name: 'user_name']
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getSimpleUsers(): JSONResponse
     {
         return new JSONResponse(
@@ -346,25 +331,21 @@ class UsersController extends AdminController
 
     /**
      * Add employee to direction
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function addUserToDirection(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
 
         $userSlug = $input['user']['slug'] ?? null;
-        $userSlugType = $input['user']['slug_type'] ?? null;
         $directionSlug = $input['direction']['slug'] ?? null;
-        $directionSlugType = $input['direction']['slug_type'] ?? null;
 
         $userModel = new User_Model();
         $directionModel = new Direction_Model();
         $usersToDirectionsModel = new UsersToDirections_Model();
 
-        $userId = $userModel->getItemIdBySlug($userSlug);
+        $userId = $userModel->getItemIdBySlug($userSlug, true);
         $directionId = $directionModel->getItemIdBySlug($directionSlug);
 
         if (empty($userId) || empty($directionId)) {
@@ -405,11 +386,9 @@ class UsersController extends AdminController
 
     /**
      * Edit employee record in direction
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function editUserInDirection(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
@@ -468,11 +447,9 @@ class UsersController extends AdminController
 
     /**
      * Delete employee from direction
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function deleteUserFromDirection(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -498,22 +475,19 @@ class UsersController extends AdminController
 
     /**
      * Get team and user associations
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserInDirection(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
 
         $userSlug = $input['slug'] ?? null;
-        $userSlugType = $input['slug_type'] ?? null;
 
         $userModel = new User_Model();
         $usersToDirectionsModel = new UsersToDirections_Model();
 
-        $userId = $userModel->getItemIdBySlug($userSlug);
+        $userId = $userModel->getItemIdBySlug($userSlug, true);
 
         if (empty($userId)) {
             return new JSONResponse(
@@ -526,6 +500,36 @@ class UsersController extends AdminController
 
         return new JSONResponse(
             $usersToDirectionsModel->getLinkedList(['user_id' => $userId]),
+            Http::STATUS_OK
+        );
+    }
+
+    /**
+     * Restore user
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    public function restoreUser(IRequest $request): JSONResponse
+    {
+        $slug = $request->getParam('slug');
+
+        if (empty($slug)) {
+            return new JSONResponse(
+                [
+                    'message' => $this->translateService->getTranslate('Not enough data to restore the user'),
+                ],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        $userModel = new User_Model();
+        $userId = $userModel->getItemIdBySlug($slug, true);
+        $userModel->update(['deleted' => 0], $userId);
+
+        return new JSONResponse(
+            [
+                'message' => $this->translateService->getTranslate('Restored successfully'),
+            ],
             Http::STATUS_OK
         );
     }

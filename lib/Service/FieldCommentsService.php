@@ -60,7 +60,6 @@ class FieldCommentsService
             return ['success' => false, 'errors' => $errors];
         }
 
-        // Проверяем, существует ли уже комментарий для этого поля
         if ($this->fieldCommentModel->commentExistsForField(
             (int)$validatedData['source'],
             $validatedData['field']

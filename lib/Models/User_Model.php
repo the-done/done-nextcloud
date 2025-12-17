@@ -409,29 +409,41 @@ class User_Model extends Base_Model
      * Add users indexed by id with position
      *
      * @param array<string, mixed> $filter
+     * @param bool                 $needDeleted
      *
      * @return array
      */
     public function getIndexedUsersFullNameWithPosition(
         array $filter = [],
+        bool $needDeleted = false,
     ): array {
         $data = [];
 
         $usersLinked = $this->getLinkedList(
             $filter,
-            ['id', 'name', 'middle_name', 'lastname', 'position_id'],
+            ['id', 'name', 'middle_name', 'lastname', 'position_id', 'deleted'],
+            false,
+            $needDeleted
         );
+
+        $deletedUser = $this->translateService->getTranslate('User deleted');
 
         foreach ($usersLinked as $user) {
             $lastname = $user['lastname'] ?? '';
             $name = $user['name'] ?? '';
             $middleName = $user['middle_name'] ?? '';
             $position = $user['position_id'] ?? '';
+            $deleted = (bool)$user['deleted'];
             $position = mb_strtolower($position);
+            $fullName = "{$lastname} {$name} {$middleName}";
+            $uname = !empty($position) ? "{$fullName}, {$position}" : $fullName;
+            $uname = $deleted ? "{$uname} ({$deletedUser})" : $uname;
+            $slug = $user['slug'] ?? '';
 
             $data[$user['id']] = [
                 'id'    => $user['id'],
-                'uname' => "{$lastname} {$name} {$middleName}, {$position}",
+                'uname' => $uname,
+                'slug'  => $slug,
             ];
         }
 
@@ -466,14 +478,17 @@ class User_Model extends Base_Model
      */
     public function getListForLink(
         array $filter = [],
-        bool $needIndex = false
+        bool $needIndex = false,
+        bool $needDeleted = false
     ): array {
         $result = [];
 
         $users = $this->getListByFilter(
             $filter,
             ['id', 'name', 'lastname', 'middle_name', 'position_id', 'deleted', 'id'],
-            ['full_name', 'ASC']
+            ['full_name', 'ASC'],
+            [],
+            $needDeleted
         );
 
         $positionsIds = BaseService::getField($users, 'position_id');
@@ -484,13 +499,18 @@ class User_Model extends Base_Model
                 ['id' => ['IN', $positionsIds, IQueryBuilder::PARAM_STR_ARRAY]]
             ) : [];
 
+        $userDeletedMessage = $this->translateService->getTranslate('User deleted');
+
         foreach ($users as $user) {
             $position = $positionsList[$user['position_id']]['name'] ?? 'no position';
+            $deleted = (bool)$user['deleted'];
             $position = mb_strtolower($position);
             $fullName = $user['full_name'] ?? 'No name';
+            $uname = "{$fullName}, {$position}";
+            $uname = $deleted ? "{$uname} ({$userDeletedMessage})" : $uname;
             $item = [
                 'id'   => $user['id'],
-                'name' => "{$fullName}, {$position}",
+                'name' => $uname,
             ];
 
             if ($needIndex) {
@@ -506,7 +526,7 @@ class User_Model extends Base_Model
     /**
      * Get user by Nextcloud UUID
      *
-     * @param string $uuid
+     * @param null|string $uuid
      *
      * @return array|bool
      */

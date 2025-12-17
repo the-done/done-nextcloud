@@ -267,7 +267,7 @@ class Times_Model extends Base_Model
      *
      * @return int[]
      */
-    public function getAvailableActions(int $statusId, string $ownerId, string $userId): array
+    public static function getAvailableActions(int $statusId, string $ownerId, string $userId): array
     {
         if (!$statusId || !$ownerId || !$userId) {
             return [];

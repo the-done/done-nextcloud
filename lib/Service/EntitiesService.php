@@ -67,8 +67,8 @@ class EntitiesService
             ]
         )['value'];
 
-        $itemId = $model->getItemIdBySlug($slug);
-        $item = $model->getLinkedItem($itemId);
+        $itemId = $model->getItemIdBySlug($slug, true);
+        $item = $model->getLinkedItem($itemId, ['*'], false, true);
 
         $entityDynFields = $dynFieldsModel->getIndexedListByFilter(filter: ['source' => $source]);
         $dynFieldsData = $dynFieldsDataModel->getIndexedDataByFilter(filter: ['record_id' => $itemId]);
@@ -183,7 +183,7 @@ class EntitiesService
                 $filterField => $itemId,
             ];
 
-            $linkedItems = (new $linkedModel())->getLinkedList($filter);
+            $linkedItems = (new $linkedModel())->getLinkedList($filter, ['*'], false, true);
 
             $entityData['external_data'][] = [
                 'title'         => $this->translateService->getTranslate($sourceTitle),

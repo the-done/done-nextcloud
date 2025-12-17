@@ -39,6 +39,11 @@ return [
             'verb' => 'POST',
         ],
         [
+            'name' => 'users#restoreUser',
+            'url'  => '/ajax/restoreUser',
+            'verb' => 'POST',
+        ],
+        [
             'name' => 'users#getStatisticsByUser',
             'url'  => '/ajax/getStatisticsByUser',
             'verb' => 'POST',

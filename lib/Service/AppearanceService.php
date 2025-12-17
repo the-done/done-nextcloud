@@ -57,7 +57,7 @@ class AppearanceService
         $model = new $sourceData[$source]['model']();
         $entityKey = $sourceData[$source]['foreign_key'];
         $appearanceModel = new $model->appearanceModel();
-        $entityId = $model->getItemIdBySlug($entitySlug);
+        $entityId = $model->getItemIdBySlug($entitySlug, true);
 
         if (!$this->validateColor($color)) {
             return [
@@ -102,7 +102,7 @@ class AppearanceService
         $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
         $model = new $sourceData[$source]['model']();
         $entityKey = $sourceData[$source]['foreign_key'];
-        $entityId = $model->getItemIdBySlug($slug);
+        $entityId = $model->getItemIdBySlug($slug, true);
         $appearanceModel = new $model->appearanceModel();
 
         // 1. File validation (only images)
@@ -173,7 +173,7 @@ class AppearanceService
      */
     private function getExistingRecord(string $projectId, string $entityKey): array
     {
-        return $this->appearanceModel->getItemByFilter([$entityKey => $projectId]);
+        return $this->appearanceModel->getItemByFilter([$entityKey => $projectId], ['*'], [], true);
     }
 
     /**

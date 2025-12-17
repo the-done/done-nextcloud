@@ -46,20 +46,38 @@ class UserService extends EntitiesService
         return self::$instance;
     }
 
+    /**
+     * Get user time tracking statistics for specified period
+     *
+     * @param string        $dateFrom Start date of the period (any format accepted by DateTimeImmutable)
+     * @param string        $dateTo   End date of the period (any format accepted by DateTimeImmutable)
+     * @param string        $userId   User ID to get statistics for
+     * @param array<string> $projects Optional array of project IDs to filter time entries
+     *
+     * @return array{data: array<mixed>, totals: array<string, int>, lastProjectId: string, firstReportDate: string}
+     */
     public function getUserStatistics(string $dateFrom, string $dateTo, string $userId, array $projects = []): array
     {
         $dateFrom = (new \DateTimeImmutable($dateFrom))->format('Y-m-d');
         $dateTo = (new \DateTimeImmutable($dateTo))->format('Y-m-d');
+        $yearFrom = (new \DateTimeImmutable($dateFrom))->format('Y');
+        $yearTo = (new \DateTimeImmutable($dateTo))->format('Y');
+
         $timesModel = new Times_Model();
         $currentUserId = $this->getCurrentUserId();
-        $days = BaseService::getWeekDays();
 
-        $periodsPrepared = $checked = $weeks = [];
-
-        $totals = $this->getTotalsForUserStatistics($dateFrom, $dateTo, $userId, $projects);
-        [$data, $projectsIds] = $timesModel->getTimeData($dateFrom, $dateTo, $userId, $projects);
+        $totalData = $timesModel->getTimeData(
+            "{$yearFrom}-01-01",
+            "{$yearTo}-12-31",
+            $userId,
+            $projects,
+            false,
+            false
+        );
+        [$timeData, $projectsIds] = $timesModel->getTimeData($dateFrom, $dateTo, $userId, $projects);
         $lastProjectId = !empty($userId) ? $timesModel->getLastProjectId($userId) : '';
         $firstReportDate = !empty($userId) ? $timesModel->getFirstReportDate($userId) : '';
+        $totals = $this->getTotalsForUserStatistics($totalData);
 
         $projects = (new Project_Model())->getIndexedListByFilter(
             'id',
@@ -73,7 +91,42 @@ class UserService extends EntitiesService
             (new \DateTime($dateTo))->setTime(0, 0, 1)
         );
 
-        // Build hierarchy
+        $periodsPrepared = self::buildHierarchy($period, $currentUserId, $timeData, $projects);
+        $data = BaseService::toTree($periodsPrepared);
+
+        return [
+            'data'            => $data,
+            'totals'          => $totals,
+            'lastProjectId'   => $lastProjectId,
+            'firstReportDate' => $firstReportDate,
+        ];
+    }
+
+    /**
+     * Build hierarchical time period structure with time entries
+     *
+     * @param \DatePeriod<\DateTime, \DateTime, null|int> $period        Date period to iterate over
+     * @param string                                      $currentUserId Current user ID for determining available actions
+     * @param array<string, array<array<mixed>>>          $data          Time entries indexed by date (Y-m-d\TH:i:s.v\Z format)
+     * @param array<string, array<mixed>>                 $projects      Projects array indexed by project ID
+     *
+     * @return array<array<mixed>> Hierarchical array of periods with structure:
+     *                             - id: Period identifier (year/quarter/month/week/day number)
+     *                             - type: Period type ('year'|'quarter'|'month'|'week'|'day')
+     *                             - parent: Parent period ID
+     *                             - parent_type: Parent period type
+     *                             - parent_year: Year of the period
+     *                             - children: Time entries (for 'day' type only)
+     */
+    public function buildHierarchy(
+        \DatePeriod $period,
+        string $currentUserId,
+        array $data = [],
+        array $projects = []
+    ): array {
+        $days = BaseService::getWeekDays();
+        $periodsPrepared = $checked = $weeks = [];
+
         foreach ($period as $date) {
             $year = (string)$date->format('Y');
             $quarter = (string)BaseService::getQuarter($date);
@@ -96,7 +149,7 @@ class UserService extends EntitiesService
             }
 
             foreach ($items as $idx => $item) {
-                $availableActions = $timesModel->getAvailableActions(
+                $availableActions = Times_Model::getAvailableActions(
                     $item['status_id'] ?? 0,
                     $item['user_id'] ?? 0,
                     $currentUserId,
@@ -144,6 +197,7 @@ class UserService extends EntitiesService
 
             if (!isset($checked[$weekKey])) {
                 if ($week == '01' && $month == '12') {
+                    /** @phpstan-ignore-next-line Special edge case for year boundary */
                     return [$date];
                 }
 
@@ -175,14 +229,7 @@ class UserService extends EntitiesService
             $checked[$dayKey] = $dayKey;
         }
 
-        $result = BaseService::toTree($periodsPrepared);
-
-        return [
-            'data'            => $result,
-            'totals'          => $totals,
-            'lastProjectId'   => $lastProjectId,
-            'firstReportDate' => $firstReportDate,
-        ];
+        return $periodsPrepared;
     }
 
     public function getUserGlobalRoles(string $currentUserId): array
@@ -212,32 +259,14 @@ class UserService extends EntitiesService
     /**
      * Get user statistics totals
      *
-     * @param string   $dateFrom
-     * @param string   $dateTo
-     * @param string   $userId
-     * @param string[] $projects
+     * @param array<array<mixed>> $totalData Time entries data with date and minutes
      *
-     * @return array
+     * @return array<string, int> Totals indexed by period key (year, quarter, month, week, day)
      */
     public function getTotalsForUserStatistics(
-        string $dateFrom,
-        string $dateTo,
-        string $userId,
-        array $projects = []
+        array $totalData = []
     ): array {
         $totals = [];
-
-        $yearFrom = (new \DateTimeImmutable($dateFrom))->format('Y');
-        $yearTo = (new \DateTimeImmutable($dateTo))->format('Y');
-
-        $totalData = (new Times_Model())->getTimeData(
-            "{$yearFrom}-01-01",
-            "{$yearTo}-12-31",
-            $userId,
-            $projects,
-            false,
-            false
-        );
 
         foreach ($totalData as $item) {
             $date = new \DateTime($item['date']);
@@ -274,9 +303,9 @@ class UserService extends EntitiesService
     /**
      * Check if user has required roles
      *
-     * @param array $requirementRoles
+     * @param array<string> $requirementRoles Array of role names to check
      *
-     * @return bool
+     * @return bool True if user has at least one of the required roles
      */
     public function can(array $requirementRoles = []): bool
     {

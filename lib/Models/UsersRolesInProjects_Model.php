@@ -129,7 +129,7 @@ class UsersRolesInProjects_Model extends Base_Model
         $rolesIds = BaseService::getField($data, 'role_id', true);
 
         $users = (new User_Model())
-            ->getIndexedUsersFullNameWithPosition(['id' => ['IN', $usersIds, IQueryBuilder::PARAM_STR_ARRAY]]);
+            ->getIndexedUsersFullNameWithPosition(['id' => ['IN', $usersIds, IQueryBuilder::PARAM_STR_ARRAY]], true);
         $roles = (new Roles_Model())
             ->getIndexedListByFilter('id', ['id' => ['IN', $rolesIds, IQueryBuilder::PARAM_STR_ARRAY]]);
 

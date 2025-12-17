@@ -79,11 +79,9 @@ class CommonController extends BaseController
      * Get user statistics
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserStatistics(IRequest $request): JSONResponse
     {
         $dateFrom = $request->getParam('date_from');
@@ -111,11 +109,9 @@ class CommonController extends BaseController
      * Create report
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function saveUserTimeInfo(
         IRequest $request
     ): JSONResponse {
@@ -174,11 +170,9 @@ class CommonController extends BaseController
      * Edit report
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function editUserTimeInfo(IRequest $request): JSONResponse
     {
         $data = $request->getParam('data');
@@ -212,11 +206,9 @@ class CommonController extends BaseController
      * Edit report sorting
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function editReportSort(IRequest $request): JSONResponse
     {
         $sort = $request->getParam('sort');
@@ -248,11 +240,9 @@ class CommonController extends BaseController
      * Multiple edit report sorting
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function editReportSortMultiple(IRequest $request): JSONResponse
     {
         $data = $request->getParam('data');
@@ -288,11 +278,9 @@ class CommonController extends BaseController
      * Delete report
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function deleteUserTimeInfo(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -320,11 +308,9 @@ class CommonController extends BaseController
      * Get report
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserTimeInfo(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -348,11 +334,9 @@ class CommonController extends BaseController
      * Get user permissions
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
@@ -411,11 +395,9 @@ class CommonController extends BaseController
      * Change report status
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function sendReportToNextStatus(IRequest $request): JSONResponse
     {
         $reportId = $request->getParam('reportId');
@@ -473,10 +455,10 @@ class CommonController extends BaseController
     /**
      * Get projects user is assigned to
      *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
+     * @return JSONResponse
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserProjects(): JSONResponse
     {
         $userId = $this->userService->getCurrentUserId();
@@ -499,10 +481,10 @@ class CommonController extends BaseController
     /**
      * Get projects user is assigned to, sorted by last usage
      *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
+     * @return JSONResponse
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getUserProjectsForReport(): JSONResponse
     {
         $userId = $this->userService->getCurrentUserId();
@@ -535,6 +517,8 @@ class CommonController extends BaseController
 
     /**
      * Get current user data
+     *
+     * @return JSONResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]

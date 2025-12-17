@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
 @layer properties;
 *, ::after, ::before, ::backdrop, ::file-selector-button {
   box-sizing: border-box;
@@ -131,6 +131,9 @@ textarea {
 ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
   padding-block: 0;
 }
+::-webkit-calendar-picker-indicator {
+  line-height: 1;
+}
 :-moz-ui-invalid {
   box-shadow: none;
 }
@@ -195,17 +198,11 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .-top-1 {
   top: calc(var(--spacing) * -1);
 }
-.-top-4 {
-  top: calc(var(--spacing) * -4);
-}
 .top-\(--time-tracking-row-height\) {
   top: var(--time-tracking-row-height);
 }
 .top-0 {
   top: calc(var(--spacing) * 0);
-}
-.top-4 {
-  top: calc(var(--spacing) * 4);
 }
 .top-8 {
   top: calc(var(--spacing) * 8);
@@ -239,9 +236,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .left-0 {
   left: calc(var(--spacing) * 0);
-}
-.left-4 {
-  left: calc(var(--spacing) * 4);
 }
 .left-8 {
   left: calc(var(--spacing) * 8);
@@ -284,9 +278,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   @media (width >= 96rem) {
     max-width: 96rem;
   }
-}
-.m-0 {
-  margin: calc(var(--spacing) * 0);
 }
 .m-0\! {
   margin: calc(var(--spacing) * 0) !important;
@@ -371,9 +362,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .h-\[calc\(100\%-var\(--header-height\)-var\(--body-container-margin\)\)\] {
   height: calc(100% - var(--header-height) - var(--body-container-margin));
 }
-.h-auto {
-  height: auto;
-}
 .h-auto\! {
   height: auto !important;
 }
@@ -397,9 +385,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .min-h-\[128px\] {
   min-height: 128px;
-}
-.min-h-auto {
-  min-height: auto;
 }
 .min-h-auto\! {
   min-height: auto !important;
@@ -487,9 +472,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .cursor-pointer {
   cursor: pointer;
-}
-.resize {
-  resize: both;
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -761,9 +743,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .uppercase {
   text-transform: uppercase;
 }
-.underline {
-  text-decoration-line: underline;
-}
 .opacity-0 {
   opacity: 0%;
 }
@@ -785,15 +764,11 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
-.outline {
-  outline-style: var(--tw-outline-style);
-  outline-width: 1px;
-}
 .filter {
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
 }
 .transition {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
@@ -1439,11 +1414,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -1530,7 +1500,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;

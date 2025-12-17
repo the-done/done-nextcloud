@@ -53,6 +53,11 @@ class TranslateService
 
     /**
      * Main method for getting translations - uses native Nextcloud system
+     *
+     * @param null|string  $key
+     * @param array|string $options
+     *
+     * @return string
      */
     public function getTranslate(
         ?string $key,
@@ -67,8 +72,14 @@ class TranslateService
 
     /**
      * Get translation with context consideration (contextual translations + native Nextcloud system)
+     *
+     * @param null|string $key
+     * @param string      $context
+     * @param array       $parameters
+     *
+     * @return string
      */
-    public function getContextualTranslation(string $key, string $context, array $parameters = []): string
+    public function getContextualTranslation(?string $key, string $context, array $parameters = []): string
     {
         // Get context hierarchy
         $hierarchy = self::CONTEXT_HIERARCHY[$context] ?? [$context, 'global'];
@@ -233,6 +244,12 @@ class TranslateService
 
     /**
      * Create JSON contextual translation file for specified context and language
+     *
+     * @param string $context
+     * @param string $language
+     * @param array  $translations
+     *
+     * @return bool
      */
     public function createContextualJsonTranslationFile(string $context, string $language, array $translations): bool
     {
@@ -282,6 +299,11 @@ class TranslateService
 
     /**
      * Get translation with parameters (uses native Nextcloud system)
+     *
+     * @param string $key
+     * @param array  $parameters
+     *
+     * @return string
      */
     public function t(string $key, array $parameters = []): string
     {
@@ -290,6 +312,13 @@ class TranslateService
 
     /**
      * Get translation with plural form (uses native Nextcloud system)
+     *
+     * @param string $singular
+     * @param string $plural
+     * @param int    $count
+     * @param array  $parameters
+     *
+     * @return string
      */
     public function n(string $singular, string $plural, int $count, array $parameters = []): string
     {

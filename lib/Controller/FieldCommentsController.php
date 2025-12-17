@@ -72,7 +72,6 @@ class FieldCommentsController extends AdminController
             ], Http::STATUS_OK);
         }
 
-        // Проверяем, есть ли конкретные ошибки от сервиса
         $errorMessage = $this->translateService->getTranslate('Error saving comment');
 
         if (isset($result['errors']) && !empty($result['errors'])) {

@@ -13,6 +13,8 @@ use OCA\Done\Service\BaseService;
 use OCA\Done\Service\DictionariesService;
 use OCA\Done\Service\TranslateService;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -37,11 +39,8 @@ class DictionariesController extends OCSController
         $this->translateService = TranslateService::getInstance();
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function saveDict(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
@@ -76,11 +75,8 @@ class DictionariesController extends OCSController
         );
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function deleteDictItem(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
@@ -109,11 +105,8 @@ class DictionariesController extends OCSController
         );
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getDictionaryData(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
@@ -135,11 +128,8 @@ class DictionariesController extends OCSController
         );
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getDictionaryItemData(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
@@ -161,11 +151,8 @@ class DictionariesController extends OCSController
         );
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getGlobalRoles(): JSONResponse
     {
         return new JSONResponse(
@@ -176,17 +163,14 @@ class DictionariesController extends OCSController
 
     /**
      * Get specific user roles
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getUserGlobalRoles(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
 
-        $userId = (new User_Model())->getItemIdBySlug($slug);
+        $userId = (new User_Model())->getItemIdBySlug($slug, true);
 
         if (empty($userId)) {
             return new JSONResponse(
@@ -197,7 +181,7 @@ class DictionariesController extends OCSController
             );
         }
 
-        $data = (new UsersGlobalRoles_Model())->getListByFilter(['user_id' => ['=', $userId]]);
+        $data = (new UsersGlobalRoles_Model())->getListByFilter(['user_id' => ['=', $userId]], ['*'], [], [], true);
         $roles = $this->dictionariesService->globalRolesDictionary->getIndexedListByFilter('id', [], ['id', 'name']);
 
         foreach ($data as $idx => $item) {
@@ -213,11 +197,9 @@ class DictionariesController extends OCSController
 
     /**
      * Get users by global role
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getUsersByGlobalRole(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -258,11 +240,9 @@ class DictionariesController extends OCSController
 
     /**
      * Get next sort number in dictionary
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getNextSortInDict(IRequest $request): JSONResponse
     {
         $dictTitle = $request->getParam('title');
