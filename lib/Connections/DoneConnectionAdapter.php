@@ -19,7 +19,7 @@ class DoneConnectionAdapter
         $this->db = $connection;
     }
 
-    public function getInstance()
+    public function getInstance(): IDBConnection
     {
         return $this->db;
     }

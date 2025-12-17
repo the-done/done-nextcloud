@@ -522,6 +522,16 @@ OC.L10N.register(
     Profile: "Profile",
     "Enter your message": "Enter your message",
     Submit: "Submit",
+    "Chat with AI": "Chat with AI",
+    Collapse: "Collapse",
+    "Clear history": "Clear history",
+    aiChatWelcomeMessage: "Hello! I'm here to help. What can I do for you?",
+    aiChatErrorMessage:
+      "Hi! I'm your bot assistant. I'm currently undergoing maintenance and will be back online shortly. Thank you for your patience. Please check back later.",
+      Restore: "Restore",
+      "Restore employee": "Restore employee",
+      Deleted: "Deleted",
+      "Do you really want to restore the employee?": "Do you really want to restore the employee?",
   },
   "en",
   "nplurals=2; plural=(n != 1);"

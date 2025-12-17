@@ -4,9 +4,12 @@
  */
 
 import axios from "@nextcloud/axios";
+import { generateUrl } from "@nextcloud/router";
+
+const baseURL = generateUrl("/apps/done");
 
 const instance = axios.create({
-  baseURL: "http://localhost:7104",
+  baseURL: "https://done-chat.softmus.ru",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -18,10 +21,7 @@ export const fetchToken = async () => {
     method: "generateJwtToken",
   });
 
-  // const { token } = data;
-
-  const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVrc2FuZHIuYSIsInVzZXJfaWQiOiJlNDEzMmRlZWIzYWJkYWUyZDJiMzEyYjAyNzI3YmRkZiIsImlhdCI6MTc2NDY1ODI2MiwiZXhwIjoxNzY5ODQyMjYyLCJpc3MiOiJkb25lLW5leHRjbG91ZCJ9.6xGFY70ZPHdn5Fya6mVI6HvMx9AIr8R56Bj0Tv43yog";
+  const { token } = data;
 
   instance.defaults.headers.common.Authorization = `Bearer ${token}`;
 

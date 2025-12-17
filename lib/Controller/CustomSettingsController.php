@@ -13,26 +13,22 @@ use OCA\Done\Models\CustomSettings_Model;
 use OCA\Done\Models\CustomSettingsData_Model;
 use OCA\Done\Models\User_Model;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
 class CustomSettingsController extends CommonController
 {
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getCustomSettingsList(): JSONResponse
     {
         return new JSONResponse((new CustomSettings_Model())->getList(), Http::STATUS_OK);
     }
 
-    /**
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
-     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getUserCustomSettings(IRequest $request): JSONResponse
     {
         $userSlug = $request->getParam('user_slug');
@@ -74,11 +70,9 @@ class CustomSettingsController extends CommonController
 
     /**
      * Save user settings
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function saveUserSettings(IRequest $request): JSONResponse
     {
         $settings = $request->getParam('settings');
@@ -177,11 +171,9 @@ class CustomSettingsController extends CommonController
 
     /**
      * Get list of available languages
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getAvailableLanguages(): JSONResponse
     {
         $languages = $this->l10nFactory->getLanguages();
@@ -229,11 +221,9 @@ class CustomSettingsController extends CommonController
 
     /**
      * Change user language
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function changeUserLanguage(string $language): JSONResponse
     {
         try {

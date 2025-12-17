@@ -152,6 +152,7 @@ abstract class Base_Model
      * @param array<string, mixed> $filter
      * @param string[]             $fields
      * @param string[]             $orderBy
+     * @param bool                 $needDeleted
      *
      * @return array
      */
@@ -159,8 +160,15 @@ abstract class Base_Model
         array $filter = [],
         array $fields = ['*'],
         array $orderBy = [],
+        bool $needDeleted = false,
     ): array {
-        $list = $this->getListByFilter($filter, $this->prepareSelectFields($fields), $orderBy);
+        $list = $this->getListByFilter(
+            $filter,
+            $this->prepareSelectFields($fields),
+            $orderBy,
+            [],
+            $needDeleted
+        );
 
         return $list[0] ?? [];
     }
@@ -721,20 +729,22 @@ abstract class Base_Model
      *
      * @param string   $id
      * @param string[] $fields
-     * @param false    $returnLinkedRecords
+     * @param bool     $returnLinkedRecords
+     * @param bool     $needDeleted
      *
      * @return array
      */
     public function getLinkedItem(
         ?string $id = null,
         array $fields = ['*'],
-        bool $returnLinkedRecords = false
+        bool $returnLinkedRecords = false,
+        bool $needDeleted = false,
     ): array {
         if (!$id) {
             return [];
         }
 
-        return $this->getLinkedList(['id' => $id], $fields, $returnLinkedRecords)[0] ?? [];
+        return $this->getLinkedList(['id' => $id], $fields, $returnLinkedRecords, $needDeleted)[0] ?? [];
     }
 
     /**
@@ -743,17 +753,19 @@ abstract class Base_Model
      * @param array<string, mixed> $filter
      * @param string[]             $fields
      * @param bool                 $returnLinkedRecords
+     * @param bool                 $needDeleted
      *
      * @return array
      */
     public function getLinkedList(
         array $filter = [],
         array $fields = ['*'],
-        bool $returnLinkedRecords = false
+        bool $returnLinkedRecords = false,
+        bool $needDeleted = false,
     ): array {
         $result = $models = $fieldsValues = $indexedList = [];
 
-        $list = $this->getListByFilter($filter, $fields);
+        $list = $this->getListByFilter($filter, $fields, [], [], $needDeleted);
 
         if ($fields == ['*']) {
             foreach ($this->fields as $field => $params) {
@@ -783,7 +795,7 @@ abstract class Base_Model
             $values = $fieldsValues[$field] ?? [];
             $values = array_unique($values);
             $linkedModel = new $link();
-            $indexedList[$field] = $this->getValuesByIdForModel($values, $linkedModel);
+            $indexedList[$field] = $this->getValuesByIdForModel($values, $linkedModel, $needDeleted);
         }
 
         foreach ($list as $idx => $item) {
@@ -810,15 +822,17 @@ abstract class Base_Model
      *
      * @param string[]   $values
      * @param Base_Model $model
+     * @param bool       $needDeleted
      *
      * @return array
      */
-    public function getValuesByIdForModel(array $values, self $model): array
+    public function getValuesByIdForModel(array $values, self $model, bool $needDeleted = false): array
     {
         return !empty($values)
             ? $model->getListForLink(
                 ['id' => ['IN', $values, IQueryBuilder::PARAM_STR_ARRAY]],
-                true
+                true,
+                $needDeleted
             ) : [];
     }
 
@@ -957,22 +971,24 @@ abstract class Base_Model
      *
      * @param array<string, mixed> $filter
      * @param bool                 $needIndex
+     * @param bool                 $needDeleted
      *
      * @return array
      */
     public function getListForLink(
         array $filter = [],
-        bool $needIndex = false
+        bool $needIndex = false,
+        bool $needDeleted = false
     ): array {
         $fields = ['id', 'name'];
 
         if ($needIndex) {
             return BaseService::makeHash(
-                $this->getListByFilter($filter, $fields),
+                $this->getListByFilter($filter, $fields, [], [], $needDeleted),
             );
         }
 
-        return $this->getListByFilter($filter, $fields);
+        return $this->getListByFilter($filter, $fields, [], [], $needDeleted);
     }
 
     /**
@@ -1084,11 +1100,14 @@ abstract class Base_Model
      * Get record ID by slug
      *
      * @param null|int|string $slug
+     * @param bool            $needDeleted
      *
-     * @return null|string
+     * @return null|int|string
      */
-    public function getItemIdBySlug(int | string | null $slug): int | string | null
-    {
+    public function getItemIdBySlug(
+        int | string | null $slug,
+        bool $needDeleted = false,
+    ): int | string | null {
         if (empty($slug)) {
             return null;
         }
@@ -1096,13 +1115,13 @@ abstract class Base_Model
         $item = [];
 
         if (!empty($this->primarySlugField) && isset($this->fields[$this->primarySlugField])) {
-            $item = $this->getItemByFilter([$this->primarySlugField => $slug]);
+            $item = $this->getItemByFilter([$this->primarySlugField => $slug], ['*'], [], $needDeleted);
         }
 
         if (empty($item)) {
             $idType = $this->fields['id']['type'];
             $slug = $idType == IQueryBuilder::PARAM_INT ? (int)$slug : $slug;
-            $item = $this->getItemByFilter(['id' => $slug]);
+            $item = $this->getItemByFilter(['id' => $slug], ['*'], [], $needDeleted);
         }
 
         return $item['id'] ?? null;
@@ -1167,7 +1186,7 @@ abstract class Base_Model
      */
     public function upsertByFilter(array $data = [], array $filter = []): string
     {
-        $item = $this->getItemByFilter($filter);
+        $item = $this->getItemByFilter($filter, ['*'], [], true);
 
         return empty($item) ? $this->addData($data) : $this->update($data, $item['id']);
     }

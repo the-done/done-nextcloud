@@ -248,7 +248,7 @@ class DynFieldDDownDataService
      *
      * @return array
      */
-    private function validateDropdownData(string $dynFieldId, string $recordId, array | string | null $value): array
+    public function validateDropdownData(string $dynFieldId, string $recordId, array | string | null $value): array
     {
         $errors = [];
 
@@ -292,7 +292,7 @@ class DynFieldDDownDataService
      *
      * @return bool
      */
-    private function validateFieldExists(string $dynFieldId): bool
+    protected function validateFieldExists(string $dynFieldId): bool
     {
         $dynamicFieldsModel = new DynamicFields_Model();
         $field = $dynamicFieldsModel->getItem($dynFieldId);

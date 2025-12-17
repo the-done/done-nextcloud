@@ -233,9 +233,11 @@ class DynFieldDDownOptionsService
      *
      * @return array
      */
-    private function validateOptionData(string $dynFieldId, string $optionLabel): array
+    public function validateOptionData(string $dynFieldId, string $optionLabel): array
     {
         $errors = [];
+
+        $optionLabel = trim($optionLabel);
 
         if (empty($dynFieldId)) {
             $errors[] = $this->translateService->getTranslate('Dynamic field ID is required');
@@ -247,7 +249,7 @@ class DynFieldDDownOptionsService
 
         $validatedData = [
             'dyn_field_id' => $dynFieldId,
-            'option_label' => trim($optionLabel),
+            'option_label' => $optionLabel,
         ];
 
         return [$validatedData, $errors];

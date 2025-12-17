@@ -326,4 +326,33 @@ class Project_Model extends Base_Model
             ),
         ];
     }
+
+    /**
+     * @override
+     */
+    public function getListForLink(
+        array $filter = [],
+        bool $needIndex = false,
+        bool $needDeleted = false
+    ): array {
+        $result = [];
+        $fields = ['id', 'name', 'deleted'];
+        $projects = $this->getListByFilter($filter, $fields, [], [], $needDeleted);
+        $projectDeletedMessage = $this->translateService->getTranslate('Project deleted');
+
+        foreach ($projects as $project) {
+            $projectName = $project['name'];
+            $deleted = (bool)$project['deleted'];
+            $projectName = $deleted ? "{$projectName} ({$projectDeletedMessage})" : $projectName;
+            $project['name'] = $projectName;
+
+            if ($needIndex) {
+                $result[$project['id']] = $project;
+            } else {
+                $result[] = $project;
+            }
+        }
+
+        return $result;
+    }
 }

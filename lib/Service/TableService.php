@@ -134,7 +134,7 @@ class TableService
     }
 
     /**
-     * Get fields that user cannot read
+     * Get fields that user can read
      */
     private function getCanReadFields(array $permissions): array
     {
@@ -479,8 +479,12 @@ class TableService
     /**
      * Get table data for entity
      */
-    public function getTableDataForEntity(Base_Model $model, int $entityType, string $userId): array
-    {
+    public function getTableDataForEntity(
+        Base_Model $model,
+        int $entityType,
+        string $userId,
+        bool | int $needDeleted = false
+    ): array {
         $tempTableModel = new TempTable_Model();
 
         $tableData = $this->getTable($model, $entityType, $userId);
@@ -491,6 +495,7 @@ class TableService
             $tableData['selectDynColumns'],
             $tableData['filterInner'],
             $tableData['sortWithinColumns'],
+            (bool)$needDeleted
         );
 
         return [

@@ -9,16 +9,21 @@ namespace OCA\Done\Middleware;
 
 use OC\Group\Manager;
 use OCA\Done\Controller\AdminController;
-use OCA\Done\Controller\CommonController;
 use OCA\Done\Controller\DictionariesController;
+use OCA\Done\Exception\PermissionDeniedException;
 use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
 use OCA\Done\Models\User_Model;
 use OCA\Done\Models\UsersGlobalRoles_Model;
 use OCA\Done\Service\UserService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Middleware;
 use OCP\IGroupManager;
+use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -41,23 +46,19 @@ class PermissionMiddleware extends Middleware
     }
 
     /**
+     * Check permissions before the controller is executed
+     *
      * @param Controller $controller
      * @param string     $methodName
+     *
+     * @throws PermissionDeniedException
      */
-    public function beforeController(Controller $controller, string $methodName): RedirectResponse
+    public function beforeController($controller, $methodName): void
     {
-        $urlGenerator = Server::get(IURLGenerator::class);
         $currentUserObj = $this->userSession->getUser();
 
         if (!$currentUserObj instanceof IUser) {
-            $redirectUrl = $urlGenerator->linkToRoute('done.common.index');
-
-            return new RedirectResponse(
-                $urlGenerator->linkToRouteAbsolute(
-                    'core.login.showLoginForm',
-                    ['redirect_url' => $redirectUrl]
-                )
-            );
+            throw new PermissionDeniedException('User not logged in');
         }
 
         $userModel = new User_Model();
@@ -68,6 +69,7 @@ class PermissionMiddleware extends Middleware
         $isAdmin = $this->groupManager->isAdmin($currentUserUid);
         $adminOrDictInstance = $controller instanceof AdminController || $controller instanceof DictionariesController;
 
+        // Automatically create user for admin on first login
         if ($isAdmin && !$currentUserId) {
             $currentUserId = $userModel->addData([
                 'user_id'           => $currentUserUid,
@@ -87,6 +89,7 @@ class PermissionMiddleware extends Middleware
             ]);
         }
 
+        // Check access permissions for AdminController and DictionariesController
         if ($currentUserId && $adminOrDictInstance) {
             $globalRoles = $this->userService->getUserGlobalRoles($currentUserId);
             $roles = [
@@ -97,38 +100,68 @@ class PermissionMiddleware extends Middleware
             ];
 
             if (empty(array_intersect($roles, $globalRoles)) && !$isAdmin) {
-                $l = Server::get(\OCP\L10N\IFactory::class)->get('lib');
-                \OC_Template::printErrorPage(
-                    '403',
-                    $l->t('Not enough permissions'),
-                    403
-                );
+                throw new PermissionDeniedException('Not enough permissions');
             }
         } elseif (!$currentUserId && !$isAdmin) {
-            $l = Server::get(\OCP\L10N\IFactory::class)->get('lib');
-            \OC_Template::printErrorPage(
-                '403',
-                $l->t('Not enough permissions'),
-                403
-            );
+            throw new PermissionDeniedException('Not enough permissions');
         }
 
-        $controllerName = '';
+        // If all checks passed successfully, simply return (middleware should return nothing)
+    }
 
-        if ($controller instanceof AdminController) {
-            $controllerName = 'admin';
-        } elseif ($controller instanceof DictionariesController) {
-            $controllerName = 'dictionaries';
-        } elseif ($controller instanceof CommonController) {
-            $controllerName = 'common';
+    /**
+     * Handle permission denied exceptions
+     *
+     * @param Controller $controller
+     * @param string     $methodName
+     * @param \Exception $exception
+     *
+     * @return Response
+     *
+     * @throws \Exception
+     */
+    public function afterException($controller, $methodName, \Exception $exception): Response
+    {
+        if ($exception instanceof PermissionDeniedException) {
+            $l = Server::get(\OCP\L10N\IFactory::class)->get('done');
+            $request = Server::get(IRequest::class);
+
+            // Determine if this is an API request or a regular web request
+            $isAjaxRequest = stripos($request->getHeader('Accept'), 'application/json') !== false
+                || str_contains($request->getPathInfo(), '/ajax/');
+
+            if ($isAjaxRequest) {
+                // For AJAX/API requests return JSON
+
+                return new JSONResponse(
+                    ['error' => $exception->getMessage()],
+                    Http::STATUS_FORBIDDEN
+                );
+            }
+            // For regular requests return error page or redirect to login
+            $currentUserObj = $this->userSession->getUser();
+
+            if (!$currentUserObj instanceof IUser) {
+                // If user is not logged in - redirect to login
+                $urlGenerator = Server::get(IURLGenerator::class);
+                $redirectUrl = $urlGenerator->linkToRoute('done.common.index');
+
+                return new RedirectResponse(
+                    $urlGenerator->linkToRouteAbsolute(
+                        'core.login.showLoginForm',
+                        ['redirect_url' => $redirectUrl]
+                    )
+                );
+            }
+            // If logged in but no permissions - show 403
+            $response = new TemplateResponse('core', '403', [
+                'message' => $l->t('Not enough permissions'),
+            ], TemplateResponse::RENDER_AS_ERROR);
+            $response->setStatus(Http::STATUS_FORBIDDEN);
+
+            return $response;
         }
 
-        $routeName = "done.{$controllerName}.{$methodName}";
-
-        return new RedirectResponse(
-            $urlGenerator->linkToRouteAbsolute(
-                $routeName,
-            )
-        );
+        throw $exception;
     }
 }

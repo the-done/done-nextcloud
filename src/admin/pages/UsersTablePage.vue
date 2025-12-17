@@ -30,6 +30,12 @@
         </NcBreadcrumbs>
       </template>
       <template #toolbar-controls>
+        <NcCheckboxRadioSwitch
+          v-model="showDeleted"
+          type="switch"
+        >
+          {{ contextTranslate("Deleted", context) }}
+        </NcCheckboxRadioSwitch>
         <NcButton
           v-if="getCommonPermission('canCreateUsers') === true"
           :to="{ name: 'staff-new' }"
@@ -78,7 +84,7 @@
             </template>
           </NcActionButton>
           <NcActionButton
-            v-if="getCommonPermission('canDismissUsers') === true"
+            v-if="!showDeleted && getCommonPermission('canDismissUsers') === true"
             :force-name="true"
             :aria-label="contextTranslate('Delete employee', context)"
             @click="() => handleDelete({ slug, slug_type })"
@@ -86,6 +92,17 @@
             <template #icon>
               <TrashCanOutline />
               {{ contextTranslate("Delete", context) }}
+            </template>
+          </NcActionButton>
+          <NcActionButton
+            v-if="showDeleted && getCommonPermission('canDismissUsers') === true"
+            :force-name="true"
+            :aria-label="contextTranslate('Restore employee', context)"
+            @click="() => handleRestore({ slug })"
+          >
+            <template #icon>
+              <Restore />
+              {{ contextTranslate("Restore", context) }}
             </template>
           </NcActionButton>
         </NcActions>
@@ -107,6 +124,7 @@ import {
   NcActions,
   NcActionButton,
   NcButton,
+  NcCheckboxRadioSwitch,
 } from "@nextcloud/vue";
 import { t } from "@nextcloud/l10n";
 import { mapState } from "pinia";
@@ -117,12 +135,13 @@ import Pencil from "vue-material-design-icons/Pencil.vue";
 import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
 import TrashCanOutline from "vue-material-design-icons/TrashCanOutline.vue";
 import ClockTimeEightOutline from "vue-material-design-icons/ClockTimeEightOutline.vue";
+import Restore from "vue-material-design-icons/Restore.vue";
 
 import { VPage } from "@/common/widgets/VPage";
 import { DynamicTable } from "@/admin/widgets/DynamicTable";
 import ExportButton from "@/admin/widgets/ExportButton.vue";
 
-import { fetchUsersTableData, deleteUser } from "@/common/entities/users/api";
+import { fetchUsersTableData, deleteUser, restoreUser } from "@/common/entities/users/api";
 
 import { usePermissionStore } from "@/admin/app/store/permission";
 
@@ -140,6 +159,7 @@ export default {
     NcActions,
     NcActionButton,
     NcButton,
+    NcCheckboxRadioSwitch,
     ExportButton,
     AccountMultiple,
     Plus,
@@ -147,8 +167,15 @@ export default {
     EyeOutline,
     TrashCanOutline,
     ClockTimeEightOutline,
+    Restore,
     VPage,
     DynamicTable,
+  },
+  data() {
+    const savedShowDeleted = localStorage.getItem('usersTableShowDeleted');
+    return {
+      showDeleted: savedShowDeleted === 'true',
+    };
   },
   computed: {
     ...mapState(usePermissionStore, ["canReadField", "getCommonPermission"]),
@@ -189,7 +216,9 @@ export default {
       try {
         this.tableIsLoading = true;
 
-        const { data } = await fetchUsersTableData();
+        const { data } = await fetchUsersTableData({
+          need_deleted: this.showDeleted
+        });
 
         this.initDynamicTable(data);
       } catch (e) {
@@ -218,7 +247,33 @@ export default {
         console.log(e);
       }
     },
+    async handleRestore({ slug }) {
+      if (
+        !confirm(
+          this.contextTranslate(
+            "Do you really want to restore the employee?",
+            this.context
+          )
+        )
+      ) {
+        return;
+      }
+
+      try {
+        await restoreUser({ slug });
+
+        this.handleFetchData();
+      } catch (e) {
+        console.log(e);
+      }
+    },
     init() {
+      this.handleFetchData();
+    },
+  },
+  watch: {
+    showDeleted(newValue) {
+      localStorage.setItem('usersTableShowDeleted', newValue);
       this.handleFetchData();
     },
   },

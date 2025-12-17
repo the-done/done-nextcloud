@@ -38,11 +38,18 @@ class TempTable_Model extends Base_Model
         array $selectDynColumns = [],
         array $filter = [],
         array $sortWithinColumns = [],
+        bool | int $needDeleted = false
     ): array {
         $dynamicFieldsModel = new DynamicFields_Model();
         $dynamicFieldsDataModel = new DynamicFieldsData_Model();
         $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
         $this->primarySlugField = $commonModel->primarySlugField;
+
+        $commonModelFilter = [];
+
+        if ($needDeleted && isset($commonModel->fields['deleted'])) {
+            $commonModelFilter['deleted'] = 1;
+        }
 
         [$commonFields, $tempTableModelCommonFields] = self::getCommonFieldsForTempTable(
             $commonModel,
@@ -51,7 +58,7 @@ class TempTable_Model extends Base_Model
         [$dynFields, $tempTableModelDynFields] = self::getDynFieldsForTempTable($selectDynColumns);
         $tempTableModelFields = [...$tempTableModelCommonFields, ...$tempTableModelDynFields];
 
-        $commonData = $commonModel->getListByFilter([], $selectCommonColumns);
+        $commonData = $commonModel->getListByFilter($commonModelFilter, $selectCommonColumns, [], [], $needDeleted);
         $dynSimpleFieldsData = $dynamicFieldsDataModel->getListByFilter(
             ['dyn_field_id' => ['IN', $selectDynColumns, IQueryBuilder::PARAM_STR_ARRAY]]
         );
@@ -110,7 +117,7 @@ class TempTable_Model extends Base_Model
             $this->addData($dataToSave);
         }
 
-        $itemsLinked = $this->getLinkedList($filter);
+        $itemsLinked = $this->getLinkedList($filter, ['*'], false, true);
 
         return $this->prepareItemsFields(
             $this->sortByMultipleFields($itemsLinked, $sortWithinColumns),

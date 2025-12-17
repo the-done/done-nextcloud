@@ -8,7 +8,7 @@
       }"
     >
       <NcButton
-        :aria-label="contextTranslate('Help', context)"
+        :aria-label="contextTranslate('Chat with AI', context)"
         type="primary"
         size="large"
         class="rounded-full!"

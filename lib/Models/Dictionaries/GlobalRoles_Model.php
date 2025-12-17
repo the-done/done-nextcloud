@@ -57,6 +57,7 @@ class GlobalRoles_Model extends Base_Model
     public const CURATOR = 4;
     public const EMPLOYEE = 5;
     public const FINANCE = 6;
+    public const AI_CHAT = 7;
 
     // Permissions
     public const CAN_ADD_ADMIN = 'canAddAdmin';
@@ -86,6 +87,7 @@ class GlobalRoles_Model extends Base_Model
     public const CAN_DELETE_PROJECTS = 'canDeleteProjects';
 
     public const CAN_READ_FINANCES = 'canReadFinances';
+    public const CAN_VIEW_AI_CHAT = 'canViewAIChat';
 
     public const CAN_CREATE_TEAMS = 'canCreateTeams';
     public const CAN_EDIT_TEAMS = 'canEditTeams';
@@ -135,6 +137,7 @@ class GlobalRoles_Model extends Base_Model
             self::CAN_ADD_STATISTICS            => 'Create reports',
 
             self::CAN_READ_FINANCES => 'View finances',
+            self::CAN_VIEW_AI_CHAT  => 'View AI chatbot',
 
             self::CAN_READ_SETTINGS      => 'View settings',
             self::CAN_READ_RIGHTS_MATRIX => 'View rights matrix',
@@ -184,6 +187,7 @@ class GlobalRoles_Model extends Base_Model
             self::CAN_READ_DICTIONARIES         => false,
             self::CAN_ADD_STATISTICS            => false,
             self::CAN_READ_FINANCES             => false,
+            self::CAN_VIEW_AI_CHAT              => false,
         ];
     }
 

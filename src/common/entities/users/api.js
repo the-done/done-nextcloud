@@ -11,8 +11,8 @@ export const fetchUsers = async () => {
   return { data };
 };
 
-export const fetchUsersTableData = async () => {
-  const { data } = await axios.post("/getUsersTableData");
+export const fetchUsersTableData = async ({ need_deleted = false } = {}) => {
+  const { data } = await axios.post("/getUsersTableData", { need_deleted });
 
   return { data };
 };
@@ -95,6 +95,12 @@ export const updateUser = async ({ slug, slug_type, data }) => {
 
 export const deleteUser = async ({ slug, slug_type }) => {
   const response = await axios.post("/deleteUser", { slug, slug_type });
+
+  return response;
+};
+
+export const restoreUser = async ({ slug }) => {
+  const response = await axios.post("/restoreUser", { slug });
 
   return response;
 };
