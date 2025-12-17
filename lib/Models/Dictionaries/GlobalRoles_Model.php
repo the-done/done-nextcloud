@@ -224,11 +224,23 @@ class GlobalRoles_Model extends Base_Model
         array $additionalOrderBy = [],
         bool $needDeleted = false,
     ): array {
-        if (!BaseModuleService::moduleExists('finances')) {
-            $filter['id'] = ['!=', self::FINANCE];
-        }
-
         $data = parent::getListByFilter($filter, $fields, $orderBy, $additionalOrderBy, $needDeleted);
+
+        // Exclude roles for which the module does not exist
+        $data = array_filter($data, static function ($item) {
+            $checkModuleRoles = [
+                'finances' => self::FINANCE,
+                'doneai'   => self::AI_CHAT,
+            ];
+
+            foreach ($checkModuleRoles as $module => $roleId) {
+                if ((int)$item['id'] == $roleId && !BaseModuleService::moduleExists($module)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
 
         return array_map(function ($item) {
             $item['name'] = $this->translateService->getTranslate($item['name']);
