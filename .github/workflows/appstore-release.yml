@@ -67,7 +67,6 @@ jobs:
             --exclude=/bin \
             --exclude=/node_modules \
             --exclude=/tests \
-            --exclude=/vendor \
             --exclude=/vendor-bin \
             --exclude=/.gitignore \
             --exclude=/.php-cs-fixer.cache \
@@ -75,8 +74,6 @@ jobs:
             --exclude=/webpack.js \
             --exclude=/package.json \
             --exclude=/package-lock.json \
-            --exclude=/composer.json \
-            --exclude=/composer.lock \
             --exclude=/psalm.xml \
             --exclude=/stylelint.config.js \
             --exclude=/src \
