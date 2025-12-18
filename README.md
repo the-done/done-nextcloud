@@ -81,7 +81,7 @@
 
 ---
 
-**Done** is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
+Done is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
 It provides flexible data structures, powerful analytics, and a fully customizable interface — built to make team utilization and workload tracking effortless.
 
 ---
