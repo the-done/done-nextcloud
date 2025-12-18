@@ -23,11 +23,9 @@ class PermissionsController extends AdminController
 {
     /**
      * Get role permission sections
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getGlobalRolesPermissions(IRequest $request): JSONResponse
     {
         $source = $request->getParam('source');
@@ -123,11 +121,9 @@ class PermissionsController extends AdminController
 
     /**
      * Save role permissions
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function saveGlobalRolesPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
@@ -170,11 +166,9 @@ class PermissionsController extends AdminController
 
     /**
      * Edit role permissions
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function editGlobalRolesPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
@@ -225,11 +219,9 @@ class PermissionsController extends AdminController
 
     /**
      * Save global role action rights
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function saveGlobalRoleActionRights(IRequest $request): JSONResponse
     {
         $globalRoleId = $request->getParam('global_role_id');
@@ -279,11 +271,9 @@ class PermissionsController extends AdminController
 
     /**
      * Get global role action rights
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
     public function getGlobalRoleActionRights(): JSONResponse
     {
         $globalRolesModel = new GlobalRoles_Model();
