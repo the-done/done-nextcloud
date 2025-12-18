@@ -16,6 +16,8 @@ use OCA\Done\Models\PermissionsEntities_Model;
 use OCA\Done\Models\RolesPermissions_Model;
 use OCA\Done\Service\BaseService;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
