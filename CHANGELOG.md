@@ -49,3 +49,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Issues with dynamic field deletion
 - Sticky header behavior in statistics preview
 - Various UI edge cases
+
+## 1.3.0 – 2025-12-18
+
+### Added
+- Switching to the list of deleted employees in the employee table
+- Possibility of restorement of deleted employees
+
+### Changed
+- Display the real names of deleted employees with a deletion mark instead of displaying their ID
+- Improving the application codebase
