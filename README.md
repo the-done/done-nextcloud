@@ -7,7 +7,7 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/the-done/done-nextcloud/total?color=blue)
 ![GitHub release](https://img.shields.io/github/downloads/the-done/done-nextcloud/latest/total?color=blue)
 
-## 📸 Screenshots
+## 📸 Screenshots 
 
 <details open>
 <summary>🖼️ Add Record</summary>
@@ -81,7 +81,7 @@
 
 ---
 
-**Done** is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
+Done is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
 It provides flexible data structures, powerful analytics, and a fully customizable interface — built to make team utilization and workload tracking effortless.
 
 ---
