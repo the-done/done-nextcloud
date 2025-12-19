@@ -158,7 +158,7 @@ You can also find **Done** published on the official Nextcloud App Store [here](
    ```
 2. Move it into your Nextcloud `apps` directory:
    ```bash
-   mv done /var/www/nextcloud/custom_apps/
+   mv done /var/www/nextcloud/apps/
    ```
 3. Enable the app:
    ```bash
