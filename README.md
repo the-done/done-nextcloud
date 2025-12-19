@@ -81,7 +81,7 @@
 
 ---
 
-Done is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
+**Done** is a Nextcloud app for managing employees, projects, and time reports in distributed teams.  
 It provides flexible data structures, powerful analytics, and a fully customizable interface — built to make team utilization and workload tracking effortless.
 
 ---
@@ -158,7 +158,7 @@ You can also find **Done** published on the official Nextcloud App Store [here](
    ```
 2. Move it into your Nextcloud `apps` directory:
    ```bash
-   mv done /var/www/nextcloud/apps/
+   mv done /var/www/nextcloud/custom_apps/
    ```
 3. Enable the app:
    ```bash
