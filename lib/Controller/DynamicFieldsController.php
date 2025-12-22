@@ -21,17 +21,17 @@ use OCA\Done\Models\Table\TableSortColumns_Model;
 use OCA\Done\Models\Table\TableSortWithinColumns_Model;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\IRequest;
 
 class DynamicFieldsController extends AdminController
 {
     /**
      * Save dynamic field value
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function saveDynamicFieldsData(IRequest $request): JSONResponse
     {
         $dynFieldId = $request->getParam('dyn_field_id');
@@ -92,11 +92,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Multiple save dynamic field values
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function saveDynamicFieldsDataMultiple(IRequest $request): JSONResponse
     {
         $data = $request->getParam('data');
@@ -175,11 +173,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Save dynamic field
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function saveDynamicField(IRequest $request): JSONResponse
     {
         $title = $request->getParam('title');
@@ -229,11 +225,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Delete dynamic field
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function deleteDynamicField(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
@@ -277,11 +271,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Get dynamic fields for entity
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getDynamicFieldsForSource(IRequest $request): JSONResponse
     {
         $source = (int)$request->getParam('source');
@@ -303,11 +295,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Get dynamic field data for record
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getDinFieldsDataForRecord(IRequest $request): JSONResponse
     {
         $recordId = $request->getParam('record_id');
@@ -331,11 +321,9 @@ class DynamicFieldsController extends AdminController
 
     /**
      * Get dynamic field types
-     *
-     * @NoAdminRequired
-     *
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getDinFieldsTypes(): JSONResponse
     {
         return new JSONResponse(
