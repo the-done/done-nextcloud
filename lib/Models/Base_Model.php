@@ -274,11 +274,14 @@ abstract class Base_Model
         if (isset($this->fields['deleted']) && !$needDeleted) {
             $qb->where($qb->expr()->eq('deleted', $qb->createNamedParameter(0)));
         } else {
-            $qb->where(1);
+            $qb->where('1 = 1');
         }
 
         if (!empty($filter)) {
             $qb = $this->makeFilter($qb, $filter);
+
+            $address = \OC::$SERVERROOT . '/test.log';
+            file_put_contents($address, print_r($qb->getSQL(), true));
         }
 
         if (!empty($orderBy)) {
@@ -715,7 +718,7 @@ abstract class Base_Model
             $query->delete($this->table);
         }
 
-        $query->where(1);
+        $query->where('1 = 1');
 
         if (!empty($filter)) {
             $query = $this->makeFilter($query, $filter);
