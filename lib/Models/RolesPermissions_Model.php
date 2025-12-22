@@ -215,7 +215,7 @@ class RolesPermissions_Model extends Base_Model
         }
 
         foreach ($fields as $fieldName => $params) {
-            $needPermission = (bool)$params['permission'];
+            $needPermission = (bool)($params['permission'] ?? false);
 
             if ($needPermission && !isset($result[$fieldName])) {
                 $result[$fieldName] = false;
