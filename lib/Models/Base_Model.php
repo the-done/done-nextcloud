@@ -279,9 +279,6 @@ abstract class Base_Model
 
         if (!empty($filter)) {
             $qb = $this->makeFilter($qb, $filter);
-
-            $address = \OC::$SERVERROOT . '/test.log';
-            file_put_contents($address, print_r($qb->getSQL(), true));
         }
 
         if (!empty($orderBy)) {
