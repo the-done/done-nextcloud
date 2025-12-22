@@ -195,15 +195,15 @@ export default {
           key: "payee",
           type: "text",
           label: this.contextTranslate("Payee", this.context),
-          required: this.formValues.type_id?.id === "1",
-          hidden: this.formValues.type_id?.id !== "1",
+          required: this.formValues.type_id?.id === "2",
+          hidden: this.formValues.type_id?.id !== "2",
         },
         {
           key: "payer",
           type: "text",
           label: this.contextTranslate("Payer", this.context),
-          required: this.formValues.type_id?.id === "2",
-          hidden: this.formValues.type_id?.id !== "2",
+          required: this.formValues.type_id?.id === "1",
+          hidden: this.formValues.type_id?.id !== "1",
         },
         {
           key: "description",
@@ -217,7 +217,7 @@ export default {
           label: this.contextTranslate("Employee", this.context),
           options: this.users,
           valueLabel: "name",
-          hidden: this.formValues.type_id?.id !== "1",
+          hidden: this.formValues.type_id?.id !== "2",
         },
         {
           key: "customer_id",
@@ -225,7 +225,7 @@ export default {
           label: this.contextTranslate("Customer", this.context),
           options: this.customers,
           valueLabel: "name",
-          hidden: this.formValues.type_id?.id !== "2",
+          hidden: this.formValues.type_id?.id !== "1",
         },
         {
           key: "comment",
@@ -441,7 +441,7 @@ export default {
         return;
       }
 
-      if (!value) {
+      if (!value || typeof value === 'undefined') {
         this.formValues.payee = "";
         this.formValues.payer = "";
         this.formValues.employee_id = "";
@@ -452,14 +452,14 @@ export default {
         return;
       }
 
-      const { id } = value;
+      let paymentTypeId = value?.id;
 
-      if (id === "1") {
+      if (paymentTypeId === "2") {
         this.formValues.payer = "";
         this.formValues.customer_id = "";
       }
 
-      if (id === "2") {
+      if (paymentTypeId === "1") {
         this.formValues.payee = "";
         this.formValues.employee_id = "";
       }

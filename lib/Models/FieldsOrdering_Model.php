@@ -86,7 +86,7 @@ class FieldsOrdering_Model extends Base_Model
             ->from($this->table);
 
         // Do not use deleted filter since this model is not SoftDelete
-        $qb->where(1);
+        $qb->where('1 = 1');
 
         if (!empty($filter)) {
             $qb = $this->makeFilter($qb, $filter);
