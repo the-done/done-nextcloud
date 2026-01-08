@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OCA\Done\Migration;
 
 use Doctrine\DBAL\Schema\SchemaException;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\GlobalRoleActionRights_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\GlobalRoleActionRightsModel;
 use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -39,7 +39,7 @@ class Version1020Date20251202000001 extends SimpleMigrationStep
     {
         $schema = $schemaClosure();
 
-        $globalRoleActionRightsModel = new GlobalRoleActionRights_Model();
+        $globalRoleActionRightsModel = new GlobalRoleActionRightsModel();
 
         if (!$schema->hasTable($globalRoleActionRightsModel->table)) {
             $table = $schema->createTable($globalRoleActionRightsModel->table);
@@ -99,260 +99,260 @@ class Version1020Date20251202000001 extends SimpleMigrationStep
     {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
-        $globalRoleActionRightsModel = new GlobalRoleActionRights_Model();
+        $globalRoleActionRightsModel = new GlobalRoleActionRightsModel();
 
         if ($this->connection->tableExists(
             $globalRoleActionRightsModel->table
         ) && empty($globalRoleActionRightsModel->getList())) {
             $dataToSave = [
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_ADD_ADMIN,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_ADD_ADMIN,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_ADD_OFFICER,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_ADD_OFFICER,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_CREATE_USERS,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_CREATE_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_LIST,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_PROFILE,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_PROFILE,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_DISMISS_USERS,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_DISMISS_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_EDIT_USERS_GLOBAL_ROLES,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_EDIT_USERS_GLOBAL_ROLES,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_READ_DICTIONARIES,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_READ_DICTIONARIES,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::ADMIN,
-                    'action'         => GlobalRoles_Model::CAN_ADD_STATISTICS,
+                    'global_role_id' => GlobalRolesModel::ADMIN,
+                    'action'         => GlobalRolesModel::CAN_ADD_STATISTICS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_HEAD,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_HEAD,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_CURATOR,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_CURATOR,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_CREATE_USERS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_CREATE_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_LIST,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_PROFILE,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_PROFILE,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_USERS_TO_DIRECTIONS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_USERS_TO_DIRECTIONS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_DISMISS_USERS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_DISMISS_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_CREATE_PROJECTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_CREATE_PROJECTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_PROJECTS_LIST,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_PROJECTS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_USERS_TO_PROJECTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_USERS_TO_PROJECTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_EDIT_PROJECTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_EDIT_PROJECTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_DELETE_PROJECTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_DELETE_PROJECTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_USERS_TO_TEAMS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_USERS_TO_TEAMS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_TEAMS_LIST,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_TEAMS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_CREATE_TEAMS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_CREATE_TEAMS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_EDIT_TEAMS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_EDIT_TEAMS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_DELETE_TEAMS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_DELETE_TEAMS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_TEAMS_TO_DIRECTIONS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_TEAMS_TO_DIRECTIONS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_TEAMS_TO_PROJECTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_TEAMS_TO_PROJECTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_REPORTS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_REPORTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_COMMON_REPORT,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_COMMON_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_PROJECTS_REPORT,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_PROJECTS_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_STAFF_REPORT,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_STAFF_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_SETTINGS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_SETTINGS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_RIGHTS_MATRIX,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_RIGHTS_MATRIX,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_EDIT_RIGHTS_MATRIX,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_EDIT_RIGHTS_MATRIX,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_STATISTICS_ALL_USERS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_STATISTICS_ALL_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_READ_DICTIONARIES,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_READ_DICTIONARIES,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::OFFICER,
-                    'action'         => GlobalRoles_Model::CAN_ADD_STATISTICS,
+                    'global_role_id' => GlobalRolesModel::OFFICER,
+                    'action'         => GlobalRolesModel::CAN_ADD_STATISTICS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_LIST,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_USERS_PROFILE,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_USERS_PROFILE,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_PROJECTS_LIST,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_PROJECTS_LIST,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_REPORTS,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_REPORTS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_COMMON_REPORT,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_COMMON_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_PROJECTS_REPORT,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_PROJECTS_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_STAFF_REPORT,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_STAFF_REPORT,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_READ_STATISTICS_ALL_USERS,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_READ_STATISTICS_ALL_USERS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::HEAD,
-                    'action'         => GlobalRoles_Model::CAN_ADD_STATISTICS,
+                    'global_role_id' => GlobalRolesModel::HEAD,
+                    'action'         => GlobalRolesModel::CAN_ADD_STATISTICS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::CURATOR,
-                    'action'         => GlobalRoles_Model::CAN_ADD_STATISTICS,
+                    'global_role_id' => GlobalRolesModel::CURATOR,
+                    'action'         => GlobalRolesModel::CAN_ADD_STATISTICS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::EMPLOYEE,
-                    'action'         => GlobalRoles_Model::CAN_ADD_STATISTICS,
+                    'global_role_id' => GlobalRolesModel::EMPLOYEE,
+                    'action'         => GlobalRolesModel::CAN_ADD_STATISTICS,
                     'can'            => true,
                 ],
                 [
-                    'global_role_id' => GlobalRoles_Model::FINANCE,
-                    'action'         => GlobalRoles_Model::CAN_READ_FINANCES,
+                    'global_role_id' => GlobalRolesModel::FINANCE,
+                    'action'         => GlobalRolesModel::CAN_READ_FINANCES,
                     'can'            => true,
                 ],
             ];

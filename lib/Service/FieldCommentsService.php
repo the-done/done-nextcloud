@@ -9,22 +9,22 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\FieldComment_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\FieldCommentModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\Server;
 
 class FieldCommentsService
 {
-    protected FieldComment_Model $fieldCommentModel;
-    protected DynamicFields_Model $dynamicFieldsModel;
+    protected FieldCommentModel $fieldCommentModel;
+    protected DynamicFieldsModel $dynamicFieldsModel;
     protected TranslateService $translateService;
     private static FieldCommentsService $instance;
 
     public function __construct()
     {
-        $this->fieldCommentModel = new FieldComment_Model();
-        $this->dynamicFieldsModel = new DynamicFields_Model();
+        $this->fieldCommentModel = new FieldCommentModel();
+        $this->dynamicFieldsModel = new DynamicFieldsModel();
         $this->translateService = TranslateService::getInstance();
     }
 
@@ -168,7 +168,7 @@ class FieldCommentsService
      */
     private function validateSource(int $source): bool
     {
-        return PermissionsEntities_Model::entityExists($source);
+        return PermissionsEntitiesModel::entityExists($source);
     }
 
     /**
@@ -194,7 +194,7 @@ class FieldCommentsService
      */
     private function getSourceAllFields(int $source): array
     {
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $sourceData = PermissionsEntitiesModel::getPermissionsEntities($source);
         $model = new $sourceData[$source]['model']();
         $modelFields = array_keys($model->fields);
         $entityDynFields = array_keys($this->dynamicFieldsModel->getIndexedListByFilter(filter: ['source' => $source]));

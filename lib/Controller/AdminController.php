@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -50,7 +50,7 @@ class AdminController extends BaseController
         $userSlug = $input['user']['slug'] ?? null;
         $roleSlug = $input['role']['slug'] ?? null;
 
-        if (!$this->userService->canDoAction(GlobalRoles_Model::CAN_EDIT_USERS_GLOBAL_ROLES)) {
+        if (!$this->userService->canDoAction(GlobalRolesModel::CAN_EDIT_USERS_GLOBAL_ROLES)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate(
@@ -61,8 +61,8 @@ class AdminController extends BaseController
             );
         }
 
-        $userModel = new User_Model();
-        $globalRolesModel = new GlobalRoles_Model();
+        $userModel = new UserModel();
+        $globalRolesModel = new GlobalRolesModel();
 
         $userId = $userModel->getItemIdBySlug($userSlug, true);
         $roleId = $globalRolesModel->getItemIdBySlug($roleSlug);
@@ -76,7 +76,7 @@ class AdminController extends BaseController
             );
         }
 
-        $usersGlobalRolesModel = new UsersGlobalRoles_Model();
+        $usersGlobalRolesModel = new UsersGlobalRolesModel();
 
         $data = [
             'user_id' => $userId,
@@ -92,7 +92,7 @@ class AdminController extends BaseController
             );
         }
 
-        if (!(new UsersGlobalRoles_Model())->addData($data)) {
+        if (!(new UsersGlobalRolesModel())->addData($data)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while saving the user role'),
@@ -129,7 +129,7 @@ class AdminController extends BaseController
             );
         }
 
-        (new UsersGlobalRoles_Model())->delete($slug);
+        (new UsersGlobalRolesModel())->delete($slug);
 
         return new JSONResponse(
             [
@@ -151,7 +151,7 @@ class AdminController extends BaseController
         $source = $request->getParam('source');
         $slug = $request->getParam('slug');
 
-        if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || empty($slug) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),

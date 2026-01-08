@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Modules\Projects\Models\ProjectAppearance_Model;
+use OCA\Done\Models\PermissionsEntitiesModel;
+use OCA\Done\Modules\Projects\Models\ProjectAppearanceModel;
 use OCP\Server;
 
 /**
@@ -23,14 +23,14 @@ class AppearanceService
     /** @var FileService */
     private FileService $fileService;
 
-    /** @var ProjectAppearance_Model */
-    private ProjectAppearance_Model $appearanceModel;
+    /** @var ProjectAppearanceModel */
+    private ProjectAppearanceModel $appearanceModel;
 
     public function __construct(
         FileService $fileService,
     ) {
         $this->fileService = $fileService;
-        $this->appearanceModel = new ProjectAppearance_Model();
+        $this->appearanceModel = new ProjectAppearanceModel();
     }
 
     public static function getInstance(): self
@@ -53,7 +53,7 @@ class AppearanceService
      */
     public function saveEntityColor(string $entitySlug, string $color, int $source): array
     {
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $sourceData = PermissionsEntitiesModel::getPermissionsEntities($source);
         $model = new $sourceData[$source]['model']();
         $entityKey = $sourceData[$source]['foreign_key'];
         $appearanceModel = new $model->appearanceModel();
@@ -99,7 +99,7 @@ class AppearanceService
      */
     public function saveEntityImage(string $slug, array $uploadedFile, string $imageField, int $source): array
     {
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $sourceData = PermissionsEntitiesModel::getPermissionsEntities($source);
         $model = new $sourceData[$source]['model']();
         $entityKey = $sourceData[$source]['foreign_key'];
         $entityId = $model->getItemIdBySlug($slug, true);

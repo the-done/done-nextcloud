@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\GlobalRoleActionRights_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Models\RolesPermissions_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\GlobalRoleActionRightsModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
+use OCA\Done\Models\RolesPermissionsModel;
 use OCA\Done\Service\BaseService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -33,10 +33,10 @@ class PermissionsController extends AdminController
         $source = $request->getParam('source');
         $result = [];
 
-        $gRolesPermitList = (new RolesPermissions_Model())->getPermissions($source);
-        $gRolesList = (new GlobalRoles_Model())->getListByFilter();
-        $permissionEntities = PermissionsEntities_Model::getPermissionsEntities($source);
-        $dynFieldsList = (new DynamicFields_Model())->getListByFilter(
+        $gRolesPermitList = (new RolesPermissionsModel())->getPermissions($source);
+        $gRolesList = (new GlobalRolesModel())->getListByFilter();
+        $permissionEntities = PermissionsEntitiesModel::getPermissionsEntities($source);
+        $dynFieldsList = (new DynamicFieldsModel())->getListByFilter(
             !empty($source) ? ['source' => $source] : []
         );
         $dynFieldsList = BaseService::makeHash($dynFieldsList, 'source', true);
@@ -129,7 +129,7 @@ class PermissionsController extends AdminController
     public function saveGlobalRolesPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
-        $rolesPermissionsModel = new RolesPermissions_Model();
+        $rolesPermissionsModel = new RolesPermissionsModel();
 
         $data = [
             'global_role_id' => $input['role'],
@@ -137,7 +137,7 @@ class PermissionsController extends AdminController
             'field'          => $input['field'],
         ];
 
-        foreach (RolesPermissions_Model::RIGHTS_TYPES as $rightType) {
+        foreach (RolesPermissionsModel::RIGHTS_TYPES as $rightType) {
             if (isset($input[$rightType])) {
                 $data[$rightType] = (bool)$input[$rightType];
             }
@@ -174,7 +174,7 @@ class PermissionsController extends AdminController
     public function editGlobalRolesPermissions(IRequest $request): JSONResponse
     {
         $input = $request->getParams();
-        $rolesPermissionsModel = new RolesPermissions_Model();
+        $rolesPermissionsModel = new RolesPermissionsModel();
 
         $slug = $input['slug'];
 
@@ -191,7 +191,7 @@ class PermissionsController extends AdminController
 
         $data = [];
 
-        foreach (RolesPermissions_Model::RIGHTS_TYPES as $rightType) {
+        foreach (RolesPermissionsModel::RIGHTS_TYPES as $rightType) {
             if (isset($input[$rightType])) {
                 $data[$rightType] = (bool)$input[$rightType];
             }
@@ -240,8 +240,8 @@ class PermissionsController extends AdminController
             );
         }
 
-        $globalRolesModel = new GlobalRoles_Model();
-        $globalRoleActionRightsModel = new GlobalRoleActionRights_Model();
+        $globalRolesModel = new GlobalRolesModel();
+        $globalRoleActionRightsModel = new GlobalRoleActionRightsModel();
 
         if (empty($globalRolesModel->getItem($globalRoleId))) {
             return new JSONResponse(
@@ -278,8 +278,8 @@ class PermissionsController extends AdminController
     #[NoAdminRequired]
     public function getGlobalRoleActionRights(): JSONResponse
     {
-        $globalRolesModel = new GlobalRoles_Model();
-        $globalRoleActionRightsModel = new GlobalRoleActionRights_Model();
+        $globalRolesModel = new GlobalRolesModel();
+        $globalRoleActionRightsModel = new GlobalRoleActionRightsModel();
         $globalRolesActionRights = $globalRoleActionRightsModel->getListByFilter();
         $globalRoles = $globalRolesModel->getListByFilter();
         $actionsNames = $globalRolesModel->getRolesActions();

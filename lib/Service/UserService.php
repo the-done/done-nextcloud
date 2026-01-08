@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\Times_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
-use OCA\Done\Modules\Projects\Models\Project_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\TimesModel;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
+use OCA\Done\Modules\Projects\Models\ProjectModel;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IUserSession;
 use OCP\Server;
@@ -63,7 +63,7 @@ class UserService extends EntitiesService
         $yearFrom = (new \DateTimeImmutable($dateFrom))->format('Y');
         $yearTo = (new \DateTimeImmutable($dateTo))->format('Y');
 
-        $timesModel = new Times_Model();
+        $timesModel = new TimesModel();
         $currentUserId = $this->getCurrentUserId();
 
         $totalData = $timesModel->getTimeData(
@@ -79,7 +79,7 @@ class UserService extends EntitiesService
         $firstReportDate = !empty($userId) ? $timesModel->getFirstReportDate($userId) : '';
         $totals = $this->getTotalsForUserStatistics($totalData);
 
-        $projects = (new Project_Model())->getIndexedListByFilter(
+        $projects = (new ProjectModel())->getIndexedListByFilter(
             'id',
             ['id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]],
             ['name', 'id']
@@ -149,7 +149,7 @@ class UserService extends EntitiesService
             }
 
             foreach ($items as $idx => $item) {
-                $availableActions = Times_Model::getAvailableActions(
+                $availableActions = TimesModel::getAvailableActions(
                     $item['status_id'] ?? 0,
                     $item['user_id'] ?? 0,
                     $currentUserId,
@@ -234,7 +234,7 @@ class UserService extends EntitiesService
 
     public function getUserGlobalRoles(string $currentUserId): array
     {
-        return (new UsersGlobalRoles_Model())->getUserRoles($currentUserId);
+        return (new UsersGlobalRolesModel())->getUserRoles($currentUserId);
     }
 
     /**
@@ -251,7 +251,7 @@ class UserService extends EntitiesService
         }
 
         $currentUserUid = $currentUserObj->getUID();
-        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
 
         return $currentUser['id'] ?? '';
     }
@@ -342,10 +342,10 @@ class UserService extends EntitiesService
     public function getActionsAvailableToUser(): array
     {
         $currentUserId = $this->getCurrentUserId();
-        $defaultRights = GlobalRoles_Model::getUsersDefaultRights();
+        $defaultRights = GlobalRolesModel::getUsersDefaultRights();
 
         return $currentUserId
-            ? (new UsersGlobalRoles_Model())->getRights($this->getUserGlobalRoles($currentUserId))
+            ? (new UsersGlobalRolesModel())->getRights($this->getUserGlobalRoles($currentUserId))
             : $defaultRights;
     }
 }

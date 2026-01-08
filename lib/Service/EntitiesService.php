@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\Base_Model;
-use OCA\Done\Models\CustomSettings_Model;
-use OCA\Done\Models\CustomSettingsData_Model;
-use OCA\Done\Models\DynamicFieldDropdownData_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\DynamicFieldsData_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\BaseModel;
+use OCA\Done\Models\CustomSettingsDataModel;
+use OCA\Done\Models\CustomSettingsModel;
+use OCA\Done\Models\DynamicFieldDropdownDataModel;
+use OCA\Done\Models\DynamicFieldsDataModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\Server;
 
 class EntitiesService
@@ -50,12 +50,12 @@ class EntitiesService
     public function getDataToViewEntity(int $source, string $slug): array
     {
         $userService = UserService::getInstance();
-        $customSettingsData = new CustomSettingsData_Model();
-        $dynFieldsModel = new DynamicFields_Model();
-        $dynFieldsDataModel = new DynamicFieldsData_Model();
-        $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
+        $customSettingsData = new CustomSettingsDataModel();
+        $dynFieldsModel = new DynamicFieldsModel();
+        $dynFieldsDataModel = new DynamicFieldsDataModel();
+        $dynamicFieldDropdownDataModel = new DynamicFieldDropdownDataModel();
         $fieldsOrderingService = FieldsOrderingService::getInstance();
-        $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+        $sourceData = PermissionsEntitiesModel::getPermissionsEntities($source);
         $model = new $sourceData[$source]['model']();
         $model->needPrepareDates = false;
         $modelFields = $model->fields;
@@ -63,7 +63,7 @@ class EntitiesService
         $hideEmptyFields = (bool)$customSettingsData->getItemByFilter(
             [
                 'user_id'    => $userService->getCurrentUserId(),
-                'setting_id' => CustomSettings_Model::HIDE_EMPTY_FIELDS_IN_PREVIEW,
+                'setting_id' => CustomSettingsModel::HIDE_EMPTY_FIELDS_IN_PREVIEW,
             ]
         )['value'];
 
@@ -162,14 +162,14 @@ class EntitiesService
      * Processes linked models and adds their data to the entity data.
      * Used for displaying related entities (e.g., user roles, project teams).
      *
-     * @param Base_Model $model      The base model instance
+     * @param BaseModel  $model      The base model instance
      * @param array      $entityData Current entity data array
      * @param int|string $itemId     Item identifier
      *
      * @return array Entity data with external_data section
      */
     public function addExternalData(
-        Base_Model $model,
+        BaseModel $model,
         array $entityData,
         int | string $itemId
     ): array {
@@ -201,7 +201,7 @@ class EntitiesService
      * Retrieves appearance-related fields (colors, images, etc.) from the
      * appearance model and adds them to the entity data.
      *
-     * @param Base_Model $model      The base model instance
+     * @param BaseModel  $model      The base model instance
      * @param array      $entityData Current entity data array
      * @param array      $sourceData Source entity configuration
      * @param int        $source     Source entity ID
@@ -210,7 +210,7 @@ class EntitiesService
      * @return array Entity data with appearance_data section
      */
     public function addAppearanceData(
-        Base_Model $model,
+        BaseModel $model,
         array $entityData,
         array $sourceData,
         int $source,

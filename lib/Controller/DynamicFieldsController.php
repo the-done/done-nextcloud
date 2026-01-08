@@ -9,16 +9,16 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\DynamicFieldDropdownData_Model;
-use OCA\Done\Models\DynamicFieldDropdownOptions_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\DynamicFieldsData_Model;
-use OCA\Done\Models\DynamicFieldsTypes_Model;
-use OCA\Done\Models\RolesPermissions_Model;
-use OCA\Done\Models\Table\TableColumnViewSettings_Model;
-use OCA\Done\Models\Table\TableFilter_Model;
-use OCA\Done\Models\Table\TableSortColumns_Model;
-use OCA\Done\Models\Table\TableSortWithinColumns_Model;
+use OCA\Done\Models\DynamicFieldDropdownDataModel;
+use OCA\Done\Models\DynamicFieldDropdownOptionsModel;
+use OCA\Done\Models\DynamicFieldsDataModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\DynamicFieldsTypesModel;
+use OCA\Done\Models\RolesPermissionsModel;
+use OCA\Done\Models\Table\TableColumnViewSettingsModel;
+use OCA\Done\Models\Table\TableFilterModel;
+use OCA\Done\Models\Table\TableSortColumnsModel;
+use OCA\Done\Models\Table\TableSortWithinColumnsModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -49,8 +49,8 @@ class DynamicFieldsController extends AdminController
             );
         }
 
-        $dynamicFieldsModel = new DynamicFields_Model();
-        $dynamicFieldsDataModel = new DynamicFieldsData_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
+        $dynamicFieldsDataModel = new DynamicFieldsDataModel();
 
         $dynField = $dynamicFieldsModel->getItem($dynFieldId);
         $dynFieldType = (int)$dynField['field_type'];
@@ -109,8 +109,8 @@ class DynamicFieldsController extends AdminController
             );
         }
 
-        $dynamicFieldsModel = new DynamicFields_Model();
-        $dynamicFieldsDataModel = new DynamicFieldsData_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
+        $dynamicFieldsDataModel = new DynamicFieldsDataModel();
         $slugs = $dynFieldsTypes = $validationErrors = [];
 
         foreach ($data as $item) {
@@ -195,7 +195,7 @@ class DynamicFieldsController extends AdminController
             );
         }
 
-        $dynamicFieldsModel = new DynamicFields_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
 
         $data = [
             'title'      => $title,
@@ -231,15 +231,15 @@ class DynamicFieldsController extends AdminController
     public function deleteDynamicField(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $dynamicFieldsModel = new DynamicFields_Model();
-        $dynamicFieldsDataModel = new DynamicFieldsData_Model();
-        $dynamicFieldsDropdownDataModel = new DynamicFieldDropdownData_Model();
-        $dynamicFieldsDropdownOptionsModel = new DynamicFieldDropdownOptions_Model();
-        $rolesPermissionsModel = new RolesPermissions_Model();
-        $tableFilterModel = new TableFilter_Model();
-        $tableSortColumnsModel = new TableSortColumns_Model();
-        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
-        $tableColumnViewSettingModel = new TableColumnViewSettings_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
+        $dynamicFieldsDataModel = new DynamicFieldsDataModel();
+        $dynamicFieldsDropdownDataModel = new DynamicFieldDropdownDataModel();
+        $dynamicFieldsDropdownOptionsModel = new DynamicFieldDropdownOptionsModel();
+        $rolesPermissionsModel = new RolesPermissionsModel();
+        $tableFilterModel = new TableFilterModel();
+        $tableSortColumnsModel = new TableSortColumnsModel();
+        $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
+        $tableColumnViewSettingModel = new TableColumnViewSettingsModel();
         $dynFieldId = $dynamicFieldsModel->getItemIdBySlug($slug);
 
         if (empty($dynFieldId)) {
@@ -288,7 +288,7 @@ class DynamicFieldsController extends AdminController
         }
 
         return new JSONResponse(
-            (new DynamicFields_Model())->getDynamicFieldsForSource($source),
+            (new DynamicFieldsModel())->getDynamicFieldsForSource($source),
             Http::STATUS_OK
         );
     }
@@ -311,7 +311,7 @@ class DynamicFieldsController extends AdminController
             );
         }
 
-        $data = (new DynamicFieldsData_Model())->getDataForRecord($recordId);
+        $data = (new DynamicFieldsDataModel())->getDataForRecord($recordId);
 
         return new JSONResponse(
             array_values($data),
@@ -327,7 +327,7 @@ class DynamicFieldsController extends AdminController
     public function getDinFieldsTypes(): JSONResponse
     {
         return new JSONResponse(
-            DynamicFieldsTypes_Model::getFieldsTypes(),
+            DynamicFieldsTypesModel::getFieldsTypes(),
             Http::STATUS_OK
         );
     }

@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\FieldsOrdering_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\FieldsOrderingModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\IDBConnection;
 use OCP\Server;
 
@@ -56,19 +56,19 @@ class FieldsOrderingService
         $validatedData = [];
 
         // Check entity existence
-        if (!PermissionsEntities_Model::entityExists($entityId)) {
+        if (!PermissionsEntitiesModel::entityExists($entityId)) {
             $errors[] = $this->translateService->getTranslate('Invalid entity');
 
             return [$validatedData, $errors];
         }
 
         // Get entity model for field validation
-        $entities = PermissionsEntities_Model::getPermissionsEntities($entityId);
+        $entities = PermissionsEntitiesModel::getPermissionsEntities($entityId);
         $modelClass = $entities[$entityId]['model'];
         $entityModel = new $modelClass();
         $availableEntityFields = $entityModel->getAvailableEntityFields();
 
-        $dynFieldsModel = new DynamicFields_Model();
+        $dynFieldsModel = new DynamicFieldsModel();
         $entityDynFields = $dynFieldsModel->getDynamicFieldsForSource($entityId);
 
         foreach ($entityDynFields as $dynField) {
@@ -135,7 +135,7 @@ class FieldsOrderingService
             ];
         }
 
-        $model = new FieldsOrdering_Model();
+        $model = new FieldsOrderingModel();
         $savedData = [];
 
         try {
@@ -209,7 +209,7 @@ class FieldsOrderingService
             return [];
         }
 
-        $model = new FieldsOrdering_Model();
+        $model = new FieldsOrderingModel();
         $records = $model->getListByFilter(
             [
                 'user_id'   => $userId,
@@ -248,7 +248,7 @@ class FieldsOrderingService
             ];
         }
 
-        $model = new FieldsOrdering_Model();
+        $model = new FieldsOrderingModel();
 
         // Get all records for user and entity BEFORE transaction
         $records = $model->getListByFilter([

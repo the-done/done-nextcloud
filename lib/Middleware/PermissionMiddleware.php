@@ -11,9 +11,9 @@ use OC\Group\Manager;
 use OCA\Done\Controller\AdminController;
 use OCA\Done\Controller\DictionariesController;
 use OCA\Done\Exception\PermissionDeniedException;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Service\UserService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -61,8 +61,8 @@ class PermissionMiddleware extends Middleware
             throw new PermissionDeniedException('User not logged in');
         }
 
-        $userModel = new User_Model();
-        $userRolesGlobalModel = new UsersGlobalRoles_Model();
+        $userModel = new UserModel();
+        $userRolesGlobalModel = new UsersGlobalRolesModel();
         $currentUserUid = $currentUserObj->getUID();
         $currentUser = $userModel->getUserByUuid($currentUserUid);
         $currentUserId = $currentUser['id'] ?? null;
@@ -81,11 +81,11 @@ class PermissionMiddleware extends Middleware
 
             $userRolesGlobalModel->addData([
                 'user_id' => $currentUserId,
-                'role_id' => GlobalRoles_Model::ADMIN,
+                'role_id' => GlobalRolesModel::ADMIN,
             ]);
             $userRolesGlobalModel->addData([
                 'user_id' => $currentUserId,
-                'role_id' => GlobalRoles_Model::OFFICER,
+                'role_id' => GlobalRolesModel::OFFICER,
             ]);
         }
 
@@ -93,10 +93,10 @@ class PermissionMiddleware extends Middleware
         if ($currentUserId && $adminOrDictInstance) {
             $globalRoles = $this->userService->getUserGlobalRoles($currentUserId);
             $roles = [
-                GlobalRoles_Model::ADMIN,
-                GlobalRoles_Model::OFFICER,
-                GlobalRoles_Model::HEAD,
-                GlobalRoles_Model::CURATOR,
+                GlobalRolesModel::ADMIN,
+                GlobalRolesModel::OFFICER,
+                GlobalRolesModel::HEAD,
+                GlobalRolesModel::CURATOR,
             ];
 
             if (empty(array_intersect($roles, $globalRoles)) && !$isAdmin) {

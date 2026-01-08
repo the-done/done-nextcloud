@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Done\Modules;
 
-use OCA\Done\Models\User_Model;
+use OCA\Done\Models\UserModel;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
 use OCP\AppFramework\Http;
@@ -85,7 +85,7 @@ abstract class BaseModuleController extends OCSController
 
         if ($currentUserObj instanceof IUser) {
             $currentUserUid = $currentUserObj->getUID();
-            $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
+            $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
             $this->currentUserId = $currentUser['id'] ?? null;
         }
     }

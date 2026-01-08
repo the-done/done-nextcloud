@@ -15,8 +15,8 @@ use Attribute;
  * Attribute for checking required user roles
  *
  * Usage:
- * #[RequireRole(GlobalRoles_Model::OFFICER)]
- * #[RequireRole([GlobalRoles_Model::OFFICER, GlobalRoles_Model::HEAD])]
+ * #[RequireRole(GlobalRolesModel::OFFICER)]
+ * #[RequireRole([GlobalRolesModel::OFFICER, GlobalRolesModel::HEAD])]
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS)]
 class RequireRole
