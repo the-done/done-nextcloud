@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace OCA\Done\Controller;
 
 use OCA\Done\AppInfo\Application;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Models\RolesPermissions_Model;
-use OCA\Done\Models\Times_Model;
-use OCA\Done\Models\TimesLog_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
-use OCA\Done\Models\UsersRolesInProjects_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
+use OCA\Done\Models\RolesPermissionsModel;
+use OCA\Done\Models\TimesLogModel;
+use OCA\Done\Models\TimesModel;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
+use OCA\Done\Models\UsersRolesInProjectsModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -55,7 +55,7 @@ class CommonController extends BaseController
         \OCP\Util::addStyle($appId, 'main');
 
         $currentUserUid = $currentUserObj->getUID();
-        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
         $currentUserId = $currentUser['id'] ?? null;
 
         if ($currentUserId) {
@@ -118,7 +118,7 @@ class CommonController extends BaseController
         $data = $request->getParam('data');
         $currentUserObj = $this->userSession->getUser();
         $currentUserUid = $currentUserObj?->getUID();
-        $currentUser = (new User_Model())->getUserByUuid($currentUserUid);
+        $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
 
         if (empty($currentUser)) {
             return new JSONResponse(
@@ -129,9 +129,9 @@ class CommonController extends BaseController
             );
         }
 
-        $timesModel = new Times_Model();
+        $timesModel = new TimesModel();
         $data['user_id'] = $currentUser['id'];
-        $data['status_id'] = Times_Model::SENT;
+        $data['status_id'] = TimesModel::SENT;
 
         [$data, $errors] = $timesModel->validateData(
             $data,
@@ -178,7 +178,7 @@ class CommonController extends BaseController
         $data = $request->getParam('data');
         $slug = $request->getParam('slug');
 
-        $timesModel = new Times_Model();
+        $timesModel = new TimesModel();
         [$data, $errors] = $timesModel->validateData($data);
 
         if (!empty($errors)) {
@@ -214,7 +214,7 @@ class CommonController extends BaseController
         $sort = $request->getParam('sort');
         $slug = $request->getParam('slug');
 
-        $timesModel = new Times_Model();
+        $timesModel = new TimesModel();
         $reportId = $timesModel->getItemIdBySlug($slug);
 
         if (empty($reportId)) {
@@ -256,7 +256,7 @@ class CommonController extends BaseController
             );
         }
 
-        $timesModel = new Times_Model();
+        $timesModel = new TimesModel();
 
         foreach ($data as $item) {
             if (empty($item['sort']) || empty($item['slug'])) {
@@ -294,7 +294,7 @@ class CommonController extends BaseController
             );
         }
 
-        (new Times_Model())->delete($slug);
+        (new TimesModel())->delete($slug);
 
         return new JSONResponse(
             [
@@ -325,7 +325,7 @@ class CommonController extends BaseController
         }
 
         return new JSONResponse(
-            (new Times_Model())->getItemByFilter(['id' => $slug]),
+            (new TimesModel())->getItemByFilter(['id' => $slug]),
             Http::STATUS_OK
         );
     }
@@ -344,7 +344,7 @@ class CommonController extends BaseController
         $userSlug = $input['slug'] ?? null;
         $userSlugType = $input['slug_type'] ?? null;
 
-        $defaultRights = GlobalRoles_Model::getUsersDefaultRights();
+        $defaultRights = GlobalRolesModel::getUsersDefaultRights();
         $currentUserObj = $this->userSession->getUser();
 
         if (!$currentUserObj && empty($userSlug)) {
@@ -358,7 +358,7 @@ class CommonController extends BaseController
         }
 
         $currentUserUid = $currentUserObj->getUID();
-        $userModel = new User_Model();
+        $userModel = new UserModel();
 
         if (!empty($userSlug)) {
             $userId = $userModel->getItemIdBySlug($userSlug);
@@ -374,10 +374,10 @@ class CommonController extends BaseController
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
 
         $commonPermissions = $userId
-            ? (new UsersGlobalRoles_Model())->getRights($globalRoles)
+            ? (new UsersGlobalRolesModel())->getRights($globalRoles)
             : $defaultRights;
 
-        $fieldsPermissions = $userId ? (new RolesPermissions_Model())->getFieldsFullPermissions(
+        $fieldsPermissions = $userId ? (new RolesPermissionsModel())->getFieldsFullPermissions(
             ['global_role_id' => ['IN', $globalRoles]]
         ) : [];
 
@@ -385,7 +385,7 @@ class CommonController extends BaseController
             [
                 'common'    => $commonPermissions,
                 'fields'    => $fieldsPermissions,
-                'isOfficer' => \in_array(GlobalRoles_Model::OFFICER, $globalRoles),
+                'isOfficer' => \in_array(GlobalRolesModel::OFFICER, $globalRoles),
             ],
             Http::STATUS_OK
         );
@@ -404,8 +404,8 @@ class CommonController extends BaseController
         $nextStatusId = (int)$request->getParam('nextStatusId');
         $comment = '';
 
-        $timesModel = new Times_Model();
-        $timesLogModel = new TimesLog_Model();
+        $timesModel = new TimesModel();
+        $timesLogModel = new TimesLogModel();
 
         $currentStatusId = $timesModel->getCurrentStatusId($reportId);
         $availableStatuses = $timesModel->getAvailableNextStatuses($currentStatusId);
@@ -473,7 +473,7 @@ class CommonController extends BaseController
         }
 
         return new JSONResponse(
-            (new UsersRolesInProjects_Model())->getUserProjects($userId),
+            (new UsersRolesInProjectsModel())->getUserProjects($userId),
             Http::STATUS_OK
         );
     }
@@ -499,7 +499,7 @@ class CommonController extends BaseController
         }
 
         return new JSONResponse(
-            (new UsersRolesInProjects_Model())->getUserProjectsForReport($userId),
+            (new UsersRolesInProjectsModel())->getUserProjectsForReport($userId),
             Http::STATUS_OK
         );
     }
@@ -525,7 +525,7 @@ class CommonController extends BaseController
     public function getMy(): JSONResponse
     {
         $userId = $this->userService->getCurrentUserId();
-        $source = PermissionsEntities_Model::USER_ENTITY;
+        $source = PermissionsEntitiesModel::USER_ENTITY;
 
         if (empty($userId)) {
             return new JSONResponse(

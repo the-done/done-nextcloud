@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\Table\TableColumnViewSettings_Model;
-use OCA\Done\Models\Table\TableFilter_Model;
-use OCA\Done\Models\Table\TableSortColumns_Model;
-use OCA\Done\Models\Table\TableSortWithinColumns_Model;
+use OCA\Done\Models\Table\TableColumnViewSettingsModel;
+use OCA\Done\Models\Table\TableFilterModel;
+use OCA\Done\Models\Table\TableSortColumnsModel;
+use OCA\Done\Models\Table\TableSortWithinColumnsModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -45,7 +45,7 @@ class TableController extends AdminController
             );
         }
 
-        $tableColumnViewSettingsModel = new TableColumnViewSettings_Model();
+        $tableColumnViewSettingsModel = new TableColumnViewSettingsModel();
         $userId = $this->userService->getCurrentUserId();
 
         $data = [
@@ -103,7 +103,7 @@ class TableController extends AdminController
         $slug = $request->getParam('slug');
         $isSave = empty($slug);
 
-        $tableSortColumnsModel = new TableSortColumns_Model();
+        $tableSortColumnsModel = new TableSortColumnsModel();
         $userId = $this->userService->getCurrentUserId();
 
         $data = [
@@ -154,7 +154,7 @@ class TableController extends AdminController
         $source = $request->getParam('source');
         $forAll = (bool)$request->getParam('for_all', false);
         $userId = $this->userService->getCurrentUserId();
-        $tableSortColumnsModel = new TableSortColumns_Model();
+        $tableSortColumnsModel = new TableSortColumnsModel();
 
         foreach ($sortData as $idx => $column) {
             $ordering = $idx + 1;
@@ -206,7 +206,7 @@ class TableController extends AdminController
         $slug = $request->getParam('slug');
         $isSave = empty($slug);
 
-        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
+        $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
         $userId = $this->userService->getCurrentUserId();
         $sort = $sort === 'ASC';
 
@@ -261,7 +261,7 @@ class TableController extends AdminController
         $sortData = $request->getParam('sort_data');
         $source = $request->getParam('source');
         $userId = $this->userService->getCurrentUserId();
-        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
+        $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
 
         foreach ($sortData as $idx => $data) {
             $sortOrdering = $idx + 1;
@@ -319,12 +319,12 @@ class TableController extends AdminController
         $slug = $request->getParam('slug');
         $isSave = empty($slug);
 
-        $tableFilterModel = new TableFilter_Model();
+        $tableFilterModel = new TableFilterModel();
         $userId = $this->userService->getCurrentUserId();
 
         if (\in_array(
             $condition,
-            [TableFilter_Model::CONTAINS_CONDITION, TableFilter_Model::DOES_NOT_CONTAIN_CONDITION]
+            [TableFilterModel::CONTAINS_CONDITION, TableFilterModel::DOES_NOT_CONTAIN_CONDITION]
         )
         ) {
             $value = implode(',', $value);
@@ -386,7 +386,7 @@ class TableController extends AdminController
             );
         }
 
-        (new TableColumnViewSettings_Model())->delete($slug);
+        (new TableColumnViewSettingsModel())->delete($slug);
 
         return new JSONResponse(
             [
@@ -407,7 +407,7 @@ class TableController extends AdminController
     {
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
-        $tableSortColumnsModel = new TableSortColumns_Model();
+        $tableSortColumnsModel = new TableSortColumnsModel();
         $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
@@ -442,7 +442,7 @@ class TableController extends AdminController
     {
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
-        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
+        $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
         $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
@@ -477,7 +477,7 @@ class TableController extends AdminController
     {
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
-        $tableFilterModel = new TableFilter_Model();
+        $tableFilterModel = new TableFilterModel();
         $currentUserId = $this->userService->getCurrentUserId();
 
         if (empty($slug) && !empty($currentUserId) && !empty($source)) {
@@ -511,7 +511,7 @@ class TableController extends AdminController
     public function getConditionsForFilter(): JSONResponse
     {
         return new JSONResponse(
-            TableFilter_Model::getConditions(),
+            TableFilterModel::getConditions(),
             Http::STATUS_OK
         );
     }

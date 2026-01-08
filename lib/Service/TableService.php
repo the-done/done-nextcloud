@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\Base_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\RolesPermissions_Model;
-use OCA\Done\Models\Table\TableColumnViewSettings_Model;
-use OCA\Done\Models\Table\TableFilter_Model;
-use OCA\Done\Models\Table\TableSortColumns_Model;
-use OCA\Done\Models\Table\TableSortWithinColumns_Model;
-use OCA\Done\Models\Table\TempTable_Model;
+use OCA\Done\Models\BaseModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\RolesPermissionsModel;
+use OCA\Done\Models\Table\TableColumnViewSettingsModel;
+use OCA\Done\Models\Table\TableFilterModel;
+use OCA\Done\Models\Table\TableSortColumnsModel;
+use OCA\Done\Models\Table\TableSortWithinColumnsModel;
+use OCA\Done\Models\Table\TempTableModel;
 use OCP\Server;
 
 class TableService
@@ -54,10 +54,10 @@ class TableService
      *
      * @NoCSRFRequired
      */
-    public function getTable(Base_Model $commonModel, int $source, string $userId): array
+    public function getTable(BaseModel $commonModel, int $source, string $userId): array
     {
-        $dynamicFieldsModel = new DynamicFields_Model();
-        $rolesPermissionsModel = new RolesPermissions_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
+        $rolesPermissionsModel = new RolesPermissionsModel();
 
         $commonFields = $commonModel->fields;
         $dynamicFields = BaseService::makeHash($dynamicFieldsModel->getDynamicFieldsForSource($source), 'id');
@@ -164,10 +164,10 @@ class TableService
 
     public function getTableSettings(string $userId, int $source): array
     {
-        $tableColumnViewSettingsModel = new TableColumnViewSettings_Model();
-        $tableSortColumnsModel = new TableSortColumns_Model();
-        $tableSortWithinColumnsModel = new TableSortWithinColumns_Model();
-        $tableFilterModel = new TableFilter_Model();
+        $tableColumnViewSettingsModel = new TableColumnViewSettingsModel();
+        $tableSortColumnsModel = new TableSortColumnsModel();
+        $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
+        $tableFilterModel = new TableFilterModel();
 
         $tableColumnView = $tableColumnViewSettingsModel->getData($userId, $source);
         $tableSortColumns = $tableSortColumnsModel->getData($userId, $source);
@@ -441,7 +441,7 @@ class TableService
             }
 
             $columnItem = $tableRules[$column] ?? [];
-            [$filterInner, $filterPublic] = TableFilter_Model::makeColumnFilter(
+            [$filterInner, $filterPublic] = TableFilterModel::makeColumnFilter(
                 $column,
                 $item['condition'],
                 $item['value']
@@ -480,12 +480,12 @@ class TableService
      * Get table data for entity
      */
     public function getTableDataForEntity(
-        Base_Model $model,
+        BaseModel $model,
         int $entityType,
         string $userId,
         bool | int $needDeleted = false
     ): array {
-        $tempTableModel = new TempTable_Model();
+        $tempTableModel = new TempTableModel();
 
         $tableData = $this->getTable($model, $entityType, $userId);
 

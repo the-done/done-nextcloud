@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\DynamicFieldDropdownData_Model;
-use OCA\Done\Models\DynamicFieldDropdownOptions_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\DynamicFieldsTypes_Model;
+use OCA\Done\Models\DynamicFieldDropdownDataModel;
+use OCA\Done\Models\DynamicFieldDropdownOptionsModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\DynamicFieldsTypesModel;
 use OCP\IDBConnection;
 use OCP\Server;
 
@@ -57,7 +57,7 @@ class DynFieldDDownDataService
         string $recordId,
         array | string | null $value,
     ): array {
-        $dynamicFieldDropdownDataModel = new DynamicFieldDropdownData_Model();
+        $dynamicFieldDropdownDataModel = new DynamicFieldDropdownDataModel();
         $savedIds = [];
 
         try {
@@ -158,8 +158,8 @@ class DynFieldDDownDataService
     public function getDropdownDataForRecord(string $recordId, ?string $dynFieldId = null): array
     {
         try {
-            $dropdownDataModel = new DynamicFieldDropdownData_Model();
-            $optionsModel = new DynamicFieldDropdownOptions_Model();
+            $dropdownDataModel = new DynamicFieldDropdownDataModel();
+            $optionsModel = new DynamicFieldDropdownOptionsModel();
 
             $filter = ['record_id' => $recordId];
 
@@ -182,7 +182,7 @@ class DynFieldDDownDataService
             foreach ($dataHashedByDynField as $fieldId => $items) {
                 $fieldData = [
                     'dyn_field_id'   => $fieldId,
-                    'dyn_field_type' => DynamicFieldsTypes_Model::DROPDOWN,
+                    'dyn_field_type' => DynamicFieldsTypesModel::DROPDOWN,
                     'record_id'      => $recordId,
                     'value'          => [],
                 ];
@@ -215,7 +215,7 @@ class DynFieldDDownDataService
     public function deleteDropdownData(string $dynFieldId, string $recordId): array
     {
         try {
-            $model = new DynamicFieldDropdownData_Model();
+            $model = new DynamicFieldDropdownDataModel();
 
             $filter = [
                 'dyn_field_id' => $dynFieldId,
@@ -294,7 +294,7 @@ class DynFieldDDownDataService
      */
     protected function validateFieldExists(string $dynFieldId): bool
     {
-        $dynamicFieldsModel = new DynamicFields_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
         $field = $dynamicFieldsModel->getItem($dynFieldId);
 
         return !empty($field);
@@ -310,7 +310,7 @@ class DynFieldDDownDataService
      */
     private function validateOptionExists(?string $dynFieldId = '', ?string $optionSlug = ''): bool
     {
-        $optionsModel = new DynamicFieldDropdownOptions_Model();
+        $optionsModel = new DynamicFieldDropdownOptionsModel();
         $option = $optionsModel->getItemByFilter(['id' => $optionSlug, 'dyn_field_id' => $dynFieldId]);
 
         return !empty($option);

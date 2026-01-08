@@ -5,7 +5,7 @@
 
 /**
  * Setting type constants
- * Correspond to constants in CustomSettings_Model
+ * Correspond to constants in CustomSettingsModel
  */
 export const SETTING_TYPES = {
   CHECKBOX: 1,
@@ -17,7 +17,7 @@ export const SETTING_TYPES = {
 
 /**
  * Setting ID constants
- * Correspond to constants in CustomSettings_Model
+ * Correspond to constants in CustomSettingsModel
  */
 export const SETTING_IDS = {
   CACHE_TIME_SETTING: 1,

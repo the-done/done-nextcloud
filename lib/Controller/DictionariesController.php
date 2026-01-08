@@ -7,8 +7,8 @@
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Service\BaseService;
 use OCA\Done\Service\DictionariesService;
 use OCA\Done\Service\TranslateService;
@@ -170,7 +170,7 @@ class DictionariesController extends OCSController
     {
         $slug = $request->getParam('slug');
 
-        $userId = (new User_Model())->getItemIdBySlug($slug, true);
+        $userId = (new UserModel())->getItemIdBySlug($slug, true);
 
         if (empty($userId)) {
             return new JSONResponse(
@@ -181,7 +181,7 @@ class DictionariesController extends OCSController
             );
         }
 
-        $data = (new UsersGlobalRoles_Model())->getListByFilter(['user_id' => ['=', $userId]], ['*'], [], [], true);
+        $data = (new UsersGlobalRolesModel())->getListByFilter(['user_id' => ['=', $userId]], ['*'], [], [], true);
         $roles = $this->dictionariesService->globalRolesDictionary->getIndexedListByFilter('id', [], ['id', 'name']);
 
         foreach ($data as $idx => $item) {
@@ -216,9 +216,9 @@ class DictionariesController extends OCSController
             );
         }
 
-        $data = (new UsersGlobalRoles_Model())->getListByFilter(['role_id' => ['=', $roleId]]);
+        $data = (new UsersGlobalRolesModel())->getListByFilter(['role_id' => ['=', $roleId]]);
         $usersIds = BaseService::getField($data, 'user_id');
-        $users = (new User_Model())
+        $users = (new UserModel())
             ->getIndexedUsersFullNameWithPosition(['id' => ['IN', $usersIds, IQueryBuilder::PARAM_STR_ARRAY]]);
 
         foreach ($data as $idx => $item) {

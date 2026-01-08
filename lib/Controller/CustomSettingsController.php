@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\CustomSettings_Model;
-use OCA\Done\Models\CustomSettingsData_Model;
-use OCA\Done\Models\User_Model;
+use OCA\Done\Models\CustomSettingsDataModel;
+use OCA\Done\Models\CustomSettingsModel;
+use OCA\Done\Models\UserModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -24,7 +24,7 @@ class CustomSettingsController extends CommonController
     #[NoAdminRequired]
     public function getCustomSettingsList(): JSONResponse
     {
-        return new JSONResponse((new CustomSettings_Model())->getList(), Http::STATUS_OK);
+        return new JSONResponse((new CustomSettingsModel())->getList(), Http::STATUS_OK);
     }
 
     #[NoCSRFRequired]
@@ -34,10 +34,10 @@ class CustomSettingsController extends CommonController
         $userSlug = $request->getParam('user_slug');
         $settingId = $request->getParam('setting_id');
         $filter = [];
-        $customSettingsData = new CustomSettingsData_Model();
+        $customSettingsData = new CustomSettingsDataModel();
 
         if (!empty($userSlug)) {
-            $userId = (new User_Model())->getItemIdBySlug($userSlug);
+            $userId = (new UserModel())->getItemIdBySlug($userSlug);
             $filter['user_id'] = $userId;
         }
 
@@ -56,9 +56,9 @@ class CustomSettingsController extends CommonController
 
             // Add language setting as virtual setting (not from DB)
             $settings[] = [
-                'setting_id' => CustomSettings_Model::USER_LANGUAGE,
+                'setting_id' => CustomSettingsModel::USER_LANGUAGE,
                 'value'      => $currentLanguage,
-                'type_id'    => CustomSettings_Model::SELECT_TYPE,
+                'type_id'    => CustomSettingsModel::SELECT_TYPE,
                 'user_id'    => $this->userService->getCurrentUserId(),
                 'slug'       => 'virtual_language_setting', // Virtual slug for frontend
                 'is_virtual' => true, // Flag that this is a virtual setting
@@ -87,7 +87,7 @@ class CustomSettingsController extends CommonController
         }
 
         $currentUserId = $this->userService->getCurrentUserId();
-        $customSettingsData = new CustomSettingsData_Model();
+        $customSettingsData = new CustomSettingsDataModel();
         $results = [];
 
         foreach ($settings as $setting) {
@@ -107,7 +107,7 @@ class CustomSettingsController extends CommonController
 
             try {
                 // Check if this is a language setting (virtual setting)
-                if ($settingId == CustomSettings_Model::USER_LANGUAGE) {
+                if ($settingId == CustomSettingsModel::USER_LANGUAGE) {
                     // For language use special Nextcloud API
                     $user = $this->userSession->getUser();
 

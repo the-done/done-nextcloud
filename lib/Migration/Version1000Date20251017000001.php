@@ -10,11 +10,11 @@ declare(strict_types=1);
 namespace OCA\Done\Migration;
 
 use Doctrine\DBAL\Schema\SchemaException;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\DynamicFields_Model;
-use OCA\Done\Models\DynamicFieldsTypes_Model;
-use OCA\Done\Models\FieldComment_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\DynamicFieldsModel;
+use OCA\Done\Models\DynamicFieldsTypesModel;
+use OCA\Done\Models\FieldCommentModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\DB\ISchemaWrapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
@@ -671,7 +671,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'integer',
                 [
                     'notnull' => true,
-                    'comment' => 'Entity source identifier. See OCA\Done\Models\PermissionsEntities_Model constants (e.g., 1 - Users, 2 - Projects).',
+                    'comment' => 'Entity source identifier. See OCA\Done\Models\PermissionsEntitiesModel constants (e.g., 1 - Users, 2 - Projects).',
                 ]
             );
             $table->addColumn('field', 'string', ['notnull' => true])->setLength(255);
@@ -1541,13 +1541,13 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
     {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
-        $globalRolesModel = new GlobalRoles_Model();
+        $globalRolesModel = new GlobalRolesModel();
 
         if ($this->connection->tableExists('done_global_roles') && empty($globalRolesModel->getList())) {
             $query = $this->connection->getQueryBuilder();
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::ADMIN, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::ADMIN, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Administrator', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(1, IQueryBuilder::PARAM_INT),
             ]);
@@ -1555,7 +1555,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::OFFICER, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::OFFICER, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Director', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(2, IQueryBuilder::PARAM_INT),
             ]);
@@ -1563,7 +1563,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::HEAD, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::HEAD, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Manager', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(3, IQueryBuilder::PARAM_INT),
             ]);
@@ -1571,7 +1571,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::CURATOR, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::CURATOR, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Curator', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(4, IQueryBuilder::PARAM_INT),
             ]);
@@ -1579,7 +1579,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::EMPLOYEE, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::EMPLOYEE, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Employee', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(5, IQueryBuilder::PARAM_INT),
             ]);
@@ -1587,7 +1587,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
 
             $query->insert('done_global_roles');
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::FINANCE, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::FINANCE, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('Finance', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(6, IQueryBuilder::PARAM_INT),
             ]);
@@ -1599,30 +1599,30 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
             && $schema->hasTable('done_users_data')
             && $schema->hasTable('done_dynamic_fields')
         ) {
-            $dynamicFieldsModel = new DynamicFields_Model();
-            $fieldCommentModel = new FieldComment_Model();
+            $dynamicFieldsModel = new DynamicFieldsModel();
+            $fieldCommentModel = new FieldCommentModel();
 
             $dynFields = [
                 [
                     'title'      => 'Annotation',
-                    'field_type' => DynamicFieldsTypes_Model::STRING,
-                    'source'     => PermissionsEntities_Model::PROJECT_ENTITY,
+                    'field_type' => DynamicFieldsTypesModel::STRING,
+                    'source'     => PermissionsEntitiesModel::PROJECT_ENTITY,
                     'required'   => false,
                     'multiple'   => false,
                     'comment'    => 'Brief project annotation',
                 ],
                 [
                     'title'      => 'Description',
-                    'field_type' => DynamicFieldsTypes_Model::STRING,
-                    'source'     => PermissionsEntities_Model::PROJECT_ENTITY,
+                    'field_type' => DynamicFieldsTypesModel::STRING,
+                    'source'     => PermissionsEntitiesModel::PROJECT_ENTITY,
                     'required'   => false,
                     'multiple'   => false,
                     'comment'    => 'Detailed project description',
                 ],
                 [
                     'title'      => 'Planned start date',
-                    'field_type' => DynamicFieldsTypes_Model::DATE,
-                    'source'     => PermissionsEntities_Model::PROJECT_ENTITY,
+                    'field_type' => DynamicFieldsTypesModel::DATE,
+                    'source'     => PermissionsEntitiesModel::PROJECT_ENTITY,
                     'required'   => false,
                     'multiple'   => false,
                     'comment'    => 'Planned project start date',

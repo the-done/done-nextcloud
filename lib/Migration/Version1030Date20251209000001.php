@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Done\Migration;
 
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\GlobalRoleActionRights_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\GlobalRoleActionRightsModel;
 use OCP\DB\ISchemaWrapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
@@ -40,17 +40,17 @@ class Version1030Date20251209000001 extends SimpleMigrationStep
 
     public function postSchemaChange(IOutput $output, \Closure $schemaClosure, array $options): void
     {
-        $globalRolesModel = new GlobalRoles_Model();
-        $globalRoleActionRightsModel = new GlobalRoleActionRights_Model();
+        $globalRolesModel = new GlobalRolesModel();
+        $globalRoleActionRightsModel = new GlobalRoleActionRightsModel();
 
         if (
             $this->connection->tableExists($globalRolesModel->table)
-            && empty($globalRolesModel->getItem(GlobalRoles_Model::AI_CHAT))
+            && empty($globalRolesModel->getItem(GlobalRolesModel::AI_CHAT))
         ) {
             $query = $this->connection->getQueryBuilder();
             $query->insert($globalRolesModel->table);
             $query->values([
-                'id'   => $query->createNamedParameter(GlobalRoles_Model::AI_CHAT, IQueryBuilder::PARAM_INT),
+                'id'   => $query->createNamedParameter(GlobalRolesModel::AI_CHAT, IQueryBuilder::PARAM_INT),
                 'name' => $query->createNamedParameter('AI Chat', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(7, IQueryBuilder::PARAM_INT),
             ]);
@@ -59,11 +59,11 @@ class Version1030Date20251209000001 extends SimpleMigrationStep
 
         if (
             $this->connection->tableExists($globalRoleActionRightsModel->table)
-            && empty($globalRoleActionRightsModel->getItemByFilter(['global_role_id' => GlobalRoles_Model::AI_CHAT]))
+            && empty($globalRoleActionRightsModel->getItemByFilter(['global_role_id' => GlobalRolesModel::AI_CHAT]))
         ) {
             $dataToSave = [
-                'global_role_id' => GlobalRoles_Model::AI_CHAT,
-                'action'         => GlobalRoles_Model::CAN_VIEW_AI_CHAT,
+                'global_role_id' => GlobalRolesModel::AI_CHAT,
+                'action'         => GlobalRolesModel::CAN_VIEW_AI_CHAT,
                 'can'            => true,
             ];
 

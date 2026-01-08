@@ -9,15 +9,15 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Models\Dictionaries\Direction_Model;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\Dictionaries\Positions_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
-use OCA\Done\Models\User_Model;
-use OCA\Done\Models\UsersGlobalRoles_Model;
-use OCA\Done\Models\UsersRolesInProjects_Model;
-use OCA\Done\Models\UsersToDirections_Model;
-use OCA\Done\Modules\Projects\Models\Project_Model;
+use OCA\Done\Models\Dictionaries\DirectionModel;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\Dictionaries\PositionsModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
+use OCA\Done\Models\UserModel;
+use OCA\Done\Models\UsersGlobalRolesModel;
+use OCA\Done\Models\UsersRolesInProjectsModel;
+use OCA\Done\Models\UsersToDirectionsModel;
+use OCA\Done\Modules\Projects\Models\ProjectModel;
 use OCA\Done\Service\BaseService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -36,7 +36,7 @@ class UsersController extends AdminController
     public function getUsersData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $userModel = new User_Model();
+        $userModel = new UserModel();
         $userModel->needPrepareFields = false;
 
         $userId = $userModel->getItemIdBySlug($slug, true);
@@ -45,7 +45,7 @@ class UsersController extends AdminController
             $data = $userModel->prepareUserItem($userModel->getItem($userId));
 
             return new JSONResponse(
-                $userModel->prepareDataBeforeSend($data, PermissionsEntities_Model::USER_ENTITY),
+                $userModel->prepareDataBeforeSend($data, PermissionsEntitiesModel::USER_ENTITY),
                 Http::STATUS_OK
             );
         }
@@ -66,8 +66,8 @@ class UsersController extends AdminController
         $needDeleted = $request->getParam('need_deleted', false);
 
         $tableData = $this->tableService->getTableDataForEntity(
-            new User_Model(),
-            PermissionsEntities_Model::USER_ENTITY,
+            new UserModel(),
+            PermissionsEntitiesModel::USER_ENTITY,
             $this->userService->getCurrentUserId(),
             $needDeleted
         );
@@ -84,7 +84,7 @@ class UsersController extends AdminController
     {
         $slug = $request->getParam('slug');
 
-        $projectModel = new Project_Model();
+        $projectModel = new ProjectModel();
         $projectId = $projectModel->getItemIdBySlug($slug);
 
         if (empty($projectId)) {
@@ -96,8 +96,8 @@ class UsersController extends AdminController
             );
         }
 
-        $userModel = new User_Model();
-        $userRolesModel = new UsersRolesInProjects_Model();
+        $userModel = new UserModel();
+        $userRolesModel = new UsersRolesInProjectsModel();
 
         $userRolesInProject = $userRolesModel->getListByFilter(['project_id' => ['=', $projectId]]);
         $existUsersInProject = BaseService::getField($userRolesInProject, 'user_id');
@@ -125,8 +125,8 @@ class UsersController extends AdminController
     public function getUserPublicData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $userModel = new User_Model();
-        $positionsModel = new Positions_Model();
+        $userModel = new UserModel();
+        $positionsModel = new PositionsModel();
 
         if (empty($slug)) {
             return new JSONResponse(
@@ -177,7 +177,7 @@ class UsersController extends AdminController
     #[NoCSRFRequired]
     public function getFreeNextcloudUsers(): JSONResponse
     {
-        $userModel = new User_Model();
+        $userModel = new UserModel();
 
         $innerUsers = $userModel->getListByFilter([], ['id', 'user_id']);
         $existUsersUuids = BaseService::getField($innerUsers, 'user_id');
@@ -212,7 +212,7 @@ class UsersController extends AdminController
             );
         }
 
-        $userModel = new User_Model();
+        $userModel = new UserModel();
         [$data, $errors] = $userModel->validateData($data, $isSave, [], $userModel->getItemIdBySlug($slug));
 
         if (!empty($errors)) {
@@ -232,7 +232,7 @@ class UsersController extends AdminController
         } else {
             $userId = $userModel->addData($data);
             $slug = $userModel->getItemSlug([], $userId);
-            (new UsersGlobalRoles_Model())->addData(['user_id' => $userId, 'role_id' => GlobalRoles_Model::EMPLOYEE]);
+            (new UsersGlobalRolesModel())->addData(['user_id' => $userId, 'role_id' => GlobalRolesModel::EMPLOYEE]);
         }
 
         return new JSONResponse(
@@ -255,7 +255,7 @@ class UsersController extends AdminController
         $slug = $request->getParam('slug');
         $slugType = $request->getParam('slug_type');
 
-        $userModel = new User_Model();
+        $userModel = new UserModel();
         $userId = $userModel->getItemIdBySlug($slug);
 
         if (empty($userId)) {
@@ -293,7 +293,7 @@ class UsersController extends AdminController
         $slug = $request->getParam('slug');
         $projects = $request->getParam('projects');
 
-        $userModel = new User_Model();
+        $userModel = new UserModel();
         $userId = $userModel->getItemIdBySlug($slug);
 
         if (empty($dateFrom) || empty($dateTo)) {
@@ -324,7 +324,7 @@ class UsersController extends AdminController
     public function getSimpleUsers(): JSONResponse
     {
         return new JSONResponse(
-            (new User_Model())->getSimpleUsers(),
+            (new UserModel())->getSimpleUsers(),
             Http::STATUS_OK
         );
     }
@@ -341,9 +341,9 @@ class UsersController extends AdminController
         $userSlug = $input['user']['slug'] ?? null;
         $directionSlug = $input['direction']['slug'] ?? null;
 
-        $userModel = new User_Model();
-        $directionModel = new Direction_Model();
-        $usersToDirectionsModel = new UsersToDirections_Model();
+        $userModel = new UserModel();
+        $directionModel = new DirectionModel();
+        $usersToDirectionsModel = new UsersToDirectionsModel();
 
         $userId = $userModel->getItemIdBySlug($userSlug, true);
         $directionId = $directionModel->getItemIdBySlug($directionSlug);
@@ -400,9 +400,9 @@ class UsersController extends AdminController
         $directionSlug = $input['direction']['slug'] ?? null;
         $directionSlugType = $input['direction']['slug_type'] ?? null;
 
-        $userModel = new User_Model();
-        $directionModel = new Direction_Model();
-        $usersToDirectionsModel = new UsersToDirections_Model();
+        $userModel = new UserModel();
+        $directionModel = new DirectionModel();
+        $usersToDirectionsModel = new UsersToDirectionsModel();
 
         $itemId = $usersToDirectionsModel->getItemIdBySlug($slug);
         $userId = $userModel->getItemIdBySlug($userSlug);
@@ -463,7 +463,7 @@ class UsersController extends AdminController
             );
         }
 
-        (new UsersToDirections_Model())->delete($slug);
+        (new UsersToDirectionsModel())->delete($slug);
 
         return new JSONResponse(
             [
@@ -484,8 +484,8 @@ class UsersController extends AdminController
 
         $userSlug = $input['slug'] ?? null;
 
-        $userModel = new User_Model();
-        $usersToDirectionsModel = new UsersToDirections_Model();
+        $userModel = new UserModel();
+        $usersToDirectionsModel = new UsersToDirectionsModel();
 
         $userId = $userModel->getItemIdBySlug($userSlug, true);
 
@@ -522,7 +522,7 @@ class UsersController extends AdminController
             );
         }
 
-        $userModel = new User_Model();
+        $userModel = new UserModel();
         $userId = $userModel->getItemIdBySlug($slug, true);
         $userModel->update(['deleted' => 0], $userId);
 

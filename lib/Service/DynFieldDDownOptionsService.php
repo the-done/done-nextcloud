@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\DynamicFieldDropdownOptions_Model;
-use OCA\Done\Models\DynamicFields_Model;
+use OCA\Done\Models\DynamicFieldDropdownOptionsModel;
+use OCA\Done\Models\DynamicFieldsModel;
 use OCP\IDBConnection;
 use OCP\Server;
 
@@ -79,7 +79,7 @@ class DynFieldDDownOptionsService
             $excludeOptionId = null;
 
             if (!empty($slug)) {
-                $excludeOptionId = (new DynamicFieldDropdownOptions_Model())->getItemIdBySlug($slug);
+                $excludeOptionId = (new DynamicFieldDropdownOptionsModel())->getItemIdBySlug($slug);
             }
 
             if (!$this->validateOptionUniqueness($dynFieldId, $optionLabel, $excludeOptionId)) {
@@ -91,7 +91,7 @@ class DynFieldDDownOptionsService
             }
 
             $isSave = empty($slug);
-            $model = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptionsModel();
 
             if ($isSave && $ordering === null) {
                 $validatedData['ordering'] = $model->getNextOrdering($dynFieldId);
@@ -132,7 +132,7 @@ class DynFieldDDownOptionsService
     public function deleteOption(string $slug): array
     {
         try {
-            $model = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptionsModel();
             $optionId = $model->getItemIdBySlug($slug);
 
             if (empty($optionId)) {
@@ -169,7 +169,7 @@ class DynFieldDDownOptionsService
     public function getOptionsForField(string $dynFieldId): array
     {
         try {
-            $model = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptionsModel();
             $options = $model->getOptionsForField($dynFieldId);
 
             return [
@@ -199,7 +199,7 @@ class DynFieldDDownOptionsService
         try {
             $this->db->beginTransaction();
 
-            $model = new DynamicFieldDropdownOptions_Model();
+            $model = new DynamicFieldDropdownOptionsModel();
             $ordering = 1;
 
             foreach ($optionIds as $optionId) {
@@ -264,7 +264,7 @@ class DynFieldDDownOptionsService
      */
     private function validateFieldExists(string $dynFieldId): bool
     {
-        $dynamicFieldsModel = new DynamicFields_Model();
+        $dynamicFieldsModel = new DynamicFieldsModel();
         $field = $dynamicFieldsModel->getItem($dynFieldId);
 
         return !empty($field);
@@ -284,7 +284,7 @@ class DynFieldDDownOptionsService
         string $optionLabel,
         ?string $excludeOptionId = null
     ): bool {
-        $model = new DynamicFieldDropdownOptions_Model();
+        $model = new DynamicFieldDropdownOptionsModel();
         $existingOption = $model->getOptionByFieldAndLabel($dynFieldId, $optionLabel);
 
         if (empty($existingOption)) {

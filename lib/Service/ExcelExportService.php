@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Done\Service;
 
-use OCA\Done\Models\Base_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\BaseModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\Server;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -72,7 +72,7 @@ class ExcelExportService
      */
     public function exportEntityToExcel(int $source, array $filters = [], array $options = []): array
     {
-        if (!PermissionsEntities_Model::entityExists($source)) {
+        if (!PermissionsEntitiesModel::entityExists($source)) {
             return [
                 'success' => false,
                 'message' => $this->translateService->getTranslate('Invalid entity source'),
@@ -89,7 +89,7 @@ class ExcelExportService
                 $format = self::FORMAT_EXCEL;
             }
 
-            $sourceData = PermissionsEntities_Model::getPermissionsEntities($source);
+            $sourceData = PermissionsEntitiesModel::getPermissionsEntities($source);
             $modelClass = $sourceData[$source]['model'];
             $model = new $modelClass();
 
@@ -146,7 +146,7 @@ class ExcelExportService
     /**
      * Get table data with caching
      */
-    private function getTableDataWithCache(Base_Model $model, int $source, string $userId, array $filters): array
+    private function getTableDataWithCache(BaseModel $model, int $source, string $userId, array $filters): array
     {
         $cacheKey = $this->generateCacheKey($source, $userId, $filters);
 

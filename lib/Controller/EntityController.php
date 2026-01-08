@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OCA\Done\Controller;
 
 use OCA\Done\Attribute\RequireRole;
-use OCA\Done\Models\Dictionaries\GlobalRoles_Model;
-use OCA\Done\Models\PermissionsEntities_Model;
+use OCA\Done\Models\Dictionaries\GlobalRolesModel;
+use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -31,7 +31,7 @@ class EntityController extends BaseController
         $source = $request->getParam('source');
         $slug = $request->getParam('slug');
 
-        if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || empty($slug) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),
@@ -58,7 +58,7 @@ class EntityController extends BaseController
         $imageField = $request->getParam('field_name');
         $image = $request->getUploadedFile('image');
 
-        if (empty($source) || empty($slug) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || empty($slug) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),
@@ -109,7 +109,7 @@ class EntityController extends BaseController
         $source = (int)$request->getParam('source');
         $fields = $request->getParam('fields');
 
-        if (empty($source) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),
@@ -157,7 +157,7 @@ class EntityController extends BaseController
     {
         $source = (int)$request->getParam('source');
 
-        if (empty($source) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),
@@ -195,7 +195,7 @@ class EntityController extends BaseController
     {
         $source = (int)$request->getParam('source');
 
-        if (empty($source) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('An error occurred while retrieving data'),
@@ -220,7 +220,7 @@ class EntityController extends BaseController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[RequireRole([GlobalRoles_Model::OFFICER])]
+    #[RequireRole([GlobalRolesModel::OFFICER])]
     public function saveEntityColor(IRequest $request): JSONResponse
     {
         $entitySlug = $request->getParam('slug');
@@ -276,7 +276,7 @@ class EntityController extends BaseController
         $filters = $request->getParam('filters', []);
         $options = $request->getParam('options', []);
 
-        if (empty($source) || !PermissionsEntities_Model::entityExists($source)) {
+        if (empty($source) || !PermissionsEntitiesModel::entityExists($source)) {
             return new JSONResponse(
                 [
                     'success' => false,
