@@ -59,3 +59,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Display the real names of deleted employees with a deletion mark instead of displaying their ID
 - Improving the application codebase
+
+## 1.4.0 – 2026-01-08
+
+### Changed
+- Handle missing permission in Roles model
+- Refactor model names to remove trailing underscore
