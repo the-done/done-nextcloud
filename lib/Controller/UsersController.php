@@ -39,9 +39,20 @@ class UsersController extends AdminController
         $userModel = new UserModel();
         $userModel->needPrepareFields = false;
 
-        $userId = $userModel->getItemIdBySlug($slug, true);
+        if (!empty($slug)) {
+            $userId = $userModel->getItemIdBySlug($slug, true);
 
-        if (!empty($userId)) {
+            if (empty($userId)) {
+                return new JSONResponse(
+                    [
+                        'message' => $this->translateService->getTranslate(
+                            'An error occurred while retrieving data'
+                        ),
+                    ],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+
             $data = $userModel->prepareUserItem($userModel->getItem($userId));
 
             return new JSONResponse(
@@ -64,12 +75,31 @@ class UsersController extends AdminController
     public function getUsersTableData(IRequest $request): JSONResponse
     {
         $needDeleted = $request->getParam('need_deleted', false);
+        $systemFilter = [];
+
+        if (
+            $this->userService->canDoAction(GlobalRolesModel::CAN_VIEW_USERS_LIST_RELATED)
+            && !$this->userService->canDoAction(GlobalRolesModel::CAN_READ_USERS_LIST)
+        ) {
+            $isHeadInfo = $this->userService->isHead();
+
+            if ($isHeadInfo['isHead']) {
+                $usersRolesInProjectsModel = new UsersRolesInProjectsModel();
+                $projectsIds = $isHeadInfo['projectsIds'];
+                $usersRolesInProjectsList = $usersRolesInProjectsModel->getListByFilter(
+                    ['project_id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]]
+                );
+                $usersIds = BaseService::getField($usersRolesInProjectsList, 'user_id', true);
+                $systemFilter['id'] = ['IN', $usersIds, IQueryBuilder::PARAM_STR_ARRAY];
+            }
+        }
 
         $tableData = $this->tableService->getTableDataForEntity(
             new UserModel(),
             PermissionsEntitiesModel::USER_ENTITY,
             $this->userService->getCurrentUserId(),
-            $needDeleted
+            $needDeleted,
+            $systemFilter
         );
 
         return new JSONResponse($tableData, Http::STATUS_OK);
@@ -308,6 +338,31 @@ class UsersController extends AdminController
                 ['message' => $this->translateService->getTranslate('Select user')],
                 Http::STATUS_BAD_REQUEST
             );
+        }
+
+        $isHeadInfo = $this->userService->isHead();
+
+        if (
+            $this->userService->canDoAction(GlobalRolesModel::CAN_VIEW_USERS_LIST_RELATED)
+            && !$this->userService->canDoAction(GlobalRolesModel::CAN_READ_USERS_LIST)
+        ) {
+            $usersIds = [];
+
+            if ($isHeadInfo['isHead']) {
+                $usersRolesInProjectsModel = new UsersRolesInProjectsModel();
+                $projectsIds = $isHeadInfo['projectsIds'];
+                $usersRolesInProjectsList = $usersRolesInProjectsModel->getListByFilter(
+                    ['project_id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]]
+                );
+                $usersIds = BaseService::getField($usersRolesInProjectsList, 'user_id', true);
+            }
+
+            if (!\in_array($userId, $usersIds)) {
+                return new JSONResponse(
+                    ['error' => $this->translateService->getTranslate('Not enough permissions')],
+                    Http::STATUS_FORBIDDEN
+                );
+            }
         }
 
         return new JSONResponse(

@@ -65,3 +65,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Handle missing permission in Roles model
 - Refactor model names to remove trailing underscore
+
+## 1.5.0 – 2026-01-22
+
+### Added
+- Added the ability to display dynamic tables as cards
+- Highlighting a record when scrolling to a new report
+- New "Add" button on the statistics page that opens a form for submitting a report
+
+### Changed
+- Improved the logic of the "Today" button on the statistics page
+- The primary action in the employee table has been changed to a view action.

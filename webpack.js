@@ -4,7 +4,7 @@ const path = require("path");
 
 webpackConfig.entry = {
   main: {
-    import: path.join(__dirname, "src/admin", "main.js"),
+    import: path.join(__dirname, "src", "main.js"),
     filename: "main.js",
   },
 };

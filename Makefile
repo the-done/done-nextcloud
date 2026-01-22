@@ -1,6 +1,8 @@
 .PHONY: help build appstore clean phpstan phpstan-level
 
 app_name=done
+docker_compose=docker compose -f $(CURDIR)/../../../docker/docker-compose.yml
+docker_exec=$(docker_compose) exec -T -u 1000 app
 
 project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build/artifacts
@@ -234,25 +236,25 @@ eslint-fix:
 	npm run eslint-fix
 
 nextcloud-upgrade:
-	docker compose exec -T app php ./occ upgrade
+	$(docker_exec) php ./occ upgrade
 
 migrations-create:
 	@echo "Enter version number (e.g., 22 for version 0022):"
 	@read version; \
 	version_padded=$$(printf "%04d" $$version); \
-	echo "y" | docker compose exec -T app php ./occ migrations:generate done $$version_padded
+	echo "y" | $(docker_exec) php ./occ migrations:generate done $$version_padded
 
 migrations-execute:
-	docker compose exec -T app php ./occ migrations:execute done $(VERSION)
+	$(docker_exec) php ./occ migrations:execute done $(VERSION)
 
 migrations-rollback:
 	./create-rollback.sh
 
 migrations-status:
-	docker compose exec -T app php ./occ migrations:status done
+	$(docker_exec) php ./occ migrations:status done
 
 migrations-migrate:
-	docker compose exec -T app php ./occ migrations:migrate done $(VERSION)
+	$(docker_exec) php ./occ migrations:migrate done $(VERSION)
 
 # Tests for checking Cyrillic symbols
 test-cyrillic-unit:

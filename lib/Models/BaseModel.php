@@ -61,6 +61,15 @@ abstract class BaseModel
     // Linked models
     public array $linkedModels = [];
 
+    // Date fields
+    public array $dateFields = [];
+
+    // Bool fields
+    public array $boolFields = [];
+
+    // Custom fields (Used to add additional columns to a custom table)
+    public array $customFields = [];
+
     // Appearance model
     public string $appearanceModel = '';
 
@@ -86,16 +95,19 @@ abstract class BaseModel
     public const SLUG_TYPE_FIELD = 1;
     public const SLUG_TYPE_ID = 2;
 
+    // Result transformation type for custom fields
+    public const CUSTOM_FIELD_ACTION_IMPLODE = 1;
+
     public function __construct()
     {
         $this->baseService = BaseService::getInstance();
         $this->userService = UserService::getInstance();
         $this->translateService = TranslateService::getInstance();
         $this->db = (new DoneConnectionAdapter())->getInstance();
-        $this->setFieldsWithPreparedValues();
+        $this->setModelFieldsForPrepare();
     }
 
-    public function setFieldsWithPreparedValues(): void
+    public function setModelFieldsForPrepare(): void
     {
         if (!empty($this->fields)) {
             foreach ($this->fields as $field => $params) {
@@ -103,6 +115,19 @@ abstract class BaseModel
                     foreach ($params['values'] as $idx => $value) {
                         $this->fieldsWithPreparedValues[$field][$idx] = $this->translateService->getTranslate($value);
                     }
+                }
+
+                if (
+                    \in_array(
+                        $params['type'],
+                        [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
+                    )
+                ) {
+                    $this->dateFields[] = $field;
+                }
+
+                if ($params['type'] == IQueryBuilder::PARAM_BOOL) {
+                    $this->boolFields[] = $field;
                 }
             }
         }
@@ -194,7 +219,7 @@ abstract class BaseModel
 
         $item = $qb->executeQuery()->fetch();
 
-        return $this->prepareItem($item, $this->getModelDateFields());
+        return $this->prepareItem($item);
     }
 
     /**
@@ -256,6 +281,8 @@ abstract class BaseModel
      * @param bool                 $needDeleted
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function getListByFilter(
         array $filter = [],
@@ -264,6 +291,14 @@ abstract class BaseModel
         array $additionalOrderBy = [],
         bool $needDeleted = false,
     ): array {
+        // Custom fields are not required for selecting from a table.
+        if (!empty($this->customFields) && $fields !== ['*']) {
+            foreach ($this->customFields as $fieldName => $params) {
+                $fieldKey = array_search($fieldName, $fields);
+                unset($fields[$fieldKey]);
+            }
+        }
+
         $qb = $this->db->getQueryBuilder();
 
         $fields = $this->prepareSelectFields($fields);
@@ -291,28 +326,97 @@ abstract class BaseModel
 
         $items = $qb->executeQuery()->fetchAll();
 
-        return $this->prepareItems($items);
+        return $this->compareDataWithCustomFields($this->prepareItems($items));
+    }
+
+    /**
+     * Adding custom fields to the received records
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array
+     */
+    public function compareDataWithCustomFields(array $data = []): array
+    {
+        $itemsIds = BaseService::getField($data, 'id', true);
+
+        if (!empty($data) && !empty($this->customFields)) {
+            $customFields = $this->customFields;
+            $customData = [];
+
+            // Get records related to the records of the current model
+            foreach ($customFields as $fieldName => $params) {
+                $model = $params['data_from'];
+                $foreignKey = $params['foreign_key'];
+                $modelData = (new $model())->getListByFilter(
+                    [
+                        $foreignKey => ['IN', $itemsIds, IQueryBuilder::PARAM_STR_ARRAY],
+                    ]
+                );
+
+                $modelData = BaseService::makeHash($modelData, $foreignKey, true);
+                $customData[$fieldName] = $modelData;
+            }
+
+            // Compare the previously obtained related records with the records from
+            // the current model, applying the specified operations to them (like CUSTOM_FIELD_ACTION_IMPLODE)
+            $data = array_map(static function ($item) use ($customData, $customFields) {
+                foreach ($customData as $fieldName => $customFieldData) {
+                    $action = $customFields[$fieldName]['action'];
+                    $targetKey = $customFields[$fieldName]['target_key'];
+                    $modelForTargetKey = $customFields[$fieldName]['model_for_target_key'];
+                    $dataForItem = $customFieldData[$item['id']] ?? null;
+
+                    if (!empty($dataForItem)) {
+                        switch ($action) {
+                            case self::CUSTOM_FIELD_ACTION_IMPLODE:
+                                $resultTargetData = [];
+
+                                $targetItemsIds = BaseService::getField($dataForItem, $targetKey, true);
+                                $targetItemsListIndexed = (new $modelForTargetKey())->getIndexedListByFilter(
+                                    'id',
+                                    ['id' => ['IN', $targetItemsIds, IQueryBuilder::PARAM_STR_ARRAY]]
+                                );
+
+                                foreach ($targetItemsIds as $targetItemsId) {
+                                    $resultTargetData[] = $targetItemsListIndexed[$targetItemsId]['name'] ?? '';
+                                }
+                                $dataForItem = implode(', ', $resultTargetData);
+                                break;
+                        }
+                    }
+
+                    $item[$fieldName] = $dataForItem;
+                }
+
+                return $item;
+            }, $data);
+        }
+
+        return $data;
     }
 
     public function prepareItems(array $items = []): array
     {
-        $dateFields = $this->getModelDateFields();
-
-        return array_map(function ($item) use ($dateFields) {
-            return $this->prepareItem($item, $dateFields);
+        return array_map(function ($item) {
+            return $this->prepareItem($item);
         }, $items);
     }
 
-    public function prepareItem(array $item = [], array $dateFields = []): array
+    public function prepareItem(array $item = []): array
     {
-        if ($this->unsetIndexField) {
-            // unset($item['id']);
-        }
-
-        if ($this->needPrepareDates) {
-            foreach ($dateFields as $dateField) {
+        if ($this->needPrepareDates && !empty($this->dateFields)) {
+            foreach ($this->dateFields as $dateField) {
                 if (isset($item[$dateField])) {
                     $item[$dateField] = (new \DateTimeImmutable($item[$dateField]))->format('Y-m-d\TH:i:s.v\Z');
+                }
+            }
+        }
+
+        if (!empty($this->boolFields)) {
+            foreach ($this->boolFields as $boolField) {
+                if (isset($item[$boolField])) {
+                    $item[$boolField] = (bool)$item[$boolField];
                 }
             }
         }
@@ -322,24 +426,6 @@ abstract class BaseModel
         }
 
         return $this->addSlugToItem($item);
-    }
-
-    public function getModelDateFields(): array
-    {
-        $result = [];
-
-        foreach ($this->fields as $field => $params) {
-            if (
-                \in_array(
-                    $params['type'],
-                    [IQueryBuilder::PARAM_DATETIME_IMMUTABLE, IQueryBuilder::PARAM_DATE_IMMUTABLE]
-                )
-            ) {
-                $result[] = $field;
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -1284,5 +1370,29 @@ abstract class BaseModel
         });
 
         return !empty($result) ? array_keys($result) : array_keys($this->fields);
+    }
+
+    /**
+     * Set model fields
+     */
+    public function setFields(array $fields): void
+    {
+        $this->fields = $fields;
+    }
+
+    /**
+     * Get model fields
+     *
+     * @return array
+     */
+    public function getFields(): array
+    {
+        $fields = $this->fields;
+
+        if (!empty($this->customFields)) {
+            $fields = array_merge($fields, $this->customFields);
+        }
+
+        return $fields;
     }
 }

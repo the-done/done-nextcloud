@@ -59,7 +59,7 @@ class TableService
         $dynamicFieldsModel = new DynamicFieldsModel();
         $rolesPermissionsModel = new RolesPermissionsModel();
 
-        $commonFields = $commonModel->fields;
+        $commonFields = $commonModel->getFields();
         $dynamicFields = BaseService::makeHash($dynamicFieldsModel->getDynamicFieldsForSource($source), 'id');
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
 
@@ -483,7 +483,8 @@ class TableService
         BaseModel $model,
         int $entityType,
         string $userId,
-        bool | int $needDeleted = false
+        bool | int $needDeleted = false,
+        array $systemFilter = []
     ): array {
         $tempTableModel = new TempTableModel();
 
@@ -495,7 +496,8 @@ class TableService
             $tableData['selectDynColumns'],
             $tableData['filterInner'],
             $tableData['sortWithinColumns'],
-            (bool)$needDeleted
+            (bool)$needDeleted,
+            $systemFilter
         );
 
         return [

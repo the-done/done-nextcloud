@@ -47,10 +47,24 @@ class ProjectsController extends BaseModuleController
     #[RequireRole([GlobalRolesModel::OFFICER, GlobalRolesModel::HEAD])]
     public function getProjectsTableData(): JSONResponse
     {
+        $currentUserId = $this->userService->getCurrentUserId();
+        $isHeadInfo = $this->userService->isHead();
+        $systemFilter = [];
+
+        if (
+            $this->userService->canDoAction(GlobalRolesModel::CAN_VIEW_PROJECTS_LIST_RELATED)
+            && !$this->userService->canDoAction(GlobalRolesModel::CAN_READ_PROJECTS_LIST)
+            && $isHeadInfo['isHead']
+        ) {
+            $systemFilter['project_head_id'] = $currentUserId;
+        }
+
         $tableData = $this->tableService->getTableDataForEntity(
             new ProjectModel(),
             PermissionsEntitiesModel::PROJECT_ENTITY,
-            $this->userService->getCurrentUserId()
+            $currentUserId,
+            false,
+            $systemFilter
         );
 
         return new JSONResponse($tableData, Http::STATUS_OK);
@@ -61,16 +75,26 @@ class ProjectsController extends BaseModuleController
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    #[RequireRole([GlobalRolesModel::OFFICER])]
+    #[RequireRole([GlobalRolesModel::OFFICER, GlobalRolesModel::HEAD])]
     public function getProjectsData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
         $projectModel = new ProjectModel();
 
-        $projectId = $projectModel->getItemIdBySlug($slug);
+        if (!empty($slug)) {
+            $projectId = $projectModel->getItemIdBySlug($slug);
 
-        if (!empty($projectId)) {
+            if (empty($projectId)) {
+                return new JSONResponse(
+                    [
+                        'message' => $this->translateService->getTranslate(
+                            'An error occurred while retrieving data'
+                        ),
+                    ],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+
             return new JSONResponse(
                 $projectModel->prepareDataBeforeSend(
                     $projectModel->getProject($projectId),
@@ -99,7 +123,6 @@ class ProjectsController extends BaseModuleController
     public function getProjectPublicData(IRequest $request): JSONResponse
     {
         $slug = $request->getParam('slug');
-        $slugType = $request->getParam('slug_type');
         $projectModel = new ProjectModel();
 
         $projectId = $projectModel->getItemIdBySlug($slug);

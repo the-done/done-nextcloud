@@ -86,8 +86,18 @@ class DynamicFieldsModel extends BaseModel
     public function getSourcesList(): array
     {
         return [
-            PermissionsEntitiesModel::USER_ENTITY    => $this->translateService->getTranslate('User card'),
-            PermissionsEntitiesModel::PROJECT_ENTITY => $this->translateService->getTranslate('Project card'),
+            PermissionsEntitiesModel::USER_ENTITY => $this->translateService->getTranslate(
+                'User card'
+            ),
+            PermissionsEntitiesModel::PROJECT_ENTITY => $this->translateService->getTranslate(
+                'Project card'
+            ),
+            PermissionsEntitiesModel::FYN_CONTRACTS_ENTITY => $this->translateService->getTranslate(
+                'Contract card'
+            ),
+            PermissionsEntitiesModel::FYN_CONTRACTS_PARAMETERS_ENTITY => $this->translateService->getTranslate(
+                'Contract parameter card'
+            ),
         ];
     }
 
