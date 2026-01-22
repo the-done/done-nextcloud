@@ -28,12 +28,10 @@ OC.L10N.register(
     "All settings have been saved successfully.":
       "Все настройки были успешно сохранены.",
     "An error occurred while deleting": "Произошла ошибка при удалении",
-    Appearance: "Оформление / Внешний вид",
+    Appearance: "Внешний вид",
     Approved: "Принят",
     "Are you sure you want to delete the record?":
       "Вы действительно хотите удалить запись?",
-    "Are you sure you want to remove the role from the employee?":
-      "Вы действительно хотите удалить роль у сотрудника?",
     "Assign Administrator role": "Выдавать роль Администратора",
     "Assign Curator role": "Выдавать роль Куратора",
     "Assign Director role": "Выдавать роль Директора",
@@ -43,6 +41,7 @@ OC.L10N.register(
     "Background image": "Фоновое изображение",
     "By employees": "По сотрудникам",
     "By projects": "По проектам",
+    Card: "Карточка",
     City: "Город проживания",
     Clarified: "Уточнён",
     "Click here to set background.": "Нажмите здесь, чтобы установить фон",
@@ -92,10 +91,6 @@ OC.L10N.register(
     Director: "Директор",
     "Do you really want to delete the employee?":
       "Вы действительно хотите удалить сотрудника?",
-    "Do you really want to delete the project?":
-      "Вы действительно хотите удалить проект?",
-    "Do you really want to delete the team?":
-      "Вы действительно хотите удалить команду?",
     Done: "Готово",
     "Done and add more...": "Готово и ещё...",
     Downtime: "Простаиваю",
@@ -330,8 +325,6 @@ OC.L10N.register(
     "finances.payments": "Платежи",
     "finances.payment.new": "Создать платеж",
     "finances.payment.edit": "Редактировать платеж",
-    "Do you really want to delete the payment?":
-      "Вы действительно хотите удалить платеж?",
     "Payments Management": "Управление платежами",
     "This page will contain the payments management interface":
       "На этой странице будет интерфейс для управления платежами",
@@ -420,6 +413,7 @@ OC.L10N.register(
     Sunday: "Воскресенье",
     sunday: "воскресенье",
     Symbol: "Символ",
+    Table: "Таблица",
     "Table column parameters": "Параметры колонок таблиц",
     "Table columns sorting": "Сортировка колонок таблиц",
     "Table settings": "Настройки таблицы",
@@ -488,7 +482,7 @@ OC.L10N.register(
     "View staff report": "Просматривать отчёт по сотрудникам",
     "View statistics for all employees":
       "Просматривать статистику по всем сотрудникам",
-    "View time": "Просматривать время",
+    "View time": "Посмотреть статистику",
     Visibility: "Видимость",
     "We could not find any data for your projects.":
       "Мы не смогли найти данные по вашим проектам.",
@@ -542,10 +536,38 @@ OC.L10N.register(
       "Привет! Я виртуальный помощник. Чем могу быть полезен?",
     aiChatErrorMessage:
       "Привет! Я ваш бот-помощник. Сейчас проходят плановые технические работы. Пожалуйста, зайдите позже. Спасибо за понимание!",
-      Restore: "Восстановить",
-      "Restore employee": "Восстановить сотрудника",
-      Deleted: "Удалённые",
-      "Do you really want to restore the employee?": "Вы действительно хотите восстановить сотрудника?"
+    Restore: "Восстановить",
+    "Restore employee": "Восстановить сотрудника",
+    Deleted: "Удалённые",
+    "Do you really want to restore the employee?":
+      "Вы действительно хотите восстановить сотрудника?",
+    "No data found for your payments": "Данные по вашим платежам не найдены",
+    Contracts: "Контракты",
+    List: "Список",
+    "Parameter groups": "Группы параметров",
+    "Create payment": "Создать платеж",
+    "Export to Excel": "Экспорт в Excel",
+    "Export to CSV": "Экспорт в CSV",
+    Loading: "Загрузка",
+    "Create contract": "Создать контракт",
+    "Contract parameters": "Параметры контракта",
+    Type: "Тип",
+    "Create contract parameter": "Создать параметр контракта",
+    "Hourly pay": "Почасовая оплата",
+    "Number of hours": "Количество часов",
+    "Hourly rate": "Почасовая ставка",
+    "Period rate": "Ставка за период",
+    "Project rate": "Ставка за проект",
+    "Select parameters group": "Выбрать группу параметров",
+    "Contract parameter": "Параметр контракта",
+    Value: "Значение",
+    "Contract field": "Поле контракта",
+    Number: "Число",
+    Operator: "Оператор",
+    "Contract parameters group": "Группа параметров контракта",
+    "Create contract parameters group": "Создать группу параметров контракта",
+    "Group name": "Название группы",
+    Parameters: "Параметры",
   },
   "ru",
   "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"

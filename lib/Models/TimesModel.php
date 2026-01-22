@@ -315,27 +315,6 @@ class TimesModel extends BaseModel
     /**
      * @override
      */
-    public function getListByFilter(
-        array $filter = [],
-        array $fields = ['*'],
-        array $orderBy = [],
-        array $additionalOrderBy = [],
-        bool $needDeleted = false,
-    ): array {
-        $data = parent::getListByFilter($filter, $fields, $orderBy, $additionalOrderBy, $needDeleted);
-
-        return array_map(static function ($item) {
-            if (isset($item['is_downtime'])) {
-                $item['is_downtime'] = (bool)$item['is_downtime'];
-            }
-
-            return $item;
-        }, $data);
-    }
-
-    /**
-     * @override
-     */
     public function validateData(array $data, bool $save = false, array $ignoreFields = []): array
     {
         if ($data['is_downtime']) {

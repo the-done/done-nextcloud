@@ -257,6 +257,24 @@ class UserService extends EntitiesService
     }
 
     /**
+     * Get current user in Done
+     *
+     * @return array
+     */
+    public function getCurrentUser(): array
+    {
+        $currentUserObj = $this->userSession->getUser();
+
+        if (!$currentUserObj) {
+            return [];
+        }
+
+        $currentUserUid = $currentUserObj->getUID();
+
+        return (new UserModel())->getUserByUuid($currentUserUid);
+    }
+
+    /**
      * Get user statistics totals
      *
      * @param array<array<mixed>> $totalData Time entries data with date and minutes
@@ -347,5 +365,29 @@ class UserService extends EntitiesService
         return $currentUserId
             ? (new UsersGlobalRolesModel())->getRights($this->getUserGlobalRoles($currentUserId))
             : $defaultRights;
+    }
+
+    /**
+     * Check if the current user has the head role and give a list of his projects
+     *
+     * @return array
+     */
+    public function isHead(): array
+    {
+        $currentUserId = $this->getCurrentUserId();
+        $globalRoles = $this->getUserGlobalRoles($currentUserId);
+        $isHead = \in_array(GlobalRolesModel::HEAD, $globalRoles);
+        $projectsIds = [];
+
+        if ($isHead) {
+            $projectModel = new ProjectModel();
+            $projects = $projectModel->getListByFilter(['project_head_id' => $currentUserId]);
+            $projectsIds = BaseService::getField($projects, 'id', true);
+        }
+
+        return [
+            'isHead'      => $isHead,
+            'projectsIds' => $projectsIds,
+        ];
     }
 }

@@ -149,10 +149,13 @@ class CommonController extends BaseController
             );
         }
 
-        if ($timesModel->addData($data)) {
+        $slug = $timesModel->addData($data);
+
+        if ($slug) {
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('Report added successfully'),
+                    'slug'    => $slug,
                 ],
                 Http::STATUS_OK
             );

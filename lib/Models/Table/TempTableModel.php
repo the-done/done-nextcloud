@@ -27,18 +27,14 @@ class TempTableModel extends BaseModel
     public array $fields = [];
     public bool $needPrepareDates = false;
 
-    public function setFields(array $fields): void
-    {
-        $this->fields = $fields;
-    }
-
     public function getDataForTable(
         BaseModel $commonModel,
         array $selectCommonColumns = [],
         array $selectDynColumns = [],
         array $filter = [],
         array $sortWithinColumns = [],
-        bool | int $needDeleted = false
+        bool | int $needDeleted = false,
+        array $systemFilter = []
     ): array {
         $dynamicFieldsModel = new DynamicFieldsModel();
         $dynamicFieldsDataModel = new DynamicFieldsDataModel();
@@ -47,8 +43,12 @@ class TempTableModel extends BaseModel
 
         $commonModelFilter = [];
 
-        if ($needDeleted && isset($commonModel->fields['deleted'])) {
+        if ($needDeleted && isset($commonModel->getFields()['deleted'])) {
             $commonModelFilter['deleted'] = 1;
+        }
+
+        if (!empty($systemFilter)) {
+            $commonModelFilter = array_merge($commonModelFilter, $systemFilter);
         }
 
         [$commonFields, $tempTableModelCommonFields] = self::getCommonFieldsForTempTable(
@@ -139,7 +139,7 @@ class TempTableModel extends BaseModel
 
     public static function getCommonFieldsForTempTable(BaseModel $model, array $selectCommonColumns = []): array
     {
-        $fields = $model->fields;
+        $fields = $model->getFields();
         $types = self::getCommonDataTypes();
         $tempTableColumns = [
             'id'        => 'id VARCHAR(32) PRIMARY KEY',

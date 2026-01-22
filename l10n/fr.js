@@ -34,8 +34,6 @@ OC.L10N.register(
     Approved: "Approuvé",
     "Are you sure you want to delete the record?":
       "Êtes-vous sûr de vouloir supprimer l'enregistrement ?",
-    "Are you sure you want to remove the role from the employee?":
-      "Êtes-vous sûr de vouloir supprimer le rôle de l'employé ?",
     "Assign Administrator role": "Attribuer le rôle d'Administrateur",
     "Assign Curator role": "Attribuer le rôle de Curateur",
     "Assign Director role": "Attribuer le rôle de Directeur",
@@ -46,6 +44,7 @@ OC.L10N.register(
     "Background image": "Image de fond",
     "By employees": "Par employés",
     "By projects": "Par projets",
+    Card: "Carte",
     Cancel: "Annuler",
     City: "Ville",
     Clarified: "Clarifié",
@@ -101,10 +100,6 @@ OC.L10N.register(
     Director: "Directeur",
     "Do you really want to delete the employee?":
       "Voulez-vous vraiment supprimer l'employé ?",
-    "Do you really want to delete the project?":
-      "Voulez-vous vraiment supprimer le projet ?",
-    "Do you really want to delete the team?":
-      "Voulez-vous vraiment supprimer l'équipe ?",
     Done: "Terminé",
     "Done and add more...": "Terminé et ajouter plus...",
     Downtime: "Temps d'arrêt",
@@ -384,6 +379,7 @@ OC.L10N.register(
     Sunday: "Dimanche",
     sunday: "dimanche",
     Symbol: "Symbole",
+    Table: "Tableau",
     "Table column parameters": "Paramètres de colonne de tableau",
     "Table columns sorting": "Tri des colonnes de tableau",
     "Table settings": "Paramètres du tableau",
@@ -508,10 +504,40 @@ OC.L10N.register(
       "Bonjour ! Je suis un assistant virtuel. Comment puis-je vous être utile ?",
     aiChatErrorMessage:
       "Bonjour ! Je suis votre assistant bot. Une maintenance technique est actuellement en cours. Veuillez réessayer un peu plus tard. Merci de votre compréhension.",
-      Restore: "Restaurer",
-      "Restore employee": "Réintégrer l'employé",
-      Deleted: "Supprimé",
-      "Do you really want to restore the employee?": "Souhaitez-vous vraiment réintégrer l'employé?"
+    Restore: "Restaurer",
+    "Restore employee": "Réintégrer l'employé",
+    Deleted: "Supprimé",
+    "Do you really want to restore the employee?":
+      "Souhaitez-vous vraiment réintégrer l'employé?",
+    "No data found for your payments":
+      "Aucune donnée trouvée pour vos paiements",
+    Contracts: "Contrats",
+    List: "Liste",
+    "Parameter groups": "Groupes de paramètres",
+    "Create payment": "Créer un paiement",
+    "Export to Excel": "Exporter vers Excel",
+    "Export to CSV": "Exporter en CSV",
+    Loading: "Chargement",
+    "Create contract": "Créer un contrat",
+    "Contract parameters": "Paramètres du contrat",
+    Type: "Type",
+    "Create contract parameter": "Créer un paramètre de contrat",
+    "Hourly pay": "Rémunération horaire",
+    "Number of hours": "Nombre d'heures",
+    "Hourly rate": "Taux horaire",
+    "Period rate": "Taux périodique",
+    "Project rate": "Taux projet",
+    "Select parameters group": "Sélectionner un groupe de paramètres",
+    "Contract parameter": "Paramètre de contrat",
+    Value: "Valeur",
+    "Contract field": "Champ de contrat",
+    Number: "Nombre",
+    Operator: "Opérateur",
+    "Contract parameters group": "Groupe de paramètres du contrat",
+    "Create contract parameters group":
+      "Créer un groupe de paramètres de contrat",
+    "Group name": "Nom du groupe",
+    Parameters: "Paramètres",
   },
   "fr",
   "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"

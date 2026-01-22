@@ -437,7 +437,7 @@ return [
             'name'    => 'common#index',
             'url'     => '/finances/payments/',
             'verb'    => 'GET',
-            'postfix' => 'finances.payments',
+            'postfix' => 'finances.payment',
         ],
         [
             'name'    => 'common#index',
@@ -450,6 +450,66 @@ return [
             'url'     => '/finances/payments/{slug}/',
             'verb'    => 'GET',
             'postfix' => 'finances.payment.edit',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/new',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.new',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/{slug}/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.edit',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/{slug}/parameters/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.parameterValues',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/parameter-groups/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.parameterGroups',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/parameter-groups/new',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.parameterGroups.new',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contracts/parameter-groups/{slug}/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contract.parameterGroups.edit',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contract-parameters/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contractParameter',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contract-parameters/new',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contractParameter.new',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/finances/contract-parameters/{slug}/',
+            'verb'    => 'GET',
+            'postfix' => 'finances.contractParameter.edit',
         ],
 
         // Staff pages

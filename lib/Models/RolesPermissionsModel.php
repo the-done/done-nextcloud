@@ -199,7 +199,7 @@ class RolesPermissionsModel extends BaseModel
         }
 
         $model = new $modelName();
-        $fields = $model->fields;
+        $fields = $model->getFields();
         $permissions = (new self())->getListByFilter($filter);
 
         foreach ($permissions as $permission) {
