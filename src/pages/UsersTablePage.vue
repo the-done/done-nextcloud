@@ -3,17 +3,7 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <VPage>
-    <DynamicTable
-      v-model="tableData"
-      :all-columns-ordering.sync="columnsWithControls"
-      :loading="tableIsLoading"
-      :source="source"
-      :settings="settings"
-      :empty-content-description="
-        contextTranslate('No data found for your employees', context)
-      "
-      @on-fetch="handleFetchData"
-    >
+    <DynamicTable :source="source" @on-fetch="handleFetchData">
       <template #toolbar-left>
         <NcBreadcrumbs>
           <NcBreadcrumb
@@ -188,27 +178,6 @@ export default {
     source() {
       return MAP_DYNAMIC_TABLE_SOURCES["user"];
     },
-    columnsWithControls: {
-      get() {
-        return [
-          {
-            title: "",
-            key: "controls",
-            draggable: false,
-            sortable: false,
-            filterable: false,
-            hideable: false,
-            customClass: "w-[100px]",
-          },
-          ...this.allColumnsOrdering,
-        ];
-      },
-      set(value) {
-        this.allColumnsOrdering = value.filter(
-          (item) => item.key !== "controls"
-        );
-      },
-    },
   },
   methods: {
     handleClickPreview(slug) {
@@ -222,7 +191,7 @@ export default {
     },
     async handleFetchData() {
       try {
-        this.tableIsLoading = true;
+        this.setTableLoading(true);
 
         const { data } = await fetchUsersTableData({
           need_deleted: this.showDeleted,
@@ -232,7 +201,7 @@ export default {
       } catch (e) {
         console.log(e);
       } finally {
-        this.tableIsLoading = false;
+        this.setTableLoading(false);
       }
     },
     async handleDelete({ slug, slug_type }) {
@@ -240,8 +209,8 @@ export default {
         !confirm(
           this.contextTranslate(
             "Do you really want to delete the employee?",
-            this.context
-          )
+            this.context,
+          ),
         )
       ) {
         return;
@@ -260,8 +229,8 @@ export default {
         !confirm(
           this.contextTranslate(
             "Do you really want to restore the employee?",
-            this.context
-          )
+            this.context,
+          ),
         )
       ) {
         return;

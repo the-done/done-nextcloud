@@ -67,12 +67,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useDynamicTableStore, ["setTableViewMode"]),
+    ...mapActions(useDynamicTableStore, ["setViewMode"]),
     handleGoBack() {
       this.$emit("on-back");
     },
     handleUpdateViewMode(value) {
-      this.setTableViewMode(this.source, value);
+      this.setViewMode(this.source, value);
     },
   },
 };

@@ -20,9 +20,9 @@ SPDX-License-Identifier: MIT */
                 <VTableHead
                   v-if="col.visible !== false"
                   :key="col.key"
-                  :draggable="col.draggable === false ? false : true"
-                  :sortable="col.sortable === false ? false : true"
-                  :filterable="col.filterable === false ? false : true"
+                  :draggable="col.draggable !== false"
+                  :sortable="col.sortable !== false"
+                  :filterable="col.filterable !== false"
                   :customClass="col.customClass"
                   :item="col"
                   @on-sort="handleSort"
