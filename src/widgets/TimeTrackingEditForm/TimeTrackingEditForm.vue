@@ -39,6 +39,7 @@ SPDX-License-Identifier: MIT */
           :required="true"
           :error="errors.description"
           :label="contextTranslate('Description', context)"
+          inputClass="max-w-full min-w-full"
           @input="(value) => handleUpdateModelValue('description', value)"
         />
         <VTextArea
@@ -46,6 +47,7 @@ SPDX-License-Identifier: MIT */
           :label="contextTranslate('Comment', context)"
           :required="value.is_downtime === true"
           :error="errors.comment"
+          inputClass="max-w-full min-w-full"
           @input="(value) => handleUpdateModelValue('comment', value)"
         />
         <div class="flex flex-col">
@@ -154,7 +156,7 @@ const validateTimeRequired = helpers.withParams(
     const { hours, minutes } = $props.value;
 
     return hours !== "" || minutes !== "";
-  }
+  },
 );
 
 const validateHours = helpers.withParams(
@@ -167,7 +169,7 @@ const validateHours = helpers.withParams(
     }
 
     return true;
-  }
+  },
 );
 
 const validateMinutes = helpers.withParams(
@@ -180,7 +182,7 @@ const validateMinutes = helpers.withParams(
     }
 
     return true;
-  }
+  },
 );
 
 export default {

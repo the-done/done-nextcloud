@@ -3,7 +3,7 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <div
-    data-id="AiChatContainer"
+    data-component-id="AiChatContainer"
     :class="{
       'fixed z-1000 w-(--ai-chat-width)': true,
       'flex flex-col bg-(--color-main-background) overflow-hidden': true,
@@ -105,6 +105,7 @@ SPDX-License-Identifier: MIT */
           'min-h-[128px] max-h-[128px]': isSidebarMode === true,
           'min-h-[80px] max-h-[80px]': isSidebarMode === false,
         }"
+        :enter-submit="true"
         @on-keydown-enter="handleSubmitMessage"
         @on-keydown-enter-shift="handleAddNewLine"
       />

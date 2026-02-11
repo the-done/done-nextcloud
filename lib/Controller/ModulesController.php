@@ -34,6 +34,7 @@ use OCP\IRequest;
  * - reports: TeamsController
  * - reports: ProjectsController
  * - reports: FinancesController
+ * - reports: IntegrationWithExtAppsController
  */
 class ModulesController extends OCSController
 {

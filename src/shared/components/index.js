@@ -22,6 +22,7 @@ export { VTabs } from "./VTabs";
 export { VTextArea } from "./VTextArea";
 export { VTextField } from "./VTextField";
 export { VTimeChip } from "./VTimeChip";
+export { VTimePicker } from "./VTimePicker";
 export { VToolbar } from "./VToolbar";
 export { VTableEditCellDropdown } from "./VTableEditCellDropdown";
 export { VTableFilterDropdown } from "./VTableFilterDropdown";

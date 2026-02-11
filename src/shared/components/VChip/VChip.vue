@@ -75,6 +75,11 @@ export default {
   background-color: var(--color-primary-element);
 }
 
+.v-chip--secondary {
+  color: var(--color-primary-element-light-text);
+  background-color: var(--color-primary-element-light);
+}
+
 .v-chip--warning {
   color: var(--color-primary-element-text);
   background-color: var(--color-element-warning);

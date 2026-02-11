@@ -12,6 +12,7 @@ namespace OCA\Done\Modules;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
@@ -29,6 +30,7 @@ abstract class BaseModuleController extends OCSController
     protected TranslateService $translateService;
     protected UserService $userService;
     protected IUserSession $userSession;
+    protected IAppManager $appManager;
     protected array $allowedRoles = [];
     public string $moduleName = '';
 
@@ -43,6 +45,7 @@ abstract class BaseModuleController extends OCSController
         $this->userSession = Server::get(IUserSession::class);
         $this->translateService = TranslateService::getInstance();
         $this->userService = UserService::getInstance();
+        $this->appManager = Server::get(IAppManager::class);
         $this->setCurrentUserId();
     }
 

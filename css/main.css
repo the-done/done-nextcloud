@@ -687,6 +687,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .pt-3 {
   padding-top: calc(var(--spacing) * 3);
 }
+.pt-4 {
+  padding-top: calc(var(--spacing) * 4);
+}
 .pt-11 {
   padding-top: calc(var(--spacing) * 11);
 }
@@ -1239,7 +1242,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   font-weight: 400;
   border-radius: 4px;
   background-color: transparent;
-  white-space: nowrap;
 }
 .v-table-dropdown__button:hover, .v-table-dropdown__button--active {
   background-color: var(--color-background-hover);

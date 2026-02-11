@@ -13,9 +13,10 @@ SPDX-License-Identifier: MIT */
       :placeholder="placeholder"
       :disabled="disabled"
       :input-class="inputClass"
+      :style="{ marginTop: 0 }"
       @update:modelValue="handleUpdateModelValue"
-      @keydown.enter.exact.prevent="handleKeydownEnter"
-      @keydown.enter.shift.exact.prevent="handleKeydownEnterShift"
+      @keydown.enter.exact="handleKeydownEnter"
+      @keydown.enter.shift.exact="handleKeydownEnterShift"
     />
     <div v-if="error" class="v-caption v-color-error">
       {{ error }}
@@ -57,6 +58,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    enterSubmit: {
+      type: Boolean,
+      default: false,
+    },
     inputClass: {
       type: [String, Object],
       default: "",
@@ -66,11 +71,27 @@ export default {
     handleUpdateModelValue(value) {
       this.$emit("input", value);
     },
-    handleKeydownEnter() {
-      this.$emit("on-keydown-enter");
+    handleKeydownEnter(e) {
+      if (this.enterSubmit === true) {
+        e.preventDefault();
+
+        this.$emit("on-keydown-enter");
+
+        return;
+      }
+
+      this.handleUpdateModelValue(e.target.value);
     },
-    handleKeydownEnterShift() {
-      this.$emit("on-keydown-enter-shift");
+    handleKeydownEnterShift(e) {
+      if (this.enterSubmit === true) {
+        e.preventDefault();
+
+        this.$emit("on-keydown-enter-shift");
+
+        return;
+      }
+
+      this.handleUpdateModelValue(e.target.value);
     },
   },
 };
