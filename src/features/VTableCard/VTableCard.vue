@@ -24,7 +24,7 @@ SPDX-License-Identifier: MIT */
           class="flex gap-4 items-start"
         >
           <div
-            v-if="col.draggable === false ? false : true"
+            v-if="draggable === true && col.draggable !== false"
             data-handle="row"
             class="w-4"
           >
@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT */
           >
             <slot
               :name="col.key"
-              :data="value"
+              :data="data"
               :row="row"
               :col="col"
               :value="row[col.key]"
@@ -78,6 +78,10 @@ export default {
     data: {
       type: Array,
       required: true,
+    },
+    draggable: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: [

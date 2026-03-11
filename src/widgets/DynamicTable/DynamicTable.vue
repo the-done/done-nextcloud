@@ -65,11 +65,12 @@ SPDX-License-Identifier: MIT */
           ]"
         >
           <VTableCard
-            v-for="row in value"
+            v-for="row in tableData"
             :key="row[uniqueKey]"
             :row="row"
             :columns="columns"
-            :data="value"
+            :data="tableData"
+            :draggable="draggable"
             @on-update-columns-ordering="handleUpdateColumnsOrdering"
             @on-sort="handleSort"
             @on-create-filter="handleCreateFilter"
@@ -82,9 +83,9 @@ SPDX-License-Identifier: MIT */
       </VScrollArea>
       <VTable
         v-else
-        :value="value"
+        :value="tableData"
         :columns="columns"
-        :loading="loading"
+        :loading="isLoading"
         :unique-key="uniqueKey"
         :empty-content-title="emptyContentTitle"
         :empty-content-description="emptyContentDescription"
@@ -103,7 +104,7 @@ SPDX-License-Identifier: MIT */
 
 <script>
 import { t } from "@nextcloud/l10n";
-import { mapState, mapWritableState } from "pinia";
+import { mapState, mapWritableState, mapActions } from "pinia";
 
 import Close from "vue-material-design-icons/Close.vue";
 
@@ -149,21 +150,9 @@ export default {
       type: Number,
       default: null,
     },
-    value: {
-      type: Array,
-      default: () => [],
-    },
-    allColumnsOrdering: {
-      type: Array,
-      default: () => [],
-    },
     uniqueKey: {
       type: String,
       default: "id",
-    },
-    loading: {
-      type: Boolean,
-      default: false,
     },
     emptyContentTitle: {
       type: String,
@@ -177,17 +166,10 @@ export default {
       type: Boolean,
       default: true,
     },
-    settings: {
-      type: Object,
-      default: () => ({}),
-    },
     tabs: {
       type: Array,
       default: () => [],
     },
-  },
-  data() {
-    return {};
   },
   computed: {
     ...mapWritableState(useDynamicTableStore, ["conditions"]),
@@ -195,12 +177,47 @@ export default {
       "filterConditionsFetched",
       "filterConditionsList",
       "getTableBySource",
+      "setAllColumnsOrdering",
     ]),
-    tableStoreData() {
+    tableState() {
       return this.getTableBySource(this.source);
     },
+    tableData() {
+      return this.tableState?.data || [];
+    },
+    options() {
+      return this.tableState?.options || {};
+    },
+    allColumnsOrdering() {
+      if (!this.tableState?.allColumnsOrdering) {
+        return [];
+      }
+
+      if (this.options?.controls === true) {
+        return [
+          {
+            title: "",
+            key: "controls",
+            draggable: false,
+            sortable: false,
+            filterable: false,
+            hideable: false,
+            customClass: "w-[100px]",
+          },
+          ...this.tableState.allColumnsOrdering,
+        ];
+      }
+
+      return this.tableState.allColumnsOrdering;
+    },
+    settings() {
+      return this.tableState?.settings || {};
+    },
+    isLoading() {
+      return this.tableState?.isLoading;
+    },
     viewMode() {
-      return this.tableStoreData?.viewMode;
+      return this.tableState?.viewMode;
     },
     columns() {
       return this.allColumnsOrdering.map((item) => {
@@ -235,8 +252,13 @@ export default {
         console.log(e);
       }
     },
+    updateColumnsOrdering(value) {
+      const result = value.filter((item) => item.draggable !== false);
+
+      this.setAllColumnsOrdering(this.source, result);
+    },
     async handleUpdateColumnsOrdering(value) {
-      this.$emit("update:allColumnsOrdering", value);
+      this.updateColumnsOrdering(value);
 
       const sortData = value.reduce((accum, item, index) => {
         return {
@@ -256,7 +278,7 @@ export default {
       }
     },
     async handleUpdateHiddenColumns({ nextValue, item, isHidden }) {
-      this.$emit("update:allColumnsOrdering", nextValue);
+      this.updateColumnsOrdering(nextValue);
 
       const { key } = item;
 
@@ -435,7 +457,7 @@ export default {
         [],
       );
 
-      this.$emit("update:allColumnsOrdering", nextAllColumnsOrdering);
+      this.updateColumnsOrdering(nextAllColumnsOrdering);
 
       const payload = {
         source: this.source,
@@ -479,7 +501,7 @@ export default {
         return column;
       });
 
-      this.$emit("update:allColumnsOrdering", nextValue);
+      this.updateColumnsOrdering(nextValue);
     },
     async handleChangeFilter({ item, value, conditionValue }) {
       try {

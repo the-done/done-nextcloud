@@ -8,32 +8,32 @@ import { mapState, mapActions } from "pinia";
 import { useDynamicTableStore } from "@/app/store/dynamicTable";
 
 export const dynamicTableMixin = {
-  data() {
-    return {
-      tableIsLoading: false,
-      allColumnsOrdering: [],
-      tableData: [],
-      settings: {},
-    };
-  },
   computed: {
     ...mapState(useDynamicTableStore, ["getTableBySource"]),
-    tableStoreData() {
+    tableState() {
       return this.getTableBySource(this.source);
     },
   },
   methods: {
     ...mapActions(useDynamicTableStore, [
-      "setTableViewMode",
-      "getTableLocalStorageName",
+      "initDynamicTableState",
+      "setLoading",
+      "setViewMode",
+      "getLocalStorageName",
     ]),
+    setTableLoading(value) {
+      this.setLoading(this.source, value);
+    },
+    setTableViewMode(value) {
+      this.setViewMode(this.source, value);
+    },
     initViewMode() {
       try {
-        if (!this.source || this.tableStoreData?.viewMode) {
+        if (!this.source || this.tableState?.viewMode) {
           return;
         }
 
-        const localStorageSettingsName = this.getTableLocalStorageName(
+        const localStorageSettingsName = this.getLocalStorageName(
           this.source,
           "settings",
         );
@@ -43,7 +43,7 @@ export const dynamicTableMixin = {
         );
 
         if (!localStorageSettings) {
-          this.setTableViewMode(this.source, "table");
+          this.setTableViewMode("table");
 
           return;
         }
@@ -51,20 +51,35 @@ export const dynamicTableMixin = {
         const parsedSettings = JSON.parse(localStorageSettings);
 
         if (parsedSettings.viewMode) {
-          this.setTableViewMode(this.source, parsedSettings.viewMode);
+          this.setTableViewMode(parsedSettings.viewMode);
 
           return;
         }
 
-        this.setTableViewMode(this.source, "table");
+        this.setTableViewMode("table");
       } catch (e) {
         console.log(e);
       }
     },
     initDynamicTable({ allColumnsOrdering, data, settings }) {
-      this.allColumnsOrdering = allColumnsOrdering;
-      this.tableData = data;
-      this.settings = settings;
+      const defaultOptions = {
+        controls: true,
+      };
+
+      const options = this.tableOptions
+        ? {
+            ...defaultOptions,
+            ...this.tableOptions,
+          }
+        : defaultOptions;
+
+      this.initDynamicTableState({
+        source: this.source,
+        allColumnsOrdering,
+        data,
+        settings,
+        options,
+      });
 
       this.initViewMode();
     },

@@ -283,6 +283,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
     max-width: 96rem;
   }
 }
+.m-0 {
+  margin: calc(var(--spacing) * 0);
+}
 .m-0\! {
   margin: calc(var(--spacing) * 0) !important;
 }
@@ -378,6 +381,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .h-\[calc\(100\%-var\(--header-height\)-var\(--body-container-margin\)\)\] {
   height: calc(100% - var(--header-height) - var(--body-container-margin));
 }
+.h-auto {
+  height: auto;
+}
 .h-auto\! {
   height: auto !important;
 }
@@ -401,6 +407,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .min-h-\[128px\] {
   min-height: 128px;
+}
+.min-h-auto {
+  min-height: auto;
 }
 .min-h-auto\! {
   min-height: auto !important;
@@ -491,6 +500,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.resize {
+  resize: both;
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -687,6 +699,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .pt-3 {
   padding-top: calc(var(--spacing) * 3);
 }
+.pt-4 {
+  padding-top: calc(var(--spacing) * 4);
+}
 .pt-11 {
   padding-top: calc(var(--spacing) * 11);
 }
@@ -795,6 +810,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .uppercase {
   text-transform: uppercase;
 }
+.underline {
+  text-decoration-line: underline;
+}
 .opacity-0 {
   opacity: 0%;
 }
@@ -822,6 +840,10 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .shadow-xl {
   --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.outline {
+  outline-style: var(--tw-outline-style);
+  outline-width: 1px;
 }
 .filter {
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
@@ -1239,7 +1261,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   font-weight: 400;
   border-radius: 4px;
   background-color: transparent;
-  white-space: nowrap;
 }
 .v-table-dropdown__button:hover, .v-table-dropdown__button--active {
   background-color: var(--color-background-hover);
@@ -1475,6 +1496,11 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -1561,6 +1587,7 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;

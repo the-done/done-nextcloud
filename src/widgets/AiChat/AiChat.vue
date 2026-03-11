@@ -1,5 +1,5 @@
 <template>
-  <div data-id="AiChat">
+  <div data-component-id="AiChat">
     <div
       :class="{
         'fixed bottom-8 z-2000 transition-right duration-200': true,

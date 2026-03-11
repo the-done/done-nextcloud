@@ -160,6 +160,7 @@ OC.L10N.register(
     "Filter condition": "Filter condition",
     "Filter value": "Filter value",
     Float: "Float",
+    "Form my day": "Form my day",
     Forward: "Forward",
     "Full name": "Full name",
     Gender: "Gender",
@@ -554,6 +555,10 @@ OC.L10N.register(
     "Create contract parameters group": "Create contract parameters group",
     "Group name": "Group name",
     Parameters: "Parameters",
+    Calendar : "Calendar",
+    Deck : "Deck",
+    "Participated in meeting": "Participated in meeting",
+    "Worked on task": "Worked on task"
   },
   "en",
   "nplurals=2; plural=(n != 1);"
