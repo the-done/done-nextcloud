@@ -168,6 +168,7 @@ OC.L10N.register(
     "Filter condition": "Filterbedingung",
     "Filter value": "Filterwert",
     Float: "Gleitkommazahl",
+    "Form my day": "Meinen Tag gestalten",
     Forward: "Vorwärts",
     Friday: "Freitag",
     "Full name": "Vollständiger Name",
@@ -545,6 +546,10 @@ OC.L10N.register(
     "Create contract parameters group": "Vertragsparametergruppe erstellen",
     "Group name": "Gruppenname",
     Parameters: "Parameter",
+    Calendar: "Kalender",
+    Deck: "Deck",
+    "Participated in meeting": "An Besprechung teilgenommen",
+    "Worked on task": "An Aufgabe gearbeitet"
   },
   "de",
   "nplurals=2; plural=(n != 1);"

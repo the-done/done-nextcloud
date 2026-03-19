@@ -158,6 +158,7 @@ OC.L10N.register(
     "Filter condition": "Условие фильтрации",
     "Filter value": "Значение фильтрации",
     Float: "Число с плавающей точкой",
+    "Form my day": "Сформировать мой день",
     Forward: "Вперёд",
     "Full name": "ФИО",
     Gender: "Гендер",
@@ -568,6 +569,10 @@ OC.L10N.register(
     "Create contract parameters group": "Создать группу параметров контракта",
     "Group name": "Название группы",
     Parameters: "Параметры",
+    Calendar : "Календарь",
+    Deck : "Карточки",
+    "Participated in meeting": "Участие во встрече",
+    "Worked on task": "Работа над задачей"
   },
   "ru",
   "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"

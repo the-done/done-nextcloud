@@ -145,6 +145,7 @@
     "Filter condition": "Filter condition",
     "Filter value": "Filter value",
     "Float": "Float",
+    "Form my day": "Form my day",
     "Forward": "Forward",
     "Full name": "Full name",
     "Gender": "Gender",
@@ -505,7 +506,11 @@
     "Contract parameters group": "Contract parameters group",
     "Create contract parameters group": "Create contract parameters group",
     "Group name": "Group name",
-    "Parameters": "Parameters"
+    "Parameters": "Parameters",
+    "Calendar" : "Calendar",
+    "Deck" : "Deck",
+    "Participated in meeting": "Participated in meeting",
+    "Worked on task": "Worked on task"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

@@ -76,3 +76,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Improved the logic of the "Today" button on the statistics page
 - The primary action in the employee table has been changed to a view action.
+- Now employees with the "Head" role can see only those employees to whom they are related within the project (where they are assigned as heads)
