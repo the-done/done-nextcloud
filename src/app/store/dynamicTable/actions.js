@@ -94,6 +94,9 @@ export const actions = {
   setLocalStorageSettings(source, payload) {
     this.setLocalStorageData(source, "settings", payload);
   },
+  setAllColumnsOrdering(source, value) {
+    this.setTableState(source, { allColumnsOrdering: value });
+  },
   setViewMode(source, viewMode = "table") {
     this.setTableState(source, { viewMode });
     this.setLocalStorageSettings(source, { viewMode });
