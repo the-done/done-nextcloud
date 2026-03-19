@@ -75,5 +75,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Improved the logic of the "Today" button on the statistics page
-- The primary action in the employee table has been changed to a view action.
+- The primary action in the employee table has been changed to a view action
 - Now employees with the "Head" role can see only those employees to whom they are related within the project (where they are assigned as heads)
+
+## 1.6.0 – 2026-03-19
+
+### Added
+- Now the first and last columns are fixed in dynamic tables
+- Added compatibility with version 33 of Nextcloud

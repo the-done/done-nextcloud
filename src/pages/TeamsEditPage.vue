@@ -151,7 +151,7 @@ export default {
 
         this.team = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

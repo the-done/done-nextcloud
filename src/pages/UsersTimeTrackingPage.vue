@@ -186,7 +186,7 @@ export default {
 
         this.userData = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     init() {

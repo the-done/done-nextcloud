@@ -17,7 +17,7 @@ SPDX-License-Identifier: MIT */
       </template>
       {{ activeValueLabel }}
     </NcButton>
-    <div v-else class="v-simple-inline-form v-flex--nowrap">
+    <div v-else class="v-simple-inline-form nowrap">
       <VDropdown
         v-model="modelValue"
         :options="options"

@@ -169,6 +169,7 @@ OC.L10N.register(
     "Filter condition": "Condición de filtro",
     "Filter value": "Valor de filtro",
     Float: "Número flotante",
+    "Form my day": "Formar mi día",
     Forward: "Adelante",
     Friday: "Viernes",
     "Full name": "Nombre completo",
@@ -538,6 +539,11 @@ OC.L10N.register(
       "Crear grupo de parámetros del contrato",
     "Group name": "Nombre del grupo",
     Parameters: "Parámetros",
+    Calendar: "Calendario",
+    Deck: "Deck",
+    "Participated in meeting": "Participó en la reunión",
+    "Worked on task": "Trabajó en la tarea",
+    "Set values for the following parameters. By default, their value is defined as 0": "Establezca valores para los siguientes parámetros. Por defecto, su valor es 0"
   },
   "es",
   "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"

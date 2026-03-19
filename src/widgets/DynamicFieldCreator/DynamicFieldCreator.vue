@@ -65,7 +65,7 @@ SPDX-License-Identifier: MIT */
         </NcCheckboxRadioSwitch>
       </div>
     </div>
-    <div class="v-flex-0-0-auto v-flex v-flex--gap-1 v-flex--justify-end">
+    <div class="flex-[0_0_auto] flex gap-1 justify-end">
       <VButton
         :style="{ width: '120px' }"
         :loading="loading"

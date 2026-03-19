@@ -24,7 +24,7 @@
       :disabled="disabled"
       :type="type"
       :minute-step="minuteStep"
-      class="v-100"
+      class="w-full!"
       @update:modelValue="handleUpdateModelValue"
     />
     <div v-else class="v-caption v-caption--grey">{{ contextTranslate('Reading is not available', context) }}</div>

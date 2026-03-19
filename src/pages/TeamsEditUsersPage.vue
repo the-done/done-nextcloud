@@ -142,7 +142,7 @@ export default {
 
         this.roleOptions = roleOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }
@@ -204,7 +204,7 @@ export default {
           duration: 2 * 1000,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
       } finally {

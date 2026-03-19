@@ -299,7 +299,7 @@ export default {
 
         this.fetchDataWithFilters();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleDragEnd({ list }) {
@@ -311,7 +311,7 @@ export default {
 
         await editReportSortMultiple(payload);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
       }

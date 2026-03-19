@@ -412,7 +412,7 @@ export const pageFormCreatorMixin = {
 
         await saveFieldsOrdering({ source: this.source, fields });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleDeleteFieldsOrdering() {
@@ -426,7 +426,7 @@ export const pageFormCreatorMixin = {
         this.tempSortDescriptor = [];
         this.fieldsSortOrdering = [];
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async fetchFieldsOrdering() {

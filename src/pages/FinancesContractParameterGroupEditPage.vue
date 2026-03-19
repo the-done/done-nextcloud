@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT */
           >
             <template #parameters></template>
             <template #footer>
-              <div class="v-flex v-flex--justify-end">
+              <div class="flex justify-end">
                 <NcButton native-type="submit">
                   {{ contextTranslate("Save", context) }}
                 </NcButton>
@@ -204,7 +204,7 @@ export default {
 
         this.parameterOptions = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleFetchData() {
@@ -224,7 +224,7 @@ export default {
 
         this.setFormValues({ ...data, parameters: parameterValues });
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

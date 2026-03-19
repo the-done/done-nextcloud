@@ -5,10 +5,7 @@ SPDX-License-Identifier: MIT */
   <VPageContent class="relative">
     <VLoader v-if="isInitLoading || isLoading" absolute />
     <VPagePadding v-if="isInitLoading === false">
-      <div
-        v-if="hasWarnings === true"
-        class="v-flex v-flex--column v-flex--gap-1 mb-4"
-      >
+      <div v-if="hasWarnings === true" class="flex flex-col gap-1 mb-4">
         <NcNoteCard
           v-if="nexcloudUserOptions && nexcloudUserOptions.length === 0"
           type="warning"
@@ -64,7 +61,7 @@ SPDX-License-Identifier: MIT */
         @on-delete-fields-ordering="handleDeleteFieldsOrdering"
       >
         <template #footer>
-          <div class="v-flex v-flex--justify-end v-flex--gap-1">
+          <div class="flex justify-end gap-1">
             <NcButton native-type="submit">
               {{ contextTranslate("Save", context) }}
             </NcButton>
@@ -330,7 +327,7 @@ export default {
 
         if (key === "position_id") {
           const objectValue = this.positionOptions.find(
-            (item) => item.slug === value
+            (item) => item.slug === value,
           );
 
           if (objectValue) {
@@ -348,7 +345,7 @@ export default {
 
         if (key === "contract_type_id") {
           const objectValue = this.contractTypeOptions.find(
-            (item) => item.slug === value
+            (item) => item.slug === value,
           );
 
           if (objectValue) {
@@ -390,7 +387,7 @@ export default {
           data,
         }); // formDynamicFieldsMixin
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async fetchDictionaries() {
@@ -421,7 +418,7 @@ export default {
         this.positionOptions = positionOptions;
         this.contractTypeOptions = contractTypeOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }

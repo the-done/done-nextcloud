@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+export const isObject = (value) =>
+  typeof value === "object" && !Array.isArray(value);
+
 export const isEmptyValue = (value) => {
   return (
     ["", null, undefined, "{}"].includes(value) === true ||

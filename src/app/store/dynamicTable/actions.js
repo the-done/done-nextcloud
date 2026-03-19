@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+import { isObject } from "@/shared/lib/helpers/validation";
+
 import { LOCALSTORAGE_TABLE_PREFIXES } from "@/shared/lib/constants/localStorage";
 
 export const actions = {
@@ -30,14 +32,34 @@ export const actions = {
       },
     };
   },
-  getTableLocalStorageName(source, key) {
+  getInitArray(value) {
+    return value && Array.isArray(value) ? value : [];
+  },
+  getInitObject(value) {
+    return isObject(value) ? value : {};
+  },
+  initDynamicTableState({
+    source,
+    data,
+    allColumnsOrdering,
+    settings,
+    options,
+  }) {
+    this.setTableState(source, { data: this.getInitArray(data) });
+    this.setTableState(source, {
+      allColumnsOrdering: this.getInitArray(allColumnsOrdering),
+    });
+    this.setTableState(source, { settings: this.getInitObject(settings) });
+    this.setTableState(source, { options: this.getInitObject(options) });
+  },
+  getLocalStorageName(source, key) {
     const prefix = LOCALSTORAGE_TABLE_PREFIXES[key];
 
     return `${prefix}_${source}`;
   },
-  setTableLocalStorageData(source, key, payload) {
+  setLocalStorageData(source, key, payload) {
     try {
-      const tableSettingsLocalStorageName = this.getTableLocalStorageName(
+      const tableSettingsLocalStorageName = this.getLocalStorageName(
         source,
         key,
       );
@@ -66,14 +88,20 @@ export const actions = {
         JSON.stringify(payload),
       );
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   },
   setLocalStorageSettings(source, payload) {
-    this.setTableLocalStorageData(source, "settings", payload);
+    this.setLocalStorageData(source, "settings", payload);
   },
-  setTableViewMode(source, viewMode = "table") {
+  setAllColumnsOrdering(source, value) {
+    this.setTableState(source, { allColumnsOrdering: value });
+  },
+  setViewMode(source, viewMode = "table") {
     this.setTableState(source, { viewMode });
     this.setLocalStorageSettings(source, { viewMode });
+  },
+  setLoading(source, value) {
+    this.setTableState(source, { isLoading: value });
   },
 };

@@ -3,9 +3,22 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <th
-    :class="['v-table-head', customClass]"
+    :class="[
+      {
+        'v-table-head': true,
+        'v-table-head--sticky': stickyLeft,
+      },
+      customClass,
+    ]"
     v-click-outside="handleCloseDropdown"
   >
+    <span
+      v-if="stickyLeft"
+      :class="{
+        'v-table-sticky-box v-table-sticky-box--left': true,
+        'v-table-sticky-box--hidden': hideStickyBox,
+      }"
+    />
     <div
       :class="[
         'v-table-head__content',
@@ -67,6 +80,14 @@ export default {
       type: [String, Object, Array],
       default: "",
     },
+    stickyLeft: {
+      type: Boolean,
+      default: false,
+    },
+    scrolledHorizontally: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -76,6 +97,9 @@ export default {
   computed: {
     hasDropdown() {
       return this.sortable === true || this.filterable === true;
+    },
+    hideStickyBox() {
+      return this.stickyLeft && !this.scrolledHorizontally;
     },
   },
   methods: {

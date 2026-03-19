@@ -1,0 +1,14 @@
+.v-simple-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.v-simple-inline-form__input {
+  max-width: 260px;
+}
+
+.v-simple-inline-form__button {
+  margin-bottom: var(--default-grid-baseline);
+}

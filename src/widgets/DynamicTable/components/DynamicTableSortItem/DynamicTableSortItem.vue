@@ -6,7 +6,7 @@
 <template>
   <div class="dynamic-table-sort-item">
     <DragVertical :size="20" class="dynamic-table-sort-item__handle" />
-    <div class="v-flex v-flex--gap-1">
+    <div class="flex gap-1">
       <VButton size="small" variant="tertiary" @click="handleChangeSort">
         <template #icon>
           <ArrowUpThin v-if="isSortedAsc" :size="16" />

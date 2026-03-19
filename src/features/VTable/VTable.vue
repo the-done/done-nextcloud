@@ -2,8 +2,12 @@
 SPDX-License-Identifier: MIT */
 
 <template>
-  <div :class="['v-table-wrap', isDarkTheme && 'v-table-wrap--dark']">
-    <VScrollArea v-if="value && value.length > 0">
+  <div class="v-table-wrap">
+    <VScrollArea
+      v-if="value && value.length > 0"
+      ref="scrollArea"
+      @scroll.native="handleScroll"
+    >
       <table class="v-table">
         <template v-if="columns && columns.length">
           <thead v-if="draggable === true" class="v-table-header">
@@ -20,11 +24,13 @@ SPDX-License-Identifier: MIT */
                 <VTableHead
                   v-if="col.visible !== false"
                   :key="col.key"
-                  :draggable="col.draggable === false ? false : true"
-                  :sortable="col.sortable === false ? false : true"
-                  :filterable="col.filterable === false ? false : true"
-                  :customClass="col.customClass"
+                  :draggable="col.draggable !== false"
+                  :sortable="col.sortable !== false"
+                  :filterable="col.filterable !== false"
                   :item="col"
+                  :sticky-left="col.stickyLeft"
+                  :scrolled-horizontally="isScrolledHorizontally"
+                  :customClass="col.customClass"
                   @on-sort="handleSort"
                   @on-create-filter="handleCreateFilter"
                 >
@@ -38,6 +44,8 @@ SPDX-License-Identifier: MIT */
               <VTableHead
                 v-if="col.visible !== false"
                 :key="col.key"
+                :sticky-left="col.stickyLeft"
+                :scrolled-horizontally="isScrolledHorizontally"
                 :customClass="col.customClass"
               >
                 {{ col.label }}
@@ -53,6 +61,10 @@ SPDX-License-Identifier: MIT */
                     :key="col.key"
                     :name="col.key"
                     :customClass="col.customClass"
+                    :sticky-left="col.stickyLeft"
+                    :sticky-right="col.stickyRight"
+                    :scrolled-horizontally="isScrolledHorizontally"
+                    :scrolled-horizontally-end="isScrolledHorizontallyEnd"
                   >
                     <slot
                       :name="col.key"
@@ -98,11 +110,7 @@ SPDX-License-Identifier: MIT */
 </template>
 
 <script>
-import {
-  NcEmptyContent,
-  NcLoadingIcon,
-  checkIfDarkTheme,
-} from "@nextcloud/vue";
+import { NcEmptyContent, NcLoadingIcon } from "@nextcloud/vue";
 import DraggableCol from "vuedraggable";
 import { t } from "@nextcloud/l10n";
 
@@ -117,6 +125,7 @@ import { VTableRow } from "./components/VTableRow";
 import { VTableCol } from "./components/VTableCol";
 
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
+import { useTableScroll } from "./lib/mixins/useTableScroll";
 
 import { LOADER_SIZE } from "@/shared/lib/constants/ui";
 
@@ -134,7 +143,7 @@ export default {
     VTableCol,
     VScrollArea,
   },
-  mixins: [contextualTranslationsMixin],
+  mixins: [contextualTranslationsMixin, useTableScroll],
   props: {
     value: {
       type: Array,
@@ -172,14 +181,10 @@ export default {
   emits: ["on-update-columns-order", "on-drag-end"],
   data() {
     return {
+      isScrollInitiated: false,
       isDragInProcess: false,
       loaderSize: LOADER_SIZE,
     };
-  },
-  computed: {
-    isDarkTheme() {
-      return checkIfDarkTheme();
-    },
   },
   methods: {
     handleDragStart() {
@@ -201,6 +206,21 @@ export default {
     },
     handleCreateFilter(payload) {
       this.$emit("on-create-filter", payload);
+    },
+  },
+  watch: {
+    value(nextValue) {
+      if (this.isScrollInitiated) {
+        return;
+      }
+
+      if (nextValue?.length) {
+        this.$nextTick(() => {
+          this.handleResize();
+        });
+
+        this.isScrollInitiated = true;
+      }
     },
   },
 };

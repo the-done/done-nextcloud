@@ -40,6 +40,7 @@
     "Background image": "Imagen de fondo",
     "By employees": "Por empleados",
     "By projects": "Por proyectos",
+    "Calendar": "Calendario",
     "Card": "Tarjeta",
     "Cancel": "Cancelar",
     "City": "Ciudad",
@@ -77,6 +78,7 @@
     "Date and time": "Fecha y hora",
     "Date of birth": "Fecha de nacimiento",
     "December": "Diciembre",
+    "Deck": "Deck",
     "Delete": "Eliminar",
     "Delete employee": "Eliminar empleado",
     "Delete projects": "Eliminar proyectos",
@@ -148,6 +150,7 @@
     "Filter condition": "Condición de filtro",
     "Filter value": "Valor de filtro",
     "Float": "Número flotante",
+    "Form my day": "Formar mi día",
     "Forward": "Adelante",
     "Friday": "Viernes",
     "Full name": "Nombre completo",
@@ -471,7 +474,10 @@
     "Contract parameters group": "Grupo de parámetros del contrato",
     "Create contract parameters group": "Crear grupo de parámetros del contrato",
     "Group name": "Nombre del grupo",
-    "Parameters": "Parámetros"
+    "Parameters": "Parámetros",
+    "Participated in meeting": "Participó en la reunión",
+    "Worked on task": "Trabajó en la tarea",
+    "Set values for the following parameters. By default, their value is defined as 0": "Establezca valores para los siguientes parámetros. Por defecto, su valor es 0"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

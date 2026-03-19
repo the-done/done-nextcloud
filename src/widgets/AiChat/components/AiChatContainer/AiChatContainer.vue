@@ -3,7 +3,7 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <div
-    data-id="AiChatContainer"
+    data-component-id="AiChatContainer"
     :class="{
       'fixed z-1000 w-(--ai-chat-width)': true,
       'flex flex-col bg-(--color-main-background) overflow-hidden': true,
@@ -105,6 +105,7 @@ SPDX-License-Identifier: MIT */
           'min-h-[128px] max-h-[128px]': isSidebarMode === true,
           'min-h-[80px] max-h-[80px]': isSidebarMode === false,
         }"
+        :enter-submit="true"
         @on-keydown-enter="handleSubmitMessage"
         @on-keydown-enter-shift="handleAddNewLine"
       />
@@ -251,7 +252,7 @@ export default {
 
         this.setToken(data.token);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       }
@@ -264,7 +265,7 @@ export default {
           throw new Error(e);
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       } finally {
@@ -279,7 +280,7 @@ export default {
           this.messages = [...data];
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       }
@@ -308,7 +309,7 @@ export default {
           this.focusTextarea();
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -325,7 +326,7 @@ export default {
 
         await resetHistory();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async init() {
@@ -350,7 +351,7 @@ export default {
 
         this.focusTextarea();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         this.handleSetErrorState();
       } finally {

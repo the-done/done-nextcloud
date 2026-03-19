@@ -3,17 +3,7 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <VPage>
-    <DynamicTable
-      v-model="tableData"
-      :all-columns-ordering.sync="columnsWithControls"
-      :loading="tableIsLoading"
-      :source="source"
-      :settings="settings"
-      :empty-content-description="
-        contextTranslate('We could not find data for your teams.')
-      "
-      @on-fetch="handleFetchData"
-    >
+    <DynamicTable :source="source" @on-fetch="handleFetchData">
       <template #toolbar-left>
         <NcBreadcrumbs>
           <NcBreadcrumb
@@ -138,27 +128,6 @@ export default {
     source() {
       return MAP_DYNAMIC_TABLE_SOURCES["team"];
     },
-    columnsWithControls: {
-      get() {
-        return [
-          {
-            title: "",
-            key: "controls",
-            draggable: false,
-            sortable: false,
-            filterable: false,
-            hideable: false,
-            customClass: "w-[100px]",
-          },
-          ...this.allColumnsOrdering,
-        ];
-      },
-      set(value) {
-        this.allColumnsOrdering = value.filter(
-          (item) => item.key !== "controls"
-        );
-      },
-    },
   },
   methods: {
     handleClickPreview(slug) {
@@ -169,21 +138,21 @@ export default {
     },
     async handleFetchData() {
       try {
-        this.tableIsLoading = true;
+        this.setTableLoading(true);
 
         const { data } = await fetchTeamsTableData();
 
         this.initDynamicTable(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
-        this.tableIsLoading = false;
+        this.setTableLoading(false);
       }
     },
     async handleDelete({ slug, slug_type }) {
       if (
         !confirm(
-          this.contextTranslate("Are you sure you want to delete the record?")
+          this.contextTranslate("Are you sure you want to delete the record?"),
         )
       ) {
         return;
@@ -194,7 +163,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     init() {

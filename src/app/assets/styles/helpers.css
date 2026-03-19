@@ -1,0 +1,65 @@
+.v-label {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.v-label--field-placeholder {
+  border-bottom: 1px solid var(--color-border-dark);
+}
+
+.v-caption {
+  display: block;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.v-caption--absolute {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform: translateY(100%);
+}
+
+.v-caption--grey {
+  color: var(--color-text-lighter);
+}
+
+.v-link {
+  text-decoration: none;
+}
+
+.v-link:hover {
+  text-decoration: underline;
+}
+
+.v-link--underline {
+  text-decoration: underline;
+}
+
+.v-link--underline:hover {
+  text-decoration: none;
+}
+
+.v-color-error {
+  color: var(--color-element-error);
+}
+
+.v-border-top {
+  border-top: 1px solid var(--color-border);
+}
+
+.v-border-bottom {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.v-cursor * {
+  cursor: inherit;
+}
+
+.v-cursor--pointer {
+  cursor: pointer;
+}
+
+.v-cursor--pointer input::file-selector-button {
+  cursor: pointer;
+}

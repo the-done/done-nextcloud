@@ -7,7 +7,7 @@ import Vue from "vue";
 export const handleRestErrors = (e) => {
   const { response } = e;
 
-  console.log(e);
+  console.error(e);
 
   if (
     response?.data?.error_type === "validation" &&

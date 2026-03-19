@@ -36,7 +36,7 @@ SPDX-License-Identifier: MIT */
               :required="true"
               :label="contextTranslate('Sorting', context)"
             />
-            <div class="v-flex v-flex--justify-end">
+            <div class="flex justify-end">
               <NcButton native-type="submit">
                 {{ contextTranslate("Save", context) }}
               </NcButton>
@@ -202,7 +202,7 @@ export default {
 
         this.navigateParent();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleUpdate() {
@@ -216,7 +216,7 @@ export default {
 
         this.navigateParent();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     handleSubmit() {
@@ -252,7 +252,7 @@ export default {
 
         this.setFormValues(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {
@@ -265,7 +265,7 @@ export default {
 
         this.formValues.sort = nextNumber ? String(nextNumber) : "0";
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     init() {

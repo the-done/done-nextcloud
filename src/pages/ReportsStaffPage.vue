@@ -2,7 +2,7 @@
 SPDX-License-Identifier: MIT */
 
 <template>
-  <VPage data-id="ReportStaffPage">
+  <VPage data-component-id="ReportStaffPage">
     <VToolbar>
       <NcBreadcrumbs>
         <NcBreadcrumb

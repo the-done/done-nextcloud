@@ -104,7 +104,7 @@ export default {
           id: String(item.id),
         }));
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }

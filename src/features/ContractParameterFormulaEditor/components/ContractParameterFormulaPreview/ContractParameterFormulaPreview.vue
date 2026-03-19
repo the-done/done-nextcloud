@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { transformFormulaToString } from "@/shared/lib/helpers/formula";
+import { transformFormulaToString } from "@/shared/lib/helpers/contractFormula";
 
 export default {
   name: "ContractParameterFormulaPreview",
@@ -14,10 +14,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    parameterOptions: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     textFormula() {
-      return transformFormulaToString(this.value);
+      return transformFormulaToString(this.value, this.parameterOptions);
     },
   },
 };

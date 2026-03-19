@@ -2,7 +2,7 @@
 SPDX-License-Identifier: MIT */
 
 <template>
-  <VPage data-id="UsersPreviewPage">
+  <VPage data-component-id="UsersPreviewPage">
     <VToolbar>
       <NcBreadcrumbs>
         <NcBreadcrumb
@@ -163,7 +163,7 @@ export default {
         this.publicData = publicData;
         this.entityData = entityData.data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {
