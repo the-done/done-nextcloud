@@ -141,7 +141,7 @@ export default {
 
         this.user = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

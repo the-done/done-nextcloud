@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT */
         @on-submit="handleSubmit"
       >
         <template #footer>
-          <div class="v-flex v-flex--justify-end">
+          <div class="flex justify-end">
             <NcButton native-type="submit">
               {{ contextTranslate("Save", context) }}
             </NcButton>
@@ -251,7 +251,7 @@ export default {
 
         this.setFormValues(model_data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       }
@@ -267,7 +267,7 @@ export default {
           }));
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleFetchData() {
@@ -282,7 +282,7 @@ export default {
 
         this.handleFetchEntityData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isInitLoading = false;
         this.isLoading = false;

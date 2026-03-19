@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: 2025 The Done contributors
- * SPDX-License-Identifier: MIT
- */
+/** * SPDX-FileCopyrightText: 2025 The Done contributors *
+SPDX-License-Identifier: MIT */
 
 <template>
   <div class="flex gap-2 items-center">
@@ -18,7 +16,7 @@
       </DynamicTableBadge>
       <div
         v-if="isDropdownActive && sortCount > 0"
-        class="v-table-dropdown p-0 v-flex--gap-none"
+        class="v-table-dropdown p-0 gap-0"
       >
         <template v-if="sortIsExist">
           <Draggable
@@ -96,7 +94,7 @@ export default {
         .sort(
           (a, b) =>
             a.rules.sort_settings.sort_ordering -
-            b.rules.sort_settings.sort_ordering
+            b.rules.sort_settings.sort_ordering,
         );
     },
     sortCount() {

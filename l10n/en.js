@@ -558,7 +558,8 @@ OC.L10N.register(
     Calendar : "Calendar",
     Deck : "Deck",
     "Participated in meeting": "Participated in meeting",
-    "Worked on task": "Worked on task"
+    "Worked on task": "Worked on task",
+    "Set values for the following parameters. By default, their value is defined as 0": "Set values for the following parameters. By default, their value is defined as 0"
   },
   "en",
   "nplurals=2; plural=(n != 1);"

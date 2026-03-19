@@ -71,7 +71,7 @@ export default {
           onSuccess(response);
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
 
@@ -116,7 +116,7 @@ export default {
       } catch (e) {
         handleRestErrors(e);
 
-        console.log(e);
+        console.error(e);
       }
     },
   },

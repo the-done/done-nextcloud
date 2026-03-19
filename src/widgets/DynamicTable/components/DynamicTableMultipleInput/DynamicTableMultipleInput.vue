@@ -4,8 +4,8 @@
  */
 
 <template>
-  <div class="v-flex v-flex--column v-flex--gap-1">
-    <div class="v-flex v-flex--align-center v-flex--gap-1">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center gap-1">
       <VTextField v-model="inputValue" placeholder="Type a value" />
       <VButton size="small" variant="tertiary" @click="handleAdd">
         <template #icon>

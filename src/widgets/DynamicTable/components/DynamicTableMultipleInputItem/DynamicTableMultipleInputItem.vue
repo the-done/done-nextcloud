@@ -4,7 +4,7 @@
  */
 
 <template>
-  <div class="v-flex v-flex--align-center v-flex--gap-1">
+  <div class="flex items-center gap-1">
     {{ value }}
     <VButton size="small" variant="tertiary" @click="handleDelete">
       <template #icon>

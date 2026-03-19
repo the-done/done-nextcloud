@@ -57,7 +57,9 @@ SPDX-License-Identifier: MIT */
           </NcActions>
         </template>
         <template #value="{ row, value }">
-          {{ getTextValueForTable({ row, value }) }}
+          <span class="text-sm">
+            {{ getTextValueForTable({ row, value }) }}
+          </span>
         </template>
       </VTable>
     </VPageContent>
@@ -78,7 +80,7 @@ SPDX-License-Identifier: MIT */
           <ContractParameterFormulaEditor
             v-if="isFormula === true"
             v-model="formValues.value"
-            :parameter-options="parameterOptions"
+            :parameter-options="tableData"
           />
           <VTextField
             v-else
@@ -131,7 +133,7 @@ import {
 
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 
-import { transformFormulaToString } from "@/shared/lib/helpers/formula";
+import { transformFormulaToString } from "@/shared/lib/helpers/contractFormula";
 import { handleRestErrors } from "@/shared/lib/helpers/errors";
 import { redirectNotFoundPage } from "@/shared/lib/helpers/navigation";
 
@@ -255,7 +257,7 @@ export default {
         try {
           const parsed = JSON.parse(value);
 
-          return transformFormulaToString(parsed);
+          return transformFormulaToString(parsed, this.tableData);
         } catch (e) {
           return value;
         }
@@ -377,11 +379,13 @@ export default {
       this.isLoading = true;
 
       try {
-        const { data } = await fetchContractParameterValues(this.slug);
+        const {
+          data: { values },
+        } = await fetchContractParameterValues(this.slug);
 
-        this.tableData = data;
+        this.tableData = values;
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

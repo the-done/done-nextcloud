@@ -87,7 +87,7 @@ export default {
         this.slug = slug;
         this.isFetched = true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isInitLoading = false;
       }

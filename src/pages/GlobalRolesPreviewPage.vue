@@ -169,7 +169,7 @@ export default {
         this.roleData = roleData;
         this.tableData = tableData;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -191,7 +191,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleSubmit({ user }) {
@@ -205,7 +205,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         this.isLoading = false;
       }

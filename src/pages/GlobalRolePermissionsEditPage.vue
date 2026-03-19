@@ -390,7 +390,7 @@ export default {
         this.entity = result;
         this.cachedFields = cached;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }

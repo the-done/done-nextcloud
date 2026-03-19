@@ -549,7 +549,8 @@ OC.L10N.register(
     Calendar: "Kalender",
     Deck: "Deck",
     "Participated in meeting": "An Besprechung teilgenommen",
-    "Worked on task": "An Aufgabe gearbeitet"
+    "Worked on task": "An Aufgabe gearbeitet",
+    "Set values for the following parameters. By default, their value is defined as 0": "Legen Sie Werte für die folgenden Parameter fest. Standardmäßig ist ihr Wert auf 0 festgelegt"
   },
   "de",
   "nplurals=2; plural=(n != 1);"

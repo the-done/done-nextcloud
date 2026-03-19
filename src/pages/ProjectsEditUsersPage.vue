@@ -145,7 +145,7 @@ export default {
 
         this.roleOptions = roleOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }
@@ -163,7 +163,7 @@ export default {
 
         this.tableData = result;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -182,7 +182,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleSubmitRoleChange({ value, row }) {
@@ -204,7 +204,7 @@ export default {
           duration: 2 * 1000,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
       } finally {
@@ -236,7 +236,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         this.isLoading = false;
       }

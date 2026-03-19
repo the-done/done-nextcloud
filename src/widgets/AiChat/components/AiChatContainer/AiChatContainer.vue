@@ -252,7 +252,7 @@ export default {
 
         this.setToken(data.token);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       }
@@ -265,7 +265,7 @@ export default {
           throw new Error(e);
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       } finally {
@@ -280,7 +280,7 @@ export default {
           this.messages = [...data];
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         throw new Error(e);
       }
@@ -309,7 +309,7 @@ export default {
           this.focusTextarea();
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -326,7 +326,7 @@ export default {
 
         await resetHistory();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async init() {
@@ -351,7 +351,7 @@ export default {
 
         this.focusTextarea();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         this.handleSetErrorState();
       } finally {

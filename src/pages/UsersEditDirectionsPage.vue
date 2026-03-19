@@ -102,7 +102,7 @@ export default {
 
         this.directionOptions = directionOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }
@@ -117,7 +117,7 @@ export default {
 
         this.fetchDictionaries();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -139,7 +139,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
       }
@@ -155,7 +155,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         handleRestErrors(e);
 

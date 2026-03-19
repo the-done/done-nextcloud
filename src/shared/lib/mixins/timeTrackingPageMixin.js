@@ -204,7 +204,7 @@ export const timeTrackingPageMixin = {
         try {
           this.activeDate = new Date(active_date);
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
 
@@ -279,7 +279,7 @@ export const timeTrackingPageMixin = {
 
         await this.initFetchDataWithFilters();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isInitLoading = false;
       }

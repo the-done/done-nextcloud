@@ -38,7 +38,7 @@ SPDX-License-Identifier: MIT */
             @on-submit="handleSubmit"
           >
             <template #footer>
-              <div class="v-flex v-flex--justify-end">
+              <div class="flex justify-end">
                 <NcButton native-type="submit">
                   {{ contextTranslate("Save", context) }}
                 </NcButton>
@@ -205,7 +205,7 @@ export default {
 
         this.setFormValues(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

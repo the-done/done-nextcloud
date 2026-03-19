@@ -476,7 +476,8 @@
     "Calendar" : "Agenda",
     "Deck" : "Deck",
     "Participated in meeting": "A participé à une réunion",
-    "Worked on task": "A travaillé sur une tâche"
+    "Worked on task": "A travaillé sur une tâche",
+    "Set values for the following parameters. By default, their value is defined as 0": "Définissez les valeurs des paramètres suivants. Par défaut, leur valeur est définie sur 0"
   },
   "pluralForm": "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

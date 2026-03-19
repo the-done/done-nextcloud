@@ -40,14 +40,14 @@ SPDX-License-Identifier: MIT */
       </template>
 
       <template #emptyStateDescription>
-        <p class="v-text-center">
+        <p class="text-center">
           {{
             contextTranslate(
               "Employee roles cannot be created through the application UI."
             )
           }}
         </p>
-        <p class="v-text-center">
+        <p class="text-center">
           {{ contextTranslate("Please contact the administrator.") }}
         </p>
       </template>
@@ -116,7 +116,7 @@ export default {
 
         this.tableData = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }

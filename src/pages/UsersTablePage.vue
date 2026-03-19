@@ -199,7 +199,7 @@ export default {
 
         this.initDynamicTable(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.setTableLoading(false);
       }
@@ -221,7 +221,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleRestore({ slug }) {
@@ -241,7 +241,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     init() {

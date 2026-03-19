@@ -4,7 +4,7 @@
  */
 
 <template>
-  <VChip v-if="value" :variant="variant" :square="square" class="v-text-nowrap">
+  <VChip v-if="value" :variant="variant" :square="square" class="nowrap">
     {{ value }}
   </VChip>
 </template>

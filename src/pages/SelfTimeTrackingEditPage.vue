@@ -185,7 +185,7 @@ export default {
         this.statisticsData = data;
         this.statisticsTotals = totals;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleCreate(payload, callback) {
@@ -302,7 +302,7 @@ export default {
 
         this.setFormValues({ ...data }); // timeTrackingFormMixin
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async init() {
@@ -328,7 +328,7 @@ export default {
         // Load cached values only if there are no URL parameters
         await this.loadCachedValues(); // timeTrackingFormMixin
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
   },

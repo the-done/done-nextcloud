@@ -193,8 +193,25 @@ export default {
         return [];
       }
 
+      const transformedColumns = this.tableState.allColumnsOrdering.map(
+        (item, index) => {
+          if (index === 0) {
+            return {
+              ...item,
+              stickyLeft: true,
+            };
+          }
+
+          return {
+            ...item,
+            stickyLeft: false,
+          };
+        },
+      );
+
       if (this.options?.controls === true) {
         return [
+          ...transformedColumns,
           {
             title: "",
             key: "controls",
@@ -202,9 +219,9 @@ export default {
             sortable: false,
             filterable: false,
             hideable: false,
+            stickyRight: true,
             customClass: "w-[100px]",
           },
-          ...this.tableState.allColumnsOrdering,
         ];
       }
 
@@ -249,7 +266,7 @@ export default {
 
         this.conditions.isFetched = true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     updateColumnsOrdering(value) {
@@ -274,7 +291,7 @@ export default {
           for_all: false,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleUpdateHiddenColumns({ nextValue, item, isHidden }) {
@@ -310,7 +327,7 @@ export default {
           for_all: false,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleDeleteAllColumnsOrdering() {
@@ -319,7 +336,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleSort({ item, value }) {
@@ -381,7 +398,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handelDeleteSort(item) {
@@ -396,7 +413,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handelDeleteAllSort() {
@@ -405,7 +422,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleChangeSort({ item, value }) {
@@ -423,7 +440,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleUpdateSortOrdering(nextValue) {
@@ -530,7 +547,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleDeleteFilter(item) {
@@ -545,7 +562,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async handleDeleteAllFilters() {
@@ -554,7 +571,7 @@ export default {
 
         this.$emit("on-fetch");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
   },

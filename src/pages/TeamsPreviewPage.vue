@@ -161,7 +161,7 @@ export default {
         this.publicData = publicData;
         this.entityData = entityData.data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         redirectNotFoundPage(this.$router);
       } finally {

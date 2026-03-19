@@ -512,7 +512,8 @@
     "Calendar" : "Календарь",
     "Deck" : "Карточки",
     "Participated in meeting": "Участие во встрече",
-    "Worked on task": "Работа над задачей"
+    "Worked on task": "Работа над задачей",
+    "Set values for the following parameters. By default, their value is defined as 0": "Установите значения для следующих параметров. По умолчанию их значение определяется как 0"
   },
   "pluralForm": "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

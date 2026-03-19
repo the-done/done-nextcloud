@@ -1,0 +1,247 @@
+.v-table-wrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.v-table-full {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.v-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.v-table-head {
+  position: relative;
+  border-style: solid;
+  border-color: var(--color-border);
+  border-width: 0 1px;
+  color: var(--color-text-maxcontrast);
+  background-color: var(--color-main-background);
+}
+
+@media (width >= 768px) {
+  .v-table-head--sticky {
+    position: sticky;
+    left: 0;
+    z-index: 50;
+  }
+}
+
+.v-table-head:before,
+.v-table-head:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.v-table-head:before {
+  top: 0;
+}
+
+.v-table-head:after {
+  bottom: -1px;
+}
+
+.v-table-head__content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.v-table-head__content--draggable {
+  padding-left: 8px;
+}
+
+.v-table-head__content--clickable,
+.v-table-head__content--clickable .v-table-head__label {
+  cursor: pointer;
+}
+
+.v-table-head__content--clickable:hover {
+  background-color: var(--color-background-hover);
+}
+
+.v-table-head__content--clickable:active {
+  background-color: var(--color-background-dark);
+}
+
+.v-table-head__label {
+  cursor: unset;
+}
+
+.v-table-head:first-child,
+.v-table-col:first-child {
+  border-left: none;
+}
+
+.v-table-head:last-child,
+.v-table-col:last-child {
+  border-right: none;
+}
+
+.v-table .v-table-row--empty:hover {
+  background-color: transparent;
+}
+
+.v-table-col {
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-main-background);
+}
+
+@media (width >= 768px) {
+  .v-table-col--sticky {
+    position: sticky;
+    z-index: 10;
+  }
+
+  .v-table-col--sticky-left {
+    left: 0;
+  }
+
+  .v-table-col--sticky-right {
+    right: 0;
+  }
+}
+
+.v-table-col--empty {
+  padding-top: 32px;
+  padding-bottom: 40px;
+  border-bottom: none;
+}
+
+.v-table-sticky-box {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  overflow: hidden;
+  z-index: -1;
+  transition: all 0.2s ease;
+}
+
+@media (width < 768px) {
+  .v-table-sticky-box {
+    display: none;
+  }
+}
+
+.v-table-sticky-box:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.v-table-sticky-box--left {
+  right: -4px;
+  left: 0;
+}
+
+.v-table-sticky-box--right {
+  right: 0;
+  left: -4px;
+}
+
+.v-table-sticky-box--left:before {
+  right: 4px;
+  left: 0;
+  box-shadow: 2px 0px 3px 0px rgba(0, 0, 0, 0.25);
+}
+
+.v-table-sticky-box--right:before {
+  right: 0;
+  left: 4px;
+  box-shadow: -2px 0px 3px 0px rgba(0, 0, 0, 0.25);
+}
+
+.v-table-sticky-box--hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.v-table-body {
+  transition: opacity 0.1s ease;
+}
+
+.v-table-body--transparent {
+  opacity: 0.15;
+}
+
+.v-table-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-main-background);
+  box-shadow: 0 5px 10px 0px var(--color-box-shadow);
+  min-width: calc(100% - 32px);
+  max-height: 425px;
+  z-index: 100;
+}
+
+.v-table-dropdown--top {
+  top: calc(100% + 1px);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.v-table-dropdown--sub {
+  display: none;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.v-table-dropdown__item {
+  position: relative;
+}
+
+.v-table-dropdown__label {
+  padding: 2px 4px 2px 8px;
+  border-radius: 4px;
+}
+
+.v-table-dropdown__item:hover .v-table-dropdown__label {
+  background-color: var(--color-background-hover);
+}
+
+.v-table-dropdown__item:hover .v-table-dropdown {
+  display: flex;
+}
+
+.v-table-dropdown__button {
+  display: flex;
+  gap: 8;
+  align-items: center;
+  padding: 2px 0;
+  margin: 0;
+  font-weight: 400;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.v-table-dropdown__button:hover,
+.v-table-dropdown__button--active {
+  background-color: var(--color-background-hover);
+}

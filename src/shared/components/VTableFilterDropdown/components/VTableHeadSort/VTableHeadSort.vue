@@ -6,9 +6,9 @@
 <template>
   <div class="v-table-dropdown__item">
     <div
-      class="v-table-dropdown__label v-flex v-flex--justify-between v-cursor v-cursor--pointer"
+      class="v-table-dropdown__label flex justify-between v-cursor v-cursor--pointer"
     >
-      <div class="v-flex v-flex--gap-1">
+      <div class="flex gap-1">
         <Sort :size="24" />
         Sort
       </div>

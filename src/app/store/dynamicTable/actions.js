@@ -88,7 +88,7 @@ export const actions = {
         JSON.stringify(payload),
       );
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   },
   setLocalStorageSettings(source, payload) {

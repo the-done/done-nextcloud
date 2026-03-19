@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT */
     <VPagePadding v-if="isInitLoading === false">
       <div
         v-if="hasWarnings === true"
-        class="v-flex v-flex--column v-flex--gap-1 mb-4"
+        class="flex flex-col gap-1 mb-4"
       >
         <NcNoteCard
           v-if="userOptions && userOptions.length === 0"
@@ -86,7 +86,7 @@ SPDX-License-Identifier: MIT */
         @on-delete-fields-ordering="handleDeleteFieldsOrdering"
       >
         <template #footer>
-          <div class="v-flex v-flex--justify-end">
+          <div class="flex justify-end">
             <NcButton native-type="submit">
               {{ contextTranslate("Save", context) }}
             </NcButton>
@@ -428,7 +428,7 @@ export default {
           data,
         }); // formDynamicFieldsMixin
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async fetchDictionaries() {
@@ -465,7 +465,7 @@ export default {
         this.projectStageOptions = projectStageOptions;
         this.customerOptions = customerOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }

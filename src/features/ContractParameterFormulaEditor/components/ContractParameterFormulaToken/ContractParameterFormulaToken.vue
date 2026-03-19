@@ -48,11 +48,12 @@
         {{ contextTranslate("Back", context) }}
       </NcActionButton>
       <NcActionButton
-        v-for="item in parameterOptions"
-        :key="item.slug"
-        @click="handleSelectToken(item, 'parameter')"
+        v-for="item in parameterMenu"
+        :key="item.key"
+        :disabled="item.disabled === true"
+        @click="item.onClick()"
       >
-        {{ item.name }}
+        {{ item.label }}
       </NcActionButton>
     </template>
     <template v-if="menuState === 'selectNumber'">
@@ -103,6 +104,13 @@ import TrashCanOutline from "vue-material-design-icons/TrashCanOutline.vue";
 
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 
+import {
+  getFieldName,
+  getParameterName,
+} from "@/shared/lib/helpers/contractFormula";
+
+import { contractFieldOptions } from "@/shared/lib/constants/contractFormula";
+
 export default {
   name: "ContractParameterFormulaToken",
   mixins: [contextualTranslationsMixin],
@@ -143,24 +151,7 @@ export default {
       isOpened: false,
       numberInputValue: "",
       menuState: "selectTokenType",
-      contractFieldOptions: [
-        {
-          label: t("done", "Hourly rate"),
-          value: "hourly_rate",
-        },
-        {
-          label: t("done", "Period rate"),
-          value: "period_rate",
-        },
-        {
-          label: t("done", "Project rate"),
-          value: "project_rate",
-        },
-        {
-          label: t("done", "Number of hours"),
-          value: "number_of_hours",
-        },
-      ],
+      contractFieldOptions,
     };
   },
   computed: {
@@ -172,6 +163,14 @@ export default {
     },
     prevToken() {
       return this.value[this.index - 1];
+    },
+    parameterMenu() {
+      return this.parameterOptions.map((item) => ({
+        key: item.slug,
+        label: item.contract_parameter_name,
+        disabled: !item.value,
+        onClick: () => this.handleSelectToken(item, "parameter"),
+      }));
     },
     menu() {
       const isLastToken = this.value && this.value.length - 1 === this.index;
@@ -200,7 +199,7 @@ export default {
           key: "parameter",
           label: this.contextTranslate("Contract parameter"),
           icon: AlphaPCircleOutline,
-          disabled: isFieldMenuDisabled,
+          disabled: isFieldMenuDisabled || this.parameterMenu?.length === 0,
           onClick: () => this.handleSetMenuState("selectParameter"),
         },
         {
@@ -245,7 +244,7 @@ export default {
           this.prevToken.type === "operator" &&
           ["+", "-", "*", "/", "("].includes(this.prevToken.value)) ||
         this.value?.some(
-          (token) => token.type === "operator" && token.value === "("
+          (token) => token.type === "operator" && token.value === "(",
         ) === false;
 
       return [
@@ -294,9 +293,9 @@ export default {
 
       switch (this.token.type) {
         case "field":
-          return this.token.label;
+          return getFieldName(this.token.value);
         case "parameter":
-          return this.token.name;
+          return getParameterName(this.token.id, this.parameterOptions);
         default:
           return this.token.value;
       }

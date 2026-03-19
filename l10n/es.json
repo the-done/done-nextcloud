@@ -476,7 +476,8 @@
     "Group name": "Nombre del grupo",
     "Parameters": "Parámetros",
     "Participated in meeting": "Participó en la reunión",
-    "Worked on task": "Trabajó en la tarea"
+    "Worked on task": "Trabajó en la tarea",
+    "Set values for the following parameters. By default, their value is defined as 0": "Establezca valores para los siguientes parámetros. Por defecto, su valor es 0"
   },
   "pluralForm": "nplurals=2; plural=(n != 1);"
 }

@@ -195,7 +195,7 @@ export default {
 
         this.isCreateRoleModalActive = true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     handleCloseCreateRoleModal() {
@@ -232,7 +232,7 @@ export default {
           this.formValues.role = newRoleItem;
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     handleDropFrom() {

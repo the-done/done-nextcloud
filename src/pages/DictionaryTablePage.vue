@@ -153,7 +153,7 @@ export default {
 
         this.tableData = data;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isLoading = false;
       }
@@ -178,7 +178,7 @@ export default {
 
         this.handleFetchData();
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     init() {

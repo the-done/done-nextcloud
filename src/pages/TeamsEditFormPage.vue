@@ -15,7 +15,7 @@ SPDX-License-Identifier: MIT */
           v-model="formValues.comment"
           :label="contextTranslate('Comment')"
         />
-        <div class="v-flex v-flex--justify-end">
+        <div class="flex justify-end">
           <NcButton native-type="submit">{{
             contextTranslate("Save")
           }}</NcButton>
@@ -137,7 +137,7 @@ export default {
 
         this.setFormValues(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async init() {

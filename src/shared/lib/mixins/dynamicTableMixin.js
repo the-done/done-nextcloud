@@ -58,7 +58,7 @@ export const dynamicTableMixin = {
 
         this.setTableViewMode("table");
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     initDynamicTable({ allColumnsOrdering, data, settings }) {

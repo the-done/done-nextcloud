@@ -99,7 +99,7 @@ export default {
 
         this.projectOptions = projectOptions;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         this.isDictionaryLoading = false;
       }

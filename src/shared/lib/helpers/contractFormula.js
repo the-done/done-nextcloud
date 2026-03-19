@@ -3,7 +3,29 @@
  * SPDX-License-Identifier: MIT
  */
 
-export const transformFormulaToString = (value) => {
+import { contractFieldOptions } from "@/shared/lib/constants/contractFormula";
+
+export const getFieldName = (value) => {
+  const exist = contractFieldOptions.find((item) => item.value === value);
+
+  if (exist) {
+    return exist.label;
+  }
+
+  return value;
+};
+
+export const getParameterName = (id, parameterOptions) => {
+  const exist = parameterOptions.find((item) => item.slug === id);
+
+  if (exist) {
+    return exist.contract_parameter_name;
+  }
+
+  return `${id.slice(0, 5)}...`;
+};
+
+export const transformFormulaToString = (value, parameterOptions) => {
   if (!value?.length || Array.isArray(value) === false) {
     return "";
   }
@@ -11,9 +33,9 @@ export const transformFormulaToString = (value) => {
   return value.reduce((accum, item) => {
     switch (item.type) {
       case "field":
-        return accum + `{contract.${item.value}}`;
+        return accum + getFieldName(item.value);
       case "parameter":
-        return accum + `{param.${item.name}}`;
+        return accum + getParameterName(item.id, parameterOptions);
       case "number":
         return accum + item.value;
       case "operator":

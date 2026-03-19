@@ -9,7 +9,7 @@ export const abortControllerMixin = {
       this.abortController = new AbortController();
     },
     handleCatchAbortControllerError(e) {
-      console.log(e);
+      console.error(e);
 
       if (e.code !== "ERR_CANCELED") {
         this.isLoading = false;

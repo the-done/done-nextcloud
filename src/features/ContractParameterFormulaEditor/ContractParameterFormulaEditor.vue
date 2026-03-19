@@ -21,6 +21,7 @@
     <ContractParameterFormulaPreview
       v-if="value?.length > 0"
       :value="value"
+      :parameterOptions="parameterOptions"
       class="mt-8 mb-4"
     />
   </div>
@@ -71,7 +72,7 @@ export default {
     handleDeleteToken(index) {
       this.$emit(
         "input",
-        this.value.filter((_, i) => i !== index)
+        this.value.filter((_, i) => i !== index),
       );
     },
   },
