@@ -107,6 +107,7 @@ SPDX-License-Identifier: MIT */
 
 <script>
 import { t } from "@nextcloud/l10n";
+import { mapState } from "pinia";
 import {
   NcBreadcrumbs,
   NcBreadcrumb,
@@ -151,6 +152,8 @@ import { timeTrackingPageMixin } from "@/shared/lib/mixins/timeTrackingPageMixin
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 import { abortControllerMixin } from "@/shared/lib/mixins/abortControllerMixin";
 
+import { useModulesStore } from "@/app/store/modules";
+
 import { redirectToUserStatistics } from "@/shared/lib/helpers/navigation";
 import { getJoinString } from "@/shared/lib/helpers/string";
 import { initFilterDescriptor } from "@/shared/lib/helpers/filter";
@@ -185,6 +188,14 @@ export default {
     contextualTranslationsMixin,
     abortControllerMixin,
   ],
+  computed: {
+    ...mapState(useModulesStore, ["moduleExist"]),
+    filterDescriptor() {
+      return this.allFilters.filter(
+        (item) => item.key !== "teams" || this.moduleExist("teams") === true
+      );
+    },
+  },
   data() {
     return {
       context: "admin/users",
@@ -192,7 +203,7 @@ export default {
       isInitLoading: true,
       modelData: [],
       localStorageActiveRangeTypeKey: LOCALSTORAGE_REPORT_STAFF_RANGE_TYPE,
-      filterDescriptor: initFilterDescriptor([
+      allFilters: initFilterDescriptor([
         {
           key: "projects",
           type: "select",
