@@ -83,3 +83,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Now the first and last columns are fixed in dynamic tables
 - Added compatibility with version 33 of Nextcloud
+
+## 1.7.0 – 2026-04-02
+
+### Added
+- The Report module has been added.<br>It is available to users assigned to the Officer role (all reports are available to them) or Head role.<br>Head role users can only access the project report, and only for those projects where they are assigned as the Head role.
