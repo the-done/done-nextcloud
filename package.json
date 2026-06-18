@@ -1,6 +1,6 @@
 {
   "name": "done",
-  "version": "1.7.0",
+  "version": "1.9.0",
   "license": "MIT",
   "engines": {
     "node": "^20.0.0",

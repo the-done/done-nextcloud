@@ -3,7 +3,12 @@ SPDX-License-Identifier: MIT */
 
 <template>
   <div class="dynamic-table-settings">
-    <NcPopover :triggers="['hover']">
+    <!--
+      :focus-trap="false" — this popover is a non-interactive hover label, so it
+      has no tabbable nodes; the default focus trap would otherwise throw
+      "focus-trap must have at least one container with at least one tabbable node".
+    -->
+    <NcPopover :triggers="['hover']" :focus-trap="false">
       <template #trigger>
         <NcButton type="tertiary" @click="handleOpenAside">
           <template #icon>

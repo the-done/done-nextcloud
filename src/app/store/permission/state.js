@@ -7,6 +7,9 @@ export const state = () => {
   return {
     list: null,
     isOfficer: false,
+    isFinance: false,
+    isApprover: false,
+    currentUserId: null,
     isFetched: false,
   };
 };
