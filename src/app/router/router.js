@@ -46,10 +46,13 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (permissionStore.isFetched === false) {
-    const { common, fields, isOfficer } = await fetchUserPermissions();
+    const { common, fields, isOfficer, isFinance, isApprover, currentUserId } = await fetchUserPermissions();
 
     permissionStore.list = { common, fields };
     permissionStore.isOfficer = isOfficer;
+    permissionStore.isFinance = isFinance;
+    permissionStore.isApprover = isApprover;
+    permissionStore.currentUserId = currentUserId;
     permissionStore.isFetched = true;
   }
 

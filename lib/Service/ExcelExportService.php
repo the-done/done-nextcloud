@@ -160,8 +160,10 @@ class ExcelExportService
             unset($this->dataCache[$cacheKey]);
         }
 
-        // Get fresh data
-        $tableData = $this->tableService->getTableDataForEntity($model, $source, $userId);
+        // Get fresh data. Filters are forwarded as the systemFilter so virtual
+        // entities (e.g. the vacations report keyed by year) honour them; for
+        // regular entities the export sends no filters, so this is a no-op.
+        $tableData = $this->tableService->getTableDataForEntity($model, $source, $userId, false, $filters);
 
         // Cache the data
         $this->dataCache[$cacheKey] = [

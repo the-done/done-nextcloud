@@ -88,3 +88,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - The Report module has been added.<br>It is available to users assigned to the Officer role (all reports are available to them) or Head role.<br>Head role users can only access the project report, and only for those projects where they are assigned as the Head role.
+
+## 1.8.0 – 2026-06-11
+
+### Changed
+- Improving the application codebase
+
+## 1.9.0 – 2026-06-18
+
+### Changed
+- Improved application stability
