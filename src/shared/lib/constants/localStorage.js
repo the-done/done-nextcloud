@@ -18,6 +18,9 @@ export const LOCALSTORAGE_REPORT_COMMON_RANGE_TYPE =
 export const LOCALSTORAGE_REPORT_STAFF_RANGE_TYPE = "done_reportStaffRangeType";
 export const LOCALSTORAGE_REPORT_PROJECT_RANGE_TYPE =
   "done_reportProjectRangeType";
+export const LOCALSTORAGE_REPORT_VACATIONS_RANGE_TYPE =
+  "done_reportVacationsRangeType";
+export const LOCALSTORAGE_VACATIONS_RANGE_TYPE = "done_vacationsRangeType";
 export const LOCALSTORAGE_TABLE_PREFIXES = {
   settings: "done_dynamicTableSettings",
 };

@@ -134,11 +134,19 @@ class BaseService
     /**
      * Get one field from array of arrays (array of objects).
      */
-    public static function getField(array $arrayList, string $fieldName = 'id', bool $needUnique = false): array
-    {
+    public static function getField(
+        array $arrayList,
+        string $fieldName = 'id',
+        bool $needUnique = false,
+        bool $excludeNulls = true
+    ): array {
         $result = [];
 
         foreach ($arrayList as $option) {
+            if ($excludeNulls && !isset($option[$fieldName])) {
+                continue;
+            }
+
             $result[] = $option[$fieldName];
         }
 
