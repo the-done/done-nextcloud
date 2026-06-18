@@ -11,6 +11,8 @@ import Book from "vue-material-design-icons/Book.vue";
 import AccountCash from "vue-material-design-icons/AccountCash.vue";
 import DirectionsFork from "vue-material-design-icons/DirectionsFork.vue";
 import Flag from "vue-material-design-icons/Flag.vue";
+import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
+import PalmTree from "vue-material-design-icons/PalmTree.vue";
 
 import { usePermissionStore } from "@/app/store/permission";
 import { useModulesStore } from "@/app/store/modules";
@@ -164,6 +166,35 @@ export const settingsNavigationMixin = {
         },
       ];
     },
+    agreementSettingsNavigation() {
+      const schemesVisible =
+        this.getCommonPermission("canReadAgreement") === true &&
+        this.moduleExist("agreement") === true;
+
+      return [
+        {
+          key: "settings-agreement",
+          label: this.contextTranslate("Agreement", this.context),
+          to: {
+            name: "settings-agreement",
+          },
+          exact: true,
+          icon: CheckDecagram,
+          visible: schemesVisible,
+          children: [
+            {
+              key: "settings-agreement-schemes",
+              label: this.contextTranslate("Schemes", this.context),
+              to: {
+                name: "settings-agreement-schemes",
+              },
+              exact: false,
+              visible: schemesVisible,
+            },
+          ],
+        },
+      ];
+    },
     settingsNavigation() {
       return [
         {
@@ -198,6 +229,19 @@ export const settingsNavigationMixin = {
           icon: AccountCash,
         },
         ...this.teamSettingsNavigation,
+        {
+          key: "settings-vacations",
+          label: this.contextTranslate("Vacations", this.context),
+          to: {
+            name: "settings-vacations",
+          },
+          exact: true,
+          visible:
+            this.getCommonPermission("canReadSettings") === true &&
+            this.moduleExist("vacations") === true,
+          icon: PalmTree,
+        },
+        ...this.agreementSettingsNavigation,
       ];
     },
   },
