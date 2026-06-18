@@ -18,6 +18,8 @@ use OCA\Done\Models\TimesModel;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Models\UsersRolesInProjectsModel;
+use OCA\Done\Modules\Agreement\Model\AgreementSchemeApproversModel;
+use OCA\Done\Modules\BaseModuleService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -345,7 +347,6 @@ class CommonController extends BaseController
         $input = $request->getParams();
 
         $userSlug = $input['slug'] ?? null;
-        $userSlugType = $input['slug_type'] ?? null;
 
         $defaultRights = GlobalRolesModel::getUsersDefaultRights();
         $currentUserObj = $this->userSession->getUser();
@@ -361,6 +362,7 @@ class CommonController extends BaseController
         }
 
         $currentUserUid = $currentUserObj->getUID();
+        $isAdmin = $this->groupManager->isAdmin($currentUserUid);
         $userModel = new UserModel();
 
         if (!empty($userSlug)) {
@@ -370,11 +372,13 @@ class CommonController extends BaseController
             $userId = $currentUser['id'] ?? null;
         }
 
-        if (!$userId && $this->groupManager->isAdmin($currentUserUid)) {
+        if (!$userId && $isAdmin) {
             $userId = $userModel->addFirstUser($currentUserUid);
         }
 
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
+
+        $isDoneAdmin = \in_array(GlobalRolesModel::ADMIN, $globalRoles);
 
         $commonPermissions = $userId
             ? (new UsersGlobalRolesModel())->getRights($globalRoles)
@@ -384,11 +388,24 @@ class CommonController extends BaseController
             ['global_role_id' => ['IN', $globalRoles]]
         ) : [];
 
+        $isApprover = false;
+
+        if (BaseModuleService::moduleExists('agreement')) {
+            $agreementSchemeApproversModel = new AgreementSchemeApproversModel();
+            $isApprover = $isAdmin || $isDoneAdmin || $agreementSchemeApproversModel->isApprover(
+                $userId
+            );
+            $commonPermissions['canReadAgreement'] = $isApprover;
+        }
+
         return new JSONResponse(
             [
-                'common'    => $commonPermissions,
-                'fields'    => $fieldsPermissions,
-                'isOfficer' => \in_array(GlobalRolesModel::OFFICER, $globalRoles),
+                'common'        => $commonPermissions,
+                'fields'        => $fieldsPermissions,
+                'isOfficer'     => \in_array(GlobalRolesModel::OFFICER, $globalRoles),
+                'isFinance'     => \in_array(GlobalRolesModel::FINANCE, $globalRoles),
+                'isApprover'    => $isApprover,
+                'currentUserId' => $userId,
             ],
             Http::STATUS_OK
         );
