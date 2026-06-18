@@ -11,3 +11,15 @@ export { TimeTrackingItem } from "./TimeTrackingItem";
 export { TimeTrackingMinutesPicker } from "./TimeTrackingMinutesPicker";
 export { VTable } from "./VTable";
 export { VTableCard } from "./VTableCard";
+export {
+  VacationStatusBadge,
+  VacationTypeBadge,
+  VacationBalance,
+  VacationUpcoming,
+  VacationGantt,
+  VacationFilters,
+  VacationDetailsDialog,
+  VacationHistoryDialog,
+  VacationFormDialog,
+  VacationTable,
+} from "./Vacations";
