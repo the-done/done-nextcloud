@@ -13,6 +13,8 @@ import CircleMultiple from "vue-material-design-icons/CircleMultiple.vue";
 import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import Book from "vue-material-design-icons/Book.vue";
 import Flag from "vue-material-design-icons/Flag.vue";
+import PalmTree from "vue-material-design-icons/PalmTree.vue";
+import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
 
 import { usePermissionStore } from "@/app/store/permission";
 import { useModulesStore } from "@/app/store/modules";
@@ -23,7 +25,7 @@ export const defaultNavigationMixin = {
   mixins: [contextualTranslationsMixin],
   components: {},
   computed: {
-    ...mapState(usePermissionStore, ["getCommonPermission"]),
+    ...mapState(usePermissionStore, ["getCommonPermission", "isApprover"]),
     ...mapState(useModulesStore, ["moduleExist"]),
     reportsNavigation() {
       return [
@@ -72,6 +74,17 @@ export const defaultNavigationMixin = {
               visible:
                 this.getCommonPermission("canReadStaffReport") === true &&
                 this.moduleExist("reports") === true,
+            },
+            {
+              key: "report-vacations",
+              label: "Vacations report",
+              to: {
+                name: "report-vacations",
+              },
+              exact: false,
+              visible:
+                this.getCommonPermission("canReadVacationsReport") === true &&
+                this.moduleExist("vacations") === true,
             },
           ],
         },
@@ -129,6 +142,78 @@ export const defaultNavigationMixin = {
         },
       ];
     },
+    vacationsNavigation() {
+      const vacationsVisible = this.moduleExist("vacations") === true;
+
+      return [
+        {
+          key: "vacations",
+          label: this.contextTranslate("Vacations", this.context),
+          to: {
+            name: "vacations-home",
+          },
+          open: true,
+          exact: true,
+          icon: PalmTree,
+          visible: vacationsVisible,
+          children: [
+            {
+              key: "vacations-balance",
+              label: this.contextTranslate("My balance", this.context),
+              to: {
+                name: "vacations-balance",
+              },
+              exact: false,
+              visible: vacationsVisible,
+            },
+            {
+              key: "vacations-requests",
+              label: this.contextTranslate("Requests", this.context),
+              to: {
+                name: "vacations-requests",
+              },
+              exact: false,
+              visible: vacationsVisible,
+            },
+            {
+              key: "vacations-schedule",
+              label: this.contextTranslate("Schedule", this.context),
+              to: {
+                name: "vacations-schedule",
+              },
+              exact: false,
+              visible: vacationsVisible,
+            },
+          ],
+        },
+      ];
+    },
+    agreementNavigation() {
+      return [
+        {
+          key: "agreement",
+          label: this.contextTranslate("Agreement", this.context),
+          to: {
+            name: "agreement-home",
+          },
+          open: true,
+          exact: true,
+          icon: CheckDecagram,
+          visible: this.getCommonPermission("canReadAgreement") === true && this.moduleExist("agreement") === true,
+          children: [
+            {
+              key: "agreement-requests",
+              label: this.contextTranslate("Requests", this.context),
+              to: {
+                name: "agreement-requests",
+              },
+              exact: false,
+              visible: this.getCommonPermission("canReadAgreement") === true && this.moduleExist("agreement") === true,
+            },
+          ],
+        },
+      ];
+    },
     defaultNavigation() {
       return [
         {
@@ -160,6 +245,8 @@ export const defaultNavigationMixin = {
         },
         ...this.reportsNavigation,
         ...this.financesNavigation,
+        ...this.vacationsNavigation,
+        ...this.agreementNavigation,
         {
           key: "staff",
           label: this.contextTranslate("Employees", this.context),

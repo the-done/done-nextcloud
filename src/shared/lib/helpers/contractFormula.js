@@ -55,18 +55,18 @@ export const transformFormulaToString = (value, parameterOptions) => {
 //
 //   while ((match = tokenPattern.exec(this.value)) !== null) {
 //     if (match[1]) {
-//       // Это поле или параметр в фигурных скобках
+//       // A field or parameter in curly braces
 //       const value = match[1];
 //       const type = value.startsWith("param.") ? "parameter" : "field";
 //       tokens.push({ type, value });
 //     } else if (match[2]) {
-//       // Это число
+//       // A number
 //       tokens.push({ type: "number", value: parseFloat(match[2]) });
 //     } else if (match[3]) {
-//       // Это оператор
+//       // An operator
 //       tokens.push({ type: "operator", value: match[3] });
 //     }
-//     // Пробелы игнорируем
+//     // Ignore whitespace
 //   }
 //
 //   return tokens;

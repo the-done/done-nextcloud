@@ -9,12 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
-use OCA\Done\Attribute\RequireRole;
 use OCA\Done\Modules\BaseModuleService;
-use OCA\Done\Modules\Finances\Controller\FinancesController;
-use OCA\Done\Modules\Projects\Controller\ProjectsController;
-use OCA\Done\Modules\Teams\Controller\TeamsController;
-use OCA\Done\Service\RoleCheckService;
 use OCA\Done\Service\TranslateService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -38,13 +33,11 @@ use OCP\IRequest;
  */
 class ModulesController extends OCSController
 {
-    private RoleCheckService $roleCheckService;
     private TranslateService $translateService;
 
     public function __construct($appName, IRequest $request)
     {
         parent::__construct($appName, $request);
-        $this->roleCheckService = new RoleCheckService();
         $this->translateService = TranslateService::getInstance();
     }
 
@@ -78,16 +71,6 @@ class ModulesController extends OCSController
 
             $controllerClass = BaseModuleService::MODULES[$module];
 
-            // Check access based on RequireRole attribute
-            if (!$this->roleCheckService->checkMethodAccess($controllerClass, $method)) {
-                return new JSONResponse([
-                    'error'   => $this->translateService->getTranslate('Access denied'),
-                    'message' => $this->translateService->getTranslate('Insufficient permissions to perform the operation'),
-                    'module'  => $module,
-                    'method'  => $method,
-                ], Http::STATUS_FORBIDDEN);
-            }
-
             $moduleController = new $controllerClass(
                 $this->appName,
                 $request,
@@ -108,6 +91,16 @@ class ModulesController extends OCSController
                 return new JSONResponse([
                     'error'   => $this->translateService->getTranslate('Access denied'),
                     'message' => $this->translateService->getTranslate('Access to module denied'),
+                ], Http::STATUS_FORBIDDEN);
+            }
+
+            // Check access based on RequireRole attribute
+            if (!$moduleController->checkMethodAccess($controllerClass, $method)) {
+                return new JSONResponse([
+                    'error'   => $this->translateService->getTranslate('Access denied'),
+                    'message' => $this->translateService->getTranslate('Insufficient permissions to perform the operation'),
+                    'module'  => $module,
+                    'method'  => $method,
                 ], Http::STATUS_FORBIDDEN);
             }
 
