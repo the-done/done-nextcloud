@@ -8,8 +8,15 @@ import DirectionsFork from "vue-material-design-icons/DirectionsFork.vue";
 import Book from "vue-material-design-icons/Book.vue";
 import AccountCash from "vue-material-design-icons/AccountCash.vue";
 import Flag from "vue-material-design-icons/Flag.vue";
+import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
+import PalmTree from "vue-material-design-icons/PalmTree.vue";
+import ArrowUpBold from "vue-material-design-icons/ArrowUpBold.vue";
 
 import SettingsLayout from "@/layouts/SettingsLayout.vue";
+
+import AgreementSchemesPage from "@/pages/AgreementSchemesPage.vue";
+import VacationsSettingsPage from "@/pages/VacationsSettingsPage.vue";
+import ProVersionSettingsPage from "@/pages/ProVersionSettingsPage.vue";
 
 import SimpleRouterPage from "@/pages/SimpleRouterPage.vue";
 import SectionNavigationPage from "@/pages/SectionNavigationPage.vue";
@@ -369,6 +376,93 @@ export const settingsLayoutRoutes = [
               },
             ],
           }),
+        ],
+      },
+      {
+        path: "agreement",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "settings-agreement",
+            path: "",
+            component: SectionNavigationPage,
+            props: {
+              additionalProps: {
+                navigationName: "agreementSettingsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "settings-agreement" },
+                    title: "Agreement",
+                    icon: CheckDecagram,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "settings-agreement-schemes",
+            path: "schemes",
+            component: AgreementSchemesPage,
+            props: {
+              additionalProps: {
+                breadcrumbs: [
+                  {
+                    path: { name: "settings-agreement" },
+                    title: "Agreement",
+                    icon: CheckDecagram,
+                  },
+                  {
+                    title: "Schemes",
+                    path: { name: "settings-agreement-schemes" },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "vacations",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "settings-vacations",
+            path: "",
+            component: VacationsSettingsPage,
+            props: {
+              additionalProps: {
+                breadcrumbs: [
+                  {
+                    path: { name: "settings-vacations" },
+                    title: "Vacations",
+                    icon: PalmTree,
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "pro",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "settings-pro",
+            path: "",
+            component: ProVersionSettingsPage,
+            props: {
+              additionalProps: {
+                breadcrumbs: [
+                  {
+                    path: { name: "settings-pro" },
+                    title: "Pro version",
+                    icon: ArrowUpBold,
+                  },
+                ],
+              },
+            },
+          },
         ],
       },
     ],

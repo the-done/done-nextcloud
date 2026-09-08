@@ -41,15 +41,21 @@ router.beforeEach(async (to, from, next) => {
   if (modulesStore.isFetched === false) {
     const { data: modulesData } = await fetchAvailableModules();
 
-    modulesStore.list = modulesData;
+    modulesStore.list = modulesData?.modules ?? [];
+    modulesStore.demoList = modulesData?.demo ?? [];
+    modulesStore.demoHidden = modulesData?.demoHidden === true;
+    modulesStore.isAdmin = modulesData?.isAdmin === true;
     modulesStore.isFetched = true;
   }
 
   if (permissionStore.isFetched === false) {
-    const { common, fields, isOfficer } = await fetchUserPermissions();
+    const { common, fields, isOfficer, isFinance, isApprover, currentUserId } = await fetchUserPermissions();
 
     permissionStore.list = { common, fields };
     permissionStore.isOfficer = isOfficer;
+    permissionStore.isFinance = isFinance;
+    permissionStore.isApprover = isApprover;
+    permissionStore.currentUserId = currentUserId;
     permissionStore.isFetched = true;
   }
 
