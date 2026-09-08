@@ -17,7 +17,10 @@ SPDX-License-Identifier: MIT */
           </template>
           {{ contextTranslate("Create", context) }}
         </NcButton>
-        <ExportButton :source="source" context-name="admin/users" />
+        <ExportButton
+          :source="source"
+          context-name="admin/users"
+        />
       </template>
       <template #controls="{ row: { slug } }">
         <NcActions :inline="1">
