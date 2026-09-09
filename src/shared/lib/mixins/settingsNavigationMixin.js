@@ -11,6 +11,9 @@ import Book from "vue-material-design-icons/Book.vue";
 import AccountCash from "vue-material-design-icons/AccountCash.vue";
 import DirectionsFork from "vue-material-design-icons/DirectionsFork.vue";
 import Flag from "vue-material-design-icons/Flag.vue";
+import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
+import PalmTree from "vue-material-design-icons/PalmTree.vue";
+import ArrowUpBold from "vue-material-design-icons/ArrowUpBold.vue";
 
 import { usePermissionStore } from "@/app/store/permission";
 import { useModulesStore } from "@/app/store/modules";
@@ -22,7 +25,7 @@ export const settingsNavigationMixin = {
   components: {},
   computed: {
     ...mapState(usePermissionStore, ["getCommonPermission"]),
-    ...mapState(useModulesStore, ["moduleExist"]),
+    ...mapState(useModulesStore, ["moduleExist", "moduleIsDemo", "isAdmin"]),
     employeeSettingsNavigation() {
       return [
         {
@@ -142,6 +145,7 @@ export const settingsNavigationMixin = {
         {
           key: "teams",
           label: this.contextTranslate("Teams", this.context),
+          demo: this.moduleIsDemo("teams") === true,
           to: {
             name: "settings-teams",
           },
@@ -152,6 +156,7 @@ export const settingsNavigationMixin = {
             {
               key: "settings-team-roles",
               label: "Team roles",
+              demo: this.moduleIsDemo("teams") === true,
               to: {
                 name: "settings-team-roles-table",
               },
@@ -159,6 +164,38 @@ export const settingsNavigationMixin = {
               visible:
                 this.moduleExist("teams") === true &&
                 this.getCommonPermission("canReadSettings") === true,
+            },
+          ],
+        },
+      ];
+    },
+    agreementSettingsNavigation() {
+      const schemesVisible =
+        this.getCommonPermission("canReadAgreement") === true &&
+        this.moduleExist("agreement") === true;
+      const agreementDemo = this.moduleIsDemo("agreement") === true;
+
+      return [
+        {
+          key: "settings-agreement",
+          label: this.contextTranslate("Agreement", this.context),
+          demo: agreementDemo,
+          to: {
+            name: "settings-agreement",
+          },
+          exact: true,
+          icon: CheckDecagram,
+          visible: schemesVisible,
+          children: [
+            {
+              key: "settings-agreement-schemes",
+              label: this.contextTranslate("Schemes", this.context),
+              demo: agreementDemo,
+              to: {
+                name: "settings-agreement-schemes",
+              },
+              exact: false,
+              visible: schemesVisible,
             },
           ],
         },
@@ -198,6 +235,30 @@ export const settingsNavigationMixin = {
           icon: AccountCash,
         },
         ...this.teamSettingsNavigation,
+        {
+          key: "settings-vacations",
+          label: this.contextTranslate("Vacations", this.context),
+          demo: this.moduleIsDemo("vacations") === true,
+          to: {
+            name: "settings-vacations",
+          },
+          exact: true,
+          visible:
+            this.getCommonPermission("canReadSettings") === true &&
+            this.moduleExist("vacations") === true,
+          icon: PalmTree,
+        },
+        ...this.agreementSettingsNavigation,
+        {
+          key: "settings-pro",
+          label: this.contextTranslate("Pro version", this.context),
+          to: {
+            name: "settings-pro",
+          },
+          exact: true,
+          visible: this.isAdmin === true,
+          icon: ArrowUpBold,
+        },
       ];
     },
   },

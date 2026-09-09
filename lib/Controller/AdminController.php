@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 use OCA\Done\Models\PermissionsEntitiesModel;
 use OCA\Done\Models\UserModel;
@@ -148,6 +149,16 @@ class AdminController extends BaseController
     #[NoCSRFRequired]
     public function getDataToViewEntity(IRequest $request): JSONResponse
     {
+        $demoCard = DemoModuleService::demoCardData(
+            $request,
+            (int)$request->getParam('source'),
+            (string)$request->getParam('slug')
+        );
+
+        if ($demoCard !== null) {
+            return new JSONResponse(['data' => $demoCard], Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $slug = $request->getParam('slug');
 

@@ -12,6 +12,7 @@ export { AssignRoleToUserForm } from "./AssignRoleToUserForm";
 export { AssignUserToProjectForm } from "./AssignUserToProjectForm";
 export { AssignUserToRoleForm } from "./AssignUserToRoleForm";
 export { AssignUserToTeamForm } from "./AssignUserToTeamForm";
+export { DemoBanner } from "./DemoBanner";
 export { DictionaryEditForm } from "./DictionaryEditForm";
 export { DynamicCommentFieldsForm } from "./DynamicCommentFieldsForm";
 export { DynamicDropdownOptionsForm } from "./DynamicDropdownOptionsForm";

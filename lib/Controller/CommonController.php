@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Done\Controller;
 
 use OCA\Done\AppInfo\Application;
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 use OCA\Done\Models\PermissionsEntitiesModel;
 use OCA\Done\Models\RolesPermissionsModel;
@@ -18,6 +19,8 @@ use OCA\Done\Models\TimesModel;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Models\UsersRolesInProjectsModel;
+use OCA\Done\Modules\Agreement\Model\AgreementSchemeApproversModel;
+use OCA\Done\Modules\BaseModuleService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -73,6 +76,29 @@ class CommonController extends BaseController
         return new TemplateResponse($appId, 'app/app', [
             'l' => $this->translateService->l10n,
         ]);
+    }
+
+    /**
+     * Serves the SPA shell for the admin-only Pro version screen.
+     *
+     * The Pro settings page must not be reachable by a non-admin, even by direct
+     * URL. For a non-admin we still boot the SPA (so the in-app 404 view renders)
+     * but return HTTP 404 so the response itself reads as not found.
+     */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
+    public function proIndex(): RedirectResponse | TemplateResponse
+    {
+        $response = $this->index();
+        $currentUserObj = $this->userSession->getUser();
+
+        if ($response instanceof TemplateResponse
+            && $currentUserObj instanceof IUser
+            && !$this->groupManager->isAdmin($currentUserObj->getUID())) {
+            $response->setStatus(Http::STATUS_NOT_FOUND);
+        }
+
+        return $response;
     }
 
     /**
@@ -345,7 +371,6 @@ class CommonController extends BaseController
         $input = $request->getParams();
 
         $userSlug = $input['slug'] ?? null;
-        $userSlugType = $input['slug_type'] ?? null;
 
         $defaultRights = GlobalRolesModel::getUsersDefaultRights();
         $currentUserObj = $this->userSession->getUser();
@@ -361,6 +386,7 @@ class CommonController extends BaseController
         }
 
         $currentUserUid = $currentUserObj->getUID();
+        $isAdmin = $this->groupManager->isAdmin($currentUserUid);
         $userModel = new UserModel();
 
         if (!empty($userSlug)) {
@@ -370,11 +396,13 @@ class CommonController extends BaseController
             $userId = $currentUser['id'] ?? null;
         }
 
-        if (!$userId && $this->groupManager->isAdmin($currentUserUid)) {
+        if (!$userId && $isAdmin) {
             $userId = $userModel->addFirstUser($currentUserUid);
         }
 
         $globalRoles = $this->userService->getUserGlobalRoles($userId);
+
+        $isDoneAdmin = \in_array(GlobalRolesModel::ADMIN, $globalRoles);
 
         $commonPermissions = $userId
             ? (new UsersGlobalRolesModel())->getRights($globalRoles)
@@ -384,11 +412,43 @@ class CommonController extends BaseController
             ['global_role_id' => ['IN', $globalRoles]]
         ) : [];
 
+        $isApprover = false;
+
+        if (BaseModuleService::moduleExists('agreement')) {
+            $agreementSchemeApproversModel = new AgreementSchemeApproversModel();
+            $isApprover = $isAdmin || $isDoneAdmin || $agreementSchemeApproversModel->isApprover(
+                $userId
+            );
+            $commonPermissions['canReadAgreement'] = $isApprover;
+        }
+
+        $isFinance = \in_array(GlobalRolesModel::FINANCE, $globalRoles);
+
+        if (DemoModuleService::isDemoVisibleForUser($globalRoles, $isAdmin)) {
+            $activeDemo = DemoModuleService::activeDemoModules(DemoModuleService::simulatedDemoModules($request));
+            $demoPerms = DemoModuleService::demoPermissions($activeDemo);
+
+            foreach ($demoPerms as $k => $v) {
+                $commonPermissions[$k] = $v;
+            }
+
+            if (\in_array('vacations', $activeDemo, true) || \in_array('agreement', $activeDemo, true)) {
+                $isApprover = true;
+            }
+
+            if (\in_array('finances', $activeDemo, true)) {
+                $isFinance = true;
+            }
+        }
+
         return new JSONResponse(
             [
-                'common'    => $commonPermissions,
-                'fields'    => $fieldsPermissions,
-                'isOfficer' => \in_array(GlobalRolesModel::OFFICER, $globalRoles),
+                'common'        => $commonPermissions,
+                'fields'        => $fieldsPermissions,
+                'isOfficer'     => \in_array(GlobalRolesModel::OFFICER, $globalRoles),
+                'isFinance'     => $isFinance,
+                'isApprover'    => $isApprover,
+                'currentUserId' => $userId,
             ],
             Http::STATUS_OK
         );

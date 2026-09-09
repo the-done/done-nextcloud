@@ -88,3 +88,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - The Report module has been added.<br>It is available to users assigned to the Officer role (all reports are available to them) or Head role.<br>Head role users can only access the project report, and only for those projects where they are assigned as the Head role.
+
+## 1.8.0 – 2026-06-11
+
+### Changed
+- Improving the application codebase
+
+## 1.9.0 – 2026-09-01
+
+### Added
+- Demo mode for the paid modules: Agreement, Finances, Teams and Vacations now
+  appear in the navigation with realistic read-only sample data, so their
+  features can be explored before purchase. Demo modules are marked with a
+  "pro" badge.
+- A setting to hide the demo modules.
+- Pro version settings page (admin only): activate the paid modules with a
+  license key and manage the license from a single screen.
+- License details panel showing the license status, plan, masked key, update
+  window, installed version and installed modules.
+- License-server reachability notice and a link to the license service.
+- Update checks backed by a daily background heartbeat that also keeps the
+  license validated.
+
+### Changed
+- License activation and module installation are now separate actions:
+  activating only validates the key, while installing (or reinstalling) the
+  modules is a distinct step. The screen warns when the license is active but
+  the modules are not installed.
+- Installed paid modules keep working when the license server is unreachable or
+  the license is revoked — nothing is disabled automatically.
+- Read-only enforcement in demo mode: create, edit, delete controls, settings
+  pages and export are hidden, and a warning is shown when a demo write is
+  attempted.
+
+### Fixed
+- Demo entity cards (such as the team preview) no longer produce 404s and now
+  render as read-only.
+- Localized the demo table column titles.
+- The Pro version screen now survives a page reload.
+- The installed pro-package version is reported correctly for update checks.
