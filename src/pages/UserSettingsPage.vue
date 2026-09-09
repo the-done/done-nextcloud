@@ -203,6 +203,8 @@ import {
   fetchAvailableLanguages,
 } from "@/entities/settings/api";
 
+import { useModulesStore } from "@/app/store/modules";
+
 import { timeTrackingFormMixin } from "@/shared/lib/mixins/timeTrackingFormMixin";
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 
@@ -311,6 +313,11 @@ export default {
       // If language changed, apply it in Nextcloud
       if (settingId === SETTING_IDS.USER_LANGUAGE) {
         this.changeUserLanguage(settingValue);
+      }
+      // If the demo visibility changed, update the navigation immediately
+      // (the value itself is persisted on Save like other settings).
+      if (settingId === SETTING_IDS.HIDE_DEMO_MODULES) {
+        useModulesStore().setDemoHidden(settingValue === true);
       }
     },
     async loadLanguages() {
