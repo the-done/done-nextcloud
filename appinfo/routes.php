@@ -216,6 +216,29 @@ return [
             'verb' => 'POST',
         ],
 
+        // ////// PRO VERSION ////////
+
+        [
+            'name' => 'proVersion#status',
+            'url'  => '/ajax/pro/status',
+            'verb' => 'GET',
+        ],
+        [
+            'name' => 'proVersion#activate',
+            'url'  => '/ajax/pro/activate',
+            'verb' => 'POST',
+        ],
+        [
+            'name' => 'proVersion#install',
+            'url'  => '/ajax/pro/install',
+            'verb' => 'POST',
+        ],
+        [
+            'name' => 'proVersion#update',
+            'url'  => '/ajax/pro/update',
+            'verb' => 'POST',
+        ],
+
         // ////// FILE CONTROLLER ////////
 
         [
@@ -425,6 +448,12 @@ return [
             'verb'    => 'GET',
             'postfix' => 'reports.staff',
         ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/reports/vacations/',
+            'verb'    => 'GET',
+            'postfix' => 'reports.vacations',
+        ],
 
         // Finance pages
         [
@@ -510,6 +539,58 @@ return [
             'url'     => '/finances/contract-parameters/{slug}/',
             'verb'    => 'GET',
             'postfix' => 'finances.contractParameter.edit',
+        ],
+
+        // Vacations pages
+        [
+            'name'    => 'common#index',
+            'url'     => '/vacations/',
+            'verb'    => 'GET',
+            'postfix' => 'vacations',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/vacations/balance/',
+            'verb'    => 'GET',
+            'postfix' => 'vacations.balance',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/vacations/requests/',
+            'verb'    => 'GET',
+            'postfix' => 'vacations.requests',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/vacations/requests/{slug}/',
+            'verb'    => 'GET',
+            'postfix' => 'vacations.request-card',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/vacations/schedule/',
+            'verb'    => 'GET',
+            'postfix' => 'vacations.schedule',
+        ],
+
+        // Agreement pages
+        [
+            'name'    => 'common#index',
+            'url'     => '/agreement/',
+            'verb'    => 'GET',
+            'postfix' => 'agreement',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/agreement/requests/',
+            'verb'    => 'GET',
+            'postfix' => 'agreement.requests',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/agreement/schemes/',
+            'verb'    => 'GET',
+            'postfix' => 'agreement.schemes',
         ],
 
         // Staff pages
@@ -806,6 +887,30 @@ return [
             'url'     => '/settings/teams/roles/{slug}',
             'verb'    => 'GET',
             'postfix' => 'teamSettings.roles.edit',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/settings/agreement/',
+            'verb'    => 'GET',
+            'postfix' => 'agreementSettings.main',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/settings/agreement/schemes/',
+            'verb'    => 'GET',
+            'postfix' => 'agreementSettings.agreement.schemes',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/settings/vacations/',
+            'verb'    => 'GET',
+            'postfix' => 'vacationSettings.main',
+        ],
+        [
+            'name'    => 'common#proIndex',
+            'url'     => '/settings/pro/',
+            'verb'    => 'GET',
+            'postfix' => 'proVersionSettings.main',
         ],
 
         // Dictionaries

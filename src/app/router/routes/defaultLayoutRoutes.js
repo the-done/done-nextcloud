@@ -5,6 +5,9 @@
 
 import FileChart from "vue-material-design-icons/FileChart.vue";
 import CashMultiple from "vue-material-design-icons/CashMultiple.vue";
+import PalmTree from "vue-material-design-icons/PalmTree.vue";
+import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
+import Cog from "vue-material-design-icons/Cog.vue";
 
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 
@@ -26,6 +29,9 @@ import ProjectsPreviewPage from "@/pages/ProjectsPreviewPage.vue";
 import ProjectsEditPage from "@/pages/ProjectsEditPage.vue";
 import ProjectsEditFormPage from "@/pages/ProjectsEditFormPage.vue";
 import ProjectsEditUsersPage from "@/pages/ProjectsEditUsersPage.vue";
+import VacationsTablePage from "@/pages/VacationsTablePage.vue";
+import VacationCardPage from "@/pages/VacationCardPage.vue";
+import AgreementRequestsPage from "@/pages/AgreementRequestsPage.vue";
 
 import SelfTimeTrackingPage from "@/pages/SelfTimeTrackingPage.vue";
 import SelfTimeTrackingEditPage from "@/pages/SelfTimeTrackingEditPage.vue";
@@ -41,6 +47,7 @@ import TeamsEditProjectsPage from "@/pages/TeamsEditProjectsPage.vue";
 import TeamsEditUsersPage from "@/pages/TeamsEditUsersPage.vue";
 
 import ReportsCommonPage from "@/pages/ReportsCommonPage.vue";
+import VacationsReportPage from "@/pages/VacationsReportPage.vue";
 import ReportsProjectPage from "@/pages/ReportsProjectPage.vue";
 import ReportsStaffPage from "@/pages/ReportsStaffPage.vue";
 
@@ -134,6 +141,15 @@ export const defaultLayoutRoutes = [
             component: ReportsStaffPage,
             meta: {
               permissions: { list: ["canReadStaffReport"], operator: "AND" },
+            },
+          },
+          {
+            name: "report-vacations",
+            path: "vacations",
+            component: VacationsReportPage,
+            meta: {
+              permissions: { list: ["canReadVacationsReport"], operator: "AND" },
+              moduleName: "vacations",
             },
           },
         ],
@@ -588,6 +604,148 @@ export const defaultLayoutRoutes = [
                 ],
               },
             ],
+          },
+        ],
+      },
+      {
+        path: "vacations",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "vacations-home",
+            path: "",
+            component: SectionNavigationPage,
+            props: {
+              additionalProps: {
+                navigationName: "vacationsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "vacations-home" },
+                    title: "Vacations",
+                    icon: PalmTree,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "vacations-balance",
+            path: "balance",
+            component: VacationsTablePage,
+            props: {
+              additionalProps: {
+                activeTab: "balance",
+                navigationName: "vacationsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "vacations-balance" },
+                    title: "Vacations",
+                    icon: PalmTree,
+                  },
+                  {
+                    path: { name: "vacations-balance" },
+                    title: "My balance",
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "vacations-requests",
+            path: "requests",
+            component: VacationsTablePage,
+            props: {
+              additionalProps: {
+                activeTab: "requests",
+                navigationName: "vacationsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "vacations-balance" },
+                    title: "Vacations",
+                    icon: PalmTree,
+                  },
+                  {
+                    path: { name: "vacations-requests" },
+                    title: "Requests",
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "vacations-request-card",
+            path: "requests/:slug",
+            component: VacationCardPage,
+            props: {
+              additionalProps: {
+                navigationName: "vacationsNavigation",
+              },
+            },
+          },
+          {
+            name: "vacations-schedule",
+            path: "schedule",
+            component: VacationsTablePage,
+            props: {
+              additionalProps: {
+                activeTab: "gantt",
+                navigationName: "vacationsNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "vacations-balance" },
+                    title: "Vacations",
+                    icon: PalmTree,
+                  },
+                  {
+                    path: { name: "vacations-schedule" },
+                    title: "Schedule",
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "agreement",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "agreement-home",
+            path: "",
+            component: SectionNavigationPage,
+            props: {
+              additionalProps: {
+                navigationName: "agreementNavigation",
+                breadcrumbs: [
+                  {
+                    path: { name: "agreement-home" },
+                    title: "Agreement",
+                    icon: CheckDecagram,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "agreement-requests",
+            path: "requests",
+            component: AgreementRequestsPage,
+            props: {
+              additionalProps: {
+                breadcrumbs: [
+                  {
+                    path: { name: "agreement-requests" },
+                    title: "Agreement",
+                    icon: CheckDecagram,
+                  },
+                  {
+                    path: { name: "agreement-requests" },
+                    title: "Requests",
+                  },
+                ],
+              },
+            },
           },
         ],
       },

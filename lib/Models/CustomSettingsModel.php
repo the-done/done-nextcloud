@@ -7,6 +7,7 @@
 
 namespace OCA\Done\Models;
 
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 
 /**
@@ -21,6 +22,7 @@ class CustomSettingsModel extends BaseModel
     public const CACHE_TIME_SETTING = 1;
     public const HIDE_EMPTY_FIELDS_IN_PREVIEW = 2;
     public const USER_LANGUAGE = 3;
+    public const HIDE_DEMO_MODULES = 4;
 
     // Setting value types
     public const CHECKBOX_TYPE = 1;
@@ -56,6 +58,18 @@ class CustomSettingsModel extends BaseModel
                 'title'       => 'Hide empty fields in preview',
                 'type'        => self::CHECKBOX_TYPE,
                 'description' => 'When this option is enabled, empty record fields will be hidden when viewing the card.',
+            ];
+        }
+
+        // Only offer the demo toggle to users who can see demo mode and only
+        // when there is at least one demo-able module to hide.
+        if (DemoModuleService::isDemoVisibleForCurrentUser()
+            && DemoModuleService::activeDemoModulesForCurrentRequest() !== []
+        ) {
+            $settings[self::HIDE_DEMO_MODULES] = [
+                'title'       => 'Hide demo modules',
+                'type'        => self::CHECKBOX_TYPE,
+                'description' => 'Hide Pro modules shown with demo data. You can turn them back on here at any time.',
             ];
         }
 

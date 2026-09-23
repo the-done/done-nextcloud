@@ -61,6 +61,12 @@ export default {
       type: String,
       default: "admin",
     },
+    // Optional system filters forwarded to the export (e.g. { year } for the
+    // vacations report). Regular tables leave this empty.
+    filters: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -123,6 +129,7 @@ export default {
         const response = await exportToExcel({
           source: this.source,
           options: { format },
+          filters: this.filters,
         });
 
         const blob = new Blob([response.data], {

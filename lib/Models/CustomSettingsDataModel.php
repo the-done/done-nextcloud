@@ -43,7 +43,7 @@ class CustomSettingsDataModel extends BaseModel
             'type'       => IQueryBuilder::PARAM_INT,
             'title'      => 'Setting ID',
             'required'   => true,
-            'db_comment' => 'Setting identifier. Possible values: 1 (Cache Time), 2 (Hide empty fields in preview), 3 (User Language)',
+            'db_comment' => 'Setting identifier. Possible values: 1 (Cache Time), 2 (Hide empty fields in preview), 3 (User Language), 4 (Hide demo modules)',
         ],
         'type_id' => [
             'type'       => IQueryBuilder::PARAM_INT,

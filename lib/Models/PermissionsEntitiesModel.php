@@ -14,6 +14,7 @@ use OCA\Done\Modules\Finances\Model\ContractsModel;
 use OCA\Done\Modules\Finances\Model\PaymentsModel;
 use OCA\Done\Modules\Projects\Models\ProjectModel;
 use OCA\Done\Modules\Teams\Models\TeamsModel;
+use OCA\Done\Modules\Vacations\Model\VacationsReportModel;
 
 /**
  * Class PermissionsEntitiesModel.
@@ -27,6 +28,7 @@ class PermissionsEntitiesModel
     public const FYN_CONTRACTS_ENTITY = 5;
     public const FYN_CONTRACTS_PARAMETERS_ENTITY = 6;
     public const FYN_CONTRACTS_PARAMETER_GROUPS_ENTITY = 7;
+    public const VACATION_REPORT_ENTITY = 8;
 
     public static function getPermissionsEntities(?int $source = null): array
     {
@@ -84,6 +86,15 @@ class PermissionsEntitiesModel
             ];
         }
 
+        if (BaseModuleService::moduleExists('vacations')) {
+            $entities[self::VACATION_REPORT_ENTITY] = [
+                'slug'        => 'vacation_report_card',
+                'foreign_key' => 'user_id',
+                'entity_name' => 'Vacation report',
+                'model'       => VacationsReportModel::class,
+            ];
+        }
+
         if (isset($source) && \array_key_exists($source, $entities)) {
             return [$source => $entities[$source]];
         }
@@ -101,6 +112,7 @@ class PermissionsEntitiesModel
             self::FYN_CONTRACTS_ENTITY,
             self::FYN_CONTRACTS_PARAMETERS_ENTITY,
             self::FYN_CONTRACTS_PARAMETER_GROUPS_ENTITY,
+            self::VACATION_REPORT_ENTITY,
         ]);
     }
 }

@@ -21,3 +21,6 @@ Thumbs.db
 
 /vendor/
 /vendor-bin/*/vendor/
+
+# Superpowers working files (specs, plans, runbooks)
+docs/superpowers/

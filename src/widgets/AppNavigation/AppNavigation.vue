@@ -37,6 +37,9 @@ SPDX-License-Identifier: MIT */
                   <template #icon>
                     <component :is="children.icon" />
                   </template>
+                  <template v-if="children.demo" #counter>
+                    <ProBadge />
+                  </template>
 
                   <template v-for="(subChildren, index) in children.children">
                     <NcAppNavigationItem
@@ -45,7 +48,11 @@ SPDX-License-Identifier: MIT */
                       :name="contextTranslate(subChildren.label, context)"
                       :to="subChildren.to"
                       :exact="subChildren.exact"
-                    />
+                    >
+                      <template v-if="subChildren.demo" #counter>
+                        <ProBadge />
+                      </template>
+                    </NcAppNavigationItem>
                   </template>
                 </NcAppNavigationItem>
                 <NcAppNavigationItem
@@ -57,6 +64,9 @@ SPDX-License-Identifier: MIT */
                 >
                   <template #icon v-if="children.icon">
                     <component :is="children.icon" />
+                  </template>
+                  <template v-if="children.demo" #counter>
+                    <ProBadge />
                   </template>
                 </NcAppNavigationItem>
               </template>
@@ -79,6 +89,9 @@ SPDX-License-Identifier: MIT */
             <template #icon>
               <component :is="item.icon" />
             </template>
+            <template v-if="item.demo" #counter>
+              <ProBadge />
+            </template>
 
             <template v-for="(children, index) in item.children">
               <NcAppNavigationItem
@@ -87,7 +100,11 @@ SPDX-License-Identifier: MIT */
                 :name="contextTranslate(children.label, context)"
                 :to="children.to"
                 :exact="children.exact"
-              />
+              >
+                <template v-if="children.demo" #counter>
+                  <ProBadge />
+                </template>
+              </NcAppNavigationItem>
             </template>
           </NcAppNavigationItem>
           <NcAppNavigationItem
@@ -99,6 +116,9 @@ SPDX-License-Identifier: MIT */
           >
             <template #icon v-if="item.icon">
               <component :is="item.icon" />
+            </template>
+            <template v-if="item.demo" #counter>
+              <ProBadge />
             </template>
           </NcAppNavigationItem>
         </template>
@@ -120,6 +140,7 @@ import {
   NcAppNavigationItem,
 } from "@nextcloud/vue";
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
+import { ProBadge } from "@/shared/components";
 
 export default {
   name: "AppNavigation",
@@ -128,6 +149,7 @@ export default {
     NcAppNavigationList,
     NcAppNavigationCaption,
     NcAppNavigationItem,
+    ProBadge,
   },
   mixins: [contextualTranslationsMixin],
   props: {

@@ -13,10 +13,14 @@ use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 use OCA\Done\Models\TimesModel;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Models\UsersGlobalRolesModel;
+use OCA\Done\Models\UsersRolesInProjectsModel;
 use OCA\Done\Modules\Projects\Models\ProjectModel;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IGroupManager;
 use OCP\IUserSession;
 use OCP\Server;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class UserService extends EntitiesService
 {
@@ -368,11 +372,116 @@ class UserService extends EntitiesService
     }
 
     /**
-     * Check if the current user has the head role and give a list of his projects
+     * Check if user is admin
+     *
+     * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function isAdmin(): bool
+    {
+        $currentUserObj = $this->userSession->getUser();
+
+        if (!$currentUserObj) {
+            return false;
+        }
+
+        $currentUserUid = $currentUserObj->getUID();
+
+        $groupManager = Server::get(IGroupManager::class);
+
+        return $groupManager->isAdmin($currentUserUid);
+    }
+
+    /**
+     * Check if user is Done admin
+     *
+     * @return bool
+     */
+    public function isDoneAdmin(): bool
+    {
+        return \in_array(GlobalRolesModel::ADMIN, $this->getUserGlobalRoles($this->getCurrentUserId()));
+    }
+
+    /**
+     * Check if the current user has the head role and give a list of his projects and employees
      *
      * @return array
      */
     public function isHead(): array
+    {
+        $currentUserId = $this->getCurrentUserId();
+        $globalRoles = $this->getUserGlobalRoles($currentUserId);
+        $isHead = \in_array(GlobalRolesModel::HEAD, $globalRoles);
+        $projectsIds = $employeesIds = [];
+
+        if ($isHead) {
+            $projectModel = new ProjectModel();
+            $usersRolesInProjectsModel = new UsersRolesInProjectsModel();
+            $projects = $projectModel->getListByFilter(['project_head_id' => $currentUserId]);
+            $projectsIds = BaseService::getField($projects, 'id', true);
+            $usersRolesInProjectsList = $usersRolesInProjectsModel->getListByFilter(
+                ['project_id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]]
+            );
+            $employeesIds = BaseService::getField($usersRolesInProjectsList, 'user_id', true);
+        }
+
+        return [
+            'isHead'       => $isHead,
+            'projectsIds'  => $projectsIds,
+            'employeesIds' => $employeesIds,
+        ];
+    }
+
+    /**
+     * Check if the current user has the officer role
+     *
+     * @return bool
+     */
+    public function isOfficer(): bool
+    {
+        $currentUserId = $this->getCurrentUserId();
+        $globalRoles = $this->getUserGlobalRoles($currentUserId);
+
+        return \in_array(GlobalRolesModel::OFFICER, $globalRoles);
+    }
+
+    /**
+     * Check if the current user has the head role and give a list of his employees
+     *
+     * @return array
+     */
+    public function isHeadAndGetEmployees(): array
+    {
+        $currentUserId = $this->getCurrentUserId();
+        $globalRoles = $this->getUserGlobalRoles($currentUserId);
+        $isHead = \in_array(GlobalRolesModel::HEAD, $globalRoles);
+        $employeesIds = [];
+
+        if ($isHead) {
+            $projectModel = new ProjectModel();
+            $usersRolesInProjectsModel = new UsersRolesInProjectsModel();
+            $projects = $projectModel->getListByFilter(['project_head_id' => $currentUserId]);
+            $projectsIds = BaseService::getField($projects, 'id', true);
+            $usersRolesInProjectsList = $usersRolesInProjectsModel->getListByFilter(
+                ['project_id' => ['IN', $projectsIds, IQueryBuilder::PARAM_STR_ARRAY]]
+            );
+            $employeesIds = BaseService::getField($usersRolesInProjectsList, 'user_id', true);
+        }
+
+        return [
+            'isHead'       => $isHead,
+            'employeesIds' => $employeesIds,
+        ];
+    }
+
+    /**
+     * Check if the current user has the head role and give a list of his projects
+     *
+     * @return array
+     */
+    public function isHeadAndGetProjects(): array
     {
         $currentUserId = $this->getCurrentUserId();
         $globalRoles = $this->getUserGlobalRoles($currentUserId);

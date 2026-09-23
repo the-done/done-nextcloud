@@ -12,6 +12,7 @@ namespace OCA\Done\AppInfo;
 use OC\DB\Connection;
 use OC\DB\MigrationService;
 use OCA\Done\Middleware\PermissionMiddleware;
+use OCA\Done\Notification\Notifier;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -48,6 +49,7 @@ class Application extends App implements IBootstrap
     public function register(IRegistrationContext $context): void
     {
         $context->registerMiddleware(PermissionMiddleware::class);
+        $context->registerNotifierService(Notifier::class);
     }
 
     private function isFirstEnable(): bool

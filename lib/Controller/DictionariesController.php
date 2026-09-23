@@ -7,6 +7,7 @@
 
 namespace OCA\Done\Controller;
 
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Service\BaseService;
@@ -47,6 +48,12 @@ class DictionariesController extends OCSController
         $data = $request->getParam('data');
         $slug = $request->getParam('slug');
         $slugType = $request->getParam('slug_type');
+
+        $demoReadOnly = DemoModuleService::demoDictionaryReadOnly($request, $dictTitle);
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
 
         $dictionaryModel = $this->dictionariesService->getDictionaryModel($dictTitle);
 
@@ -92,6 +99,12 @@ class DictionariesController extends OCSController
             );
         }
 
+        $demoReadOnly = DemoModuleService::demoDictionaryReadOnly($request, $dictTitle);
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $dictionaryModel = $this->dictionariesService->getDictionaryModel($dictTitle);
         $itemId = $dictionaryModel->getItemIdBySlug($slug);
 
@@ -120,6 +133,15 @@ class DictionariesController extends OCSController
             );
         }
 
+        $demoData = DemoModuleService::demoDictionaryData($request, $dictTitle);
+
+        if ($demoData !== null) {
+            return new JSONResponse(
+                $demoData,
+                Http::STATUS_OK
+            );
+        }
+
         $data = $this->dictionariesService->getDictionary($dictTitle);
 
         return new JSONResponse(
@@ -142,6 +164,15 @@ class DictionariesController extends OCSController
                     'message' => $this->translateService->getTranslate('An error occurred'),
                 ],
                 Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        $demoItem = DemoModuleService::demoDictionaryItem($request, $dictTitle, $slug);
+
+        if ($demoItem !== null) {
+            return new JSONResponse(
+                $demoItem,
+                Http::STATUS_OK
             );
         }
 
