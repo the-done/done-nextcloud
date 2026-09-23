@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Done\Controller;
 
 use OCA\Done\Attribute\RequireRole;
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 use OCA\Done\Models\PermissionsEntitiesModel;
 use OCP\AppFramework\Http;
@@ -28,6 +29,16 @@ class EntityController extends BaseController
     #[NoCSRFRequired]
     public function getDataToViewEntity(IRequest $request): JSONResponse
     {
+        $demoCard = DemoModuleService::demoCardData(
+            $request,
+            (int)$request->getParam('source'),
+            (string)$request->getParam('slug')
+        );
+
+        if ($demoCard !== null) {
+            return new JSONResponse(['data' => $demoCard], Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $slug = $request->getParam('slug');
 
@@ -53,6 +64,12 @@ class EntityController extends BaseController
     #[NoCSRFRequired]
     public function saveEntityImage(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $source = (int)$request->getParam('source');
         $slug = $request->getParam('slug');
         $imageField = $request->getParam('field_name');
@@ -223,6 +240,12 @@ class EntityController extends BaseController
     #[RequireRole([GlobalRolesModel::OFFICER])]
     public function saveEntityColor(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $entitySlug = $request->getParam('slug');
         $color = $request->getParam('color');
         $source = (int)$request->getParam('source');

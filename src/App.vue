@@ -5,6 +5,7 @@ SPDX-License-Identifier: MIT */
   <NcContent appName="app">
     <RouterView />
     <notifications position="bottom right" />
+    <DemoBanner />
     <AiChat v-if="aiChatEnabled === true" />
   </NcContent>
 </template>
@@ -14,7 +15,7 @@ import { mapState } from "pinia";
 
 import { NcContent } from "@nextcloud/vue";
 
-import { AiChat } from "@/widgets";
+import { AiChat, DemoBanner } from "@/widgets";
 
 import { usePermissionStore } from "@/app/store/permission";
 import { useModulesStore } from "@/app/store/modules";
@@ -24,6 +25,7 @@ export default {
   components: {
     NcContent,
     AiChat,
+    DemoBanner,
   },
   computed: {
     ...mapState(usePermissionStore, ["getCommonPermission"]),

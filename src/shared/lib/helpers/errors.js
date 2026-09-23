@@ -9,6 +9,13 @@ export const handleRestErrors = (e) => {
 
   console.error(e);
 
+  // Demo write rejections are already surfaced by the centered demo banner
+  // (see the axios response interceptor in main.js). Do not add a second,
+  // corner toast on top of it.
+  if (e?.demoReadOnly === true) {
+    return;
+  }
+
   if (
     response?.data?.error_type === "validation" &&
     Array.isArray(response?.data?.message) &&

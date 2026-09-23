@@ -81,6 +81,7 @@ class GlobalRolesModel extends BaseModel
     public const CAN_READ_COMMON_REPORT = 'canReadCommonReport';
     public const CAN_READ_PROJECTS_REPORT = 'canReadProjectsReport';
     public const CAN_READ_STAFF_REPORT = 'canReadStaffReport';
+    public const CAN_READ_VACATIONS_REPORT = 'canReadVacationsReport';
     public const CAN_READ_TEAMS_LIST = 'canReadTeamsList';
     public const CAN_READ_SETTINGS = 'canReadSettings';
     public const CAN_READ_RIGHTS_MATRIX = 'canReadRightsMatrix';
@@ -137,6 +138,7 @@ class GlobalRolesModel extends BaseModel
             self::CAN_READ_COMMON_REPORT        => 'View common report',
             self::CAN_READ_PROJECTS_REPORT      => 'View projects report',
             self::CAN_READ_STAFF_REPORT         => 'View staff report',
+            self::CAN_READ_VACATIONS_REPORT     => 'View vacations report',
             self::CAN_READ_STATISTICS_ALL_USERS => 'View statistics for all employees',
             self::CAN_ADD_STATISTICS            => 'Create reports',
 
@@ -182,6 +184,7 @@ class GlobalRolesModel extends BaseModel
             self::CAN_READ_COMMON_REPORT         => false,
             self::CAN_READ_PROJECTS_REPORT       => false,
             self::CAN_READ_STAFF_REPORT          => false,
+            self::CAN_READ_VACATIONS_REPORT      => false,
             self::CAN_READ_SETTINGS              => false,
             self::CAN_READ_RIGHTS_MATRIX         => false,
             self::CAN_EDIT_RIGHTS_MATRIX         => false,

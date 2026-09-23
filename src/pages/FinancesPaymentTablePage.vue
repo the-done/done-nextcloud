@@ -63,7 +63,10 @@ SPDX-License-Identifier: MIT */
         </NcActions>
       </template>
       <template #emptyContentActions>
-        <NcButton :to="{ name: 'finances-payment-new' }" class="mt-2">
+        <NcButton
+          :to="{ name: 'finances-payment-new' }"
+          class="mt-2"
+        >
           <template #icon> <Plus /> </template>
           {{ contextTranslate("Create Payment", context) }}
         </NcButton>

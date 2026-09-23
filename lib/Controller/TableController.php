@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Done\Controller;
 
+use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Models\Table\TableColumnViewSettingsModel;
 use OCA\Done\Models\Table\TableFilterModel;
 use OCA\Done\Models\Table\TableSortColumnsModel;
@@ -28,6 +29,12 @@ class TableController extends AdminController
      */
     public function saveTableColumnView(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $column = $request->getParam('column');
         $width = $request->getParam('width');
@@ -96,6 +103,12 @@ class TableController extends AdminController
      */
     public function saveTableSortColumns(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $column = $request->getParam('column');
         $ordering = $request->getParam('ordering');
@@ -150,6 +163,12 @@ class TableController extends AdminController
      */
     public function saveTableSortColumnsMultiple(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $sortData = $request->getParam('sort_data');
         $source = $request->getParam('source');
         $forAll = (bool)$request->getParam('for_all', false);
@@ -198,6 +217,12 @@ class TableController extends AdminController
      */
     public function saveTableSortWithinColumns(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $column = $request->getParam('column');
         $sort = $request->getParam('sort', 'ASC');
@@ -258,6 +283,12 @@ class TableController extends AdminController
      */
     public function saveTableSortWithinColumnsMultiple(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $sortData = $request->getParam('sort_data');
         $source = $request->getParam('source');
         $userId = $this->userService->getCurrentUserId();
@@ -311,6 +342,12 @@ class TableController extends AdminController
      */
     public function saveTableFilter(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $source = $request->getParam('source');
         $column = $request->getParam('column');
         $condition = $request->getParam('condition');
@@ -405,6 +442,12 @@ class TableController extends AdminController
      */
     public function deleteTableSortColumns(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
         $tableSortColumnsModel = new TableSortColumnsModel();
@@ -440,6 +483,12 @@ class TableController extends AdminController
      */
     public function deleteTableSortWithinColumns(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
         $tableSortWithinColumnsModel = new TableSortWithinColumnsModel();
@@ -475,6 +524,12 @@ class TableController extends AdminController
      */
     public function deleteTableFilter(IRequest $request): JSONResponse
     {
+        $demoReadOnly = DemoModuleService::demoSourceWriteReadOnly($request, (int)$request->getParam('source'));
+
+        if ($demoReadOnly !== null) {
+            return new JSONResponse($demoReadOnly, Http::STATUS_OK);
+        }
+
         $slug = $request->getParam('slug');
         $source = $request->getParam('source');
         $tableFilterModel = new TableFilterModel();

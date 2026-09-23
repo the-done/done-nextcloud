@@ -34,6 +34,9 @@ SPDX-License-Identifier: MIT */
               <template #icon>
                 <FolderOutline />
               </template>
+              <template v-if="item.demo" #indicator>
+                <ProBadge />
+              </template>
             </NcListItem>
           </ul>
         </VPagePadding>
@@ -50,7 +53,7 @@ import BookOpenVariant from "vue-material-design-icons/BookOpenVariant.vue";
 import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
 
 import { VPage, VPageLayout, VPageContent, VPagePadding } from "@/widgets";
-import { VToolbar } from "@/shared/components";
+import { VToolbar, ProBadge } from "@/shared/components";
 
 import { useModulesStore } from "@/app/store/modules";
 
@@ -76,6 +79,7 @@ export default {
     VPageContent,
     VPagePadding,
     VToolbar,
+    ProBadge,
   },
   props: {
     additionalProps: {

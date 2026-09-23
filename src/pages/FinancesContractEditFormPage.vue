@@ -125,14 +125,15 @@ export default {
         {
           key: "start_date",
           type: "date",
-          label: this.contextTranslate("Start date", this.context),
+          label: this.contextTranslate("Contract start date", this.context),
           required: true,
         },
         {
+          // Optional: employees can work on indefinite-term contracts, so the
+          // contract end date must not be required.
           key: "end_date",
           type: "date",
-          label: this.contextTranslate("End date", this.context),
-          required: true,
+          label: this.contextTranslate("Contract end date", this.context),
         },
         {
           key: "is_hourly",

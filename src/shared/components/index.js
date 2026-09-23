@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+export { ProBadge } from "./ProBadge";
 export { ReportActionsItem } from "./ReportActionsItem";
 export { VAside } from "./VAside";
 export { VButton } from "./VButton";

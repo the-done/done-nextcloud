@@ -72,12 +72,13 @@ export const deleteFieldsOrdering = async ({ source }) => {
   return data;
 };
 
-export const exportToExcel = async ({ source, options = {} }) => {
+export const exportToExcel = async ({ source, options = {}, filters = {} }) => {
   const response = await axios.post(
     "/exportToExcel",
     {
       source,
       options,
+      filters,
     },
     {
       responseType: "blob",

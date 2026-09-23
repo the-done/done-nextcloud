@@ -11,4 +11,5 @@ export const MAP_DYNAMIC_TABLE_SOURCES = {
   contract: 5,
   contractParameter: 6,
   contractParameterGroup: 7,
+  vacationReport: 8,
 };

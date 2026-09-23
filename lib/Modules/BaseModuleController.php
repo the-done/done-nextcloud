@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Done\Modules;
 
+use OCA\Done\Attribute\RequireRole;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
@@ -32,6 +33,8 @@ abstract class BaseModuleController extends OCSController
     protected IUserSession $userSession;
     protected IAppManager $appManager;
     protected array $allowedRoles = [];
+    protected bool $globalAccessPermission = false;
+    protected bool $useGlobalAccessPermission = false;
     public string $moduleName = '';
 
     /** @var null|mixed */
@@ -50,6 +53,45 @@ abstract class BaseModuleController extends OCSController
     }
 
     /**
+     * Check if user has access to method based on RequireRole attribute
+     */
+    public function checkMethodAccess(string $controllerClass, string $methodName): bool
+    {
+        try {
+            $reflectionClass = new \ReflectionClass($controllerClass);
+            $reflectionMethod = $reflectionClass->getMethod($methodName);
+
+            // Check attribute at method level
+            $methodAttributes = $reflectionMethod->getAttributes(RequireRole::class);
+
+            if (!empty($methodAttributes)) {
+                $requireRole = $methodAttributes[0]->newInstance();
+
+                return $this->checkUserRoles($requireRole->getRequiredRoles());
+            }
+
+            // Check attribute at class level
+            $classAttributes = $reflectionClass->getAttributes(RequireRole::class);
+
+            if (!empty($classAttributes)) {
+                $requireRole = $classAttributes[0]->newInstance();
+
+                return $this->checkUserRoles($requireRole->getRequiredRoles());
+            }
+
+            if ($this->getUseGlobalAccessPermission()) {
+                return $this->getGlobalAccessPermission();
+            }
+
+            // If attribute not found, allow access
+            return true;
+        } catch (\ReflectionException $e) {
+            // In case of reflection error, deny access
+            return false;
+        }
+    }
+
+    /**
      * Common method for checking module access permissions
      */
     public function checkModuleAccess(): bool
@@ -61,13 +103,35 @@ abstract class BaseModuleController extends OCSController
         }
 
         $allowedRoles = $this->getAllowedRoles();
+        $globalAccessPermission = $this->getGlobalAccessPermission();
+        $useGlobalAccessPermission = $this->getUseGlobalAccessPermission();
         $userRoles = $this->userService->getUserGlobalRoles($currentUserId);
 
-        if (empty(array_intersect($allowedRoles, $userRoles)) && !\in_array('ALL', $allowedRoles)) {
+        if (
+            !empty(array_intersect($allowedRoles, $userRoles))
+            || \in_array('ALL', $allowedRoles)
+            || ($globalAccessPermission && $useGlobalAccessPermission)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has specified roles
+     */
+    private function checkUserRoles(array $requiredRoles = []): bool
+    {
+        $userId = $this->userService->getCurrentUserId();
+
+        if (empty($userId)) {
             return false;
         }
 
-        return true;
+        $userRoles = $this->userService->getUserGlobalRoles($userId);
+
+        return !empty(array_intersect($requiredRoles, $userRoles)) || \in_array('ALL', $requiredRoles);
     }
 
     /**
@@ -107,6 +171,38 @@ abstract class BaseModuleController extends OCSController
     public function getAllowedRoles(): array
     {
         return $this->allowedRoles;
+    }
+
+    /**
+     * Set global access permission
+     */
+    public function setGlobalAccessPermission(bool $can = false): void
+    {
+        $this->globalAccessPermission = $can;
+    }
+
+    /**
+     * Set "use" param for global access permission
+     */
+    public function setUseGlobalAccessPermission(bool $use = false): void
+    {
+        $this->useGlobalAccessPermission = $use;
+    }
+
+    /**
+     * Get global access permission
+     */
+    public function getGlobalAccessPermission(): bool
+    {
+        return $this->globalAccessPermission;
+    }
+
+    /**
+     * Get "use" param for global access permission
+     */
+    public function getUseGlobalAccessPermission(): bool
+    {
+        return $this->useGlobalAccessPermission;
     }
 
     /**

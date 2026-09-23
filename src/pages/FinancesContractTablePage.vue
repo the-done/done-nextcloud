@@ -17,7 +17,10 @@ SPDX-License-Identifier: MIT */
           </template>
           {{ contextTranslate("Create", context) }}
         </NcButton>
-        <ExportButton :source="source" context-name="admin/contracts" />
+        <ExportButton
+          :source="source"
+          context-name="admin/contracts"
+        />
       </template>
       <template #controls="{ row: { slug, slug_type } }">
         <NcActions :inline="1">
@@ -45,7 +48,10 @@ SPDX-License-Identifier: MIT */
         </NcActions>
       </template>
       <template #emptyContentActions>
-        <NcButton :to="{ name: 'finances-contract-new' }" class="mt-2">
+        <NcButton
+          :to="{ name: 'finances-contract-new' }"
+          class="mt-2"
+        >
           <template #icon> <Plus /> </template>
           {{ contextTranslate("Create", context) }}
         </NcButton>

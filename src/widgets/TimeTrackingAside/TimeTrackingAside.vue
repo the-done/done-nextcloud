@@ -41,7 +41,16 @@ SPDX-License-Identifier: MIT */
             <ChevronRight :size="20" />
           </template>
         </NcButton>
-        <NcActions class="flex-[0_0_auto]">
+        <!--
+          Show the range switcher only when there is more than one range.
+          With a single NcActionButton, NcActions enters single-action mode and
+          forwards the string model-value into NcButton.pressed (Boolean), which
+          makes Vue emit a type-mismatch warning.
+        -->
+        <NcActions
+          v-if="Object.keys(dateRanges).length > 1"
+          class="flex-[0_0_auto]"
+        >
           <template #icon>
             <component :is="activeRangeIcon" />
           </template>
