@@ -7,24 +7,250 @@
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>done</id>
     <name>Done</name>
-    <summary><![CDATA[Time & project management for teams.]]></summary>
-    <description><![CDATA[
-        Done is a Nextcloud app for managing employees, projects, and time reports in distributed teams.
-        It provides flexible data structures, powerful analytics, and a fully customizable interface — built to make team utilization and workload tracking effortless.
 
-👥 Employees
+    <!-- ===================== SUMMARY ===================== -->
 
-📁 Projects
+    <summary>Time tracking, projects and team workload in Nextcloud — see where your team's hours and money go.</summary>
+    <summary lang="ru">Учёт времени, проекты и загрузка команды в Nextcloud — видно, куда уходят часы и деньги.</summary>
+    <summary lang="de">Zeiterfassung, Projekte und Teamauslastung in Nextcloud – sehen Sie, wohin Zeit und Geld Ihres Teams fließen.</summary>
+    <summary lang="es">Registro de tiempo, proyectos y carga del equipo en Nextcloud: descubre adónde van las horas y el dinero de tu equipo.</summary>
+    <summary lang="fr">Suivi du temps, projets et charge d’équipe dans Nextcloud : voyez où partent les heures et l’argent de votre équipe.</summary>
 
-🕒 Time Reports
+    <!-- ===================== DESCRIPTION: EN (default) ===================== -->
 
-👩‍💻 Teams
+    <description><![CDATA[**Stop guessing where your team's time goes.** Done turns everyday time tracking into a clear picture of your projects, people and profitability, right inside your Nextcloud.
 
-🧭 Directions
+No new SaaS account, no data leaving your server. Employee profiles are built from your Nextcloud users, so your team can start logging time in minutes.
 
-⚙️ Customization & Access Control
-        ]]>
-    </description>
+## Why teams choose Done
+
+- 🔒 **Your data stays yours.** Everything lives in your own Nextcloud, not in someone else's cloud.
+- ⏱️ **Logging time takes seconds.** Quick entry, a fast time picker, repeating entries and remembered recent projects mean people actually keep their timesheets up to date.
+- 📊 **Reports without spreadsheets.** Look at effort by project, employee or period, and drill down from the big picture to single records.
+- 💰 **From hours to margin.** Link actual effort to labour cost, client price and extra expenses, so you know which projects really make money.
+- 🧩 **Pay only for what you use.** Start free and add modules as your processes grow.
+
+## Free: everything you need to start
+
+- **Time tracking** by project and task, with comments and personal statistics
+- **Projects** with team members, roles, stages and custom fields
+- **Employees** in a smart table (drag-and-drop columns, multi-level sorting and filtering) or as cards
+- **Reports**: overall, by project and by employee
+
+## Professional: run the whole team
+
+- 👩‍💻 **Teams**: group people and see workload and utilization at a glance
+- 💼 **Finance**: payments, contracts and contract parameters with calculation formulas
+- 🌴 **Leave**: balances, requests and a team availability schedule, plus leave reports
+- ✅ **Approvals**: employee requests submitted and reviewed in one place, instead of getting lost in email and chats
+
+## AI: ask your data in plain language
+
+- 💬 **AI chat**: *"What did Anna work on in project X this month?"* The answer comes from your Done data.
+- 📅 **My day**: suggested time entries based on your calendar events
+
+## Built for project-driven teams
+
+Agencies, development studios, consultancies and internal project offices use Done to answer three questions every manager asks: *Who is working on what? Where is the time going? Is this project profitable?*
+
+Flexible permissions, custom fields and configurable interface visibility let you fit Done to your structure, not the other way round.
+
+## Get started
+
+1. Click **Enable** in your Nextcloud Apps.
+2. Open **Done**. Your Nextcloud users are ready to become employees.
+3. Create a project and log your first hour.
+
+🌐 [the-done.app](https://the-done.app) · 💳 [Pricing](https://the-done.app/en/pricing/) · 📖 [Support](https://the-done.app/en/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
+
+    <!-- ===================== DESCRIPTION: RU ===================== -->
+
+    <description lang="ru"><![CDATA[**Хватит гадать, куда уходит время команды.** Done превращает ежедневный учёт времени в понятную картину по проектам, людям и деньгам, прямо внутри вашего Nextcloud.
+
+Не нужен новый SaaS-аккаунт, и данные не покидают ваш сервер. Карточки сотрудников создаются из учётных записей Nextcloud, так что команда начинает учитывать время за считаные минуты.
+
+## Почему выбирают Done
+
+- 🔒 **Данные остаются у вас.** Всё хранится в вашем Nextcloud, а не в чужом облаке.
+- ⏱️ **Записать время — дело секунд.** Быстрый ввод, удобный выбор времени, повтор записей и запоминание последних проектов. Сотрудники действительно заполняют отчёты.
+- 📊 **Отчёты без таблиц.** Трудозатраты по проектам, сотрудникам и периодам, с переходом от общей картины к отдельным записям.
+- 💰 **От часов к марже.** Свяжите фактические трудозатраты со стоимостью работы, ценой для клиента и доп. расходами и узнайте, какие проекты на самом деле зарабатывают.
+- 🧩 **Платите только за нужное.** Начните бесплатно и подключайте модули по мере роста.
+
+## Бесплатно: всё для старта
+
+- **Учёт времени** по проектам и задачам, с комментариями и личной статистикой
+- **Проекты**: команда, роли, этапы, свои поля
+- **Сотрудники** в умной таблице (перетаскивание колонок, многоуровневая сортировка и фильтры) или карточками
+- **Отчёты**: общий, по проекту, по сотруднику
+
+## Professional: управление всей командой
+
+- 👩‍💻 **Команды**: загрузка и утилизация людей одним взглядом
+- 💼 **Финансы**: платежи, договоры и параметры договоров с формулами расчёта
+- 🌴 **Отпуска**: остатки, заявки, график доступности команды и отчёт по отпускам
+- ✅ **Согласования**: заявки сотрудников в одном месте, а не в почте и мессенджерах
+
+## AI: спросите свои данные простым языком
+
+- 💬 **AI-чат**: *«Над чем Анна работала в этом месяце по проекту X?»* Ответ строится на данных Done.
+- 📅 **«Мой день»**: предложенные записи времени по событиям календаря
+
+## Для проектных команд
+
+Агентства, студии разработки, консалтинг и внутренние проектные офисы используют Done, чтобы отвечать на три главных вопроса руководителя: *кто чем занят, куда уходит время и окупается ли проект?*
+
+Гибкая матрица прав, свои поля и настройка видимости интерфейса подстраивают Done под вашу структуру, а не наоборот.
+
+## Как начать
+
+1. Нажмите **Включить** в разделе «Приложения» Nextcloud.
+2. Откройте **Done**. Пользователи Nextcloud готовы стать сотрудниками.
+3. Создайте проект и запишите первый час.
+
+🌐 [the-done.app](https://the-done.app) · 💳 [Тарифы](https://the-done.app/ru/pricing/) · 📖 [Поддержка](https://the-done.app/ru/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
+
+    <!-- ===================== DESCRIPTION: DE ===================== -->
+
+    <description lang="de"><![CDATA[**Schluss mit dem Rätselraten, wohin die Zeit Ihres Teams fließt.** Done macht aus der täglichen Zeiterfassung ein klares Bild Ihrer Projekte, Mitarbeiter und Rentabilität – direkt in Ihrer Nextcloud.
+
+Kein neues SaaS-Konto, keine Daten, die Ihren Server verlassen. Mitarbeiterprofile entstehen aus Ihren Nextcloud-Benutzern – Ihr Team erfasst die ersten Stunden in wenigen Minuten.
+
+## Warum Teams Done wählen
+
+- 🔒 **Ihre Daten bleiben bei Ihnen.** Alles liegt in Ihrer eigenen Nextcloud, nicht in einer fremden Cloud.
+- ⏱️ **Zeit erfassen in Sekunden.** Schnelleingabe, komfortable Zeitauswahl, wiederholbare Einträge und zuletzt genutzte Projekte – so bleiben Zeitnachweise wirklich aktuell.
+- 📊 **Berichte ohne Tabellenkalkulation.** Aufwand nach Projekt, Mitarbeiter oder Zeitraum – vom Gesamtbild bis zum einzelnen Eintrag.
+- 💰 **Von Stunden zur Marge.** Verknüpfen Sie den tatsächlichen Aufwand mit Personalkosten, Kundenpreis und Zusatzkosten und sehen Sie, welche Projekte sich wirklich rechnen.
+- 🧩 **Nur zahlen, was Sie nutzen.** Kostenlos starten und Module hinzufügen, wenn Ihre Prozesse wachsen.
+
+## Kostenlos: alles für den Start
+
+- **Zeiterfassung** nach Projekt und Aufgabe, mit Kommentaren und persönlicher Statistik
+- **Projekte** mit Team, Rollen, Phasen und eigenen Feldern
+- **Mitarbeiter** in einer smarten Tabelle (Spalten per Drag-and-drop, mehrstufiges Sortieren und Filtern) oder als Karten
+- **Berichte**: Gesamtbericht, nach Projekt und nach Mitarbeiter
+
+## Professionell: das ganze Team im Griff
+
+- 👩‍💻 **Teams**: Mitarbeiter gruppieren und Auslastung auf einen Blick sehen
+- 💼 **Finanzen**: Zahlungen, Verträge und Vertragsparameter mit Berechnungsformeln
+- 🌴 **Urlaub**: Resturlaub, Anträge, Abwesenheitsplan des Teams und Urlaubsberichte
+- ✅ **Genehmigungen**: Mitarbeiteranträge an einem Ort statt verstreut in E-Mails und Chats
+
+## KI: Fragen Sie Ihre Daten in natürlicher Sprache
+
+- 💬 **KI-Chat**: *„Woran hat Anna diesen Monat im Projekt X gearbeitet?“* Die Antwort basiert auf Ihren Done-Daten.
+- 📅 **Mein Tag**: Vorschläge für Zeiteinträge auf Basis Ihrer Kalendertermine
+
+## Für projektorientierte Teams
+
+Agenturen, Entwicklungsstudios, Beratungen und interne Projektbüros nutzen Done, um die drei Fragen jedes Managers zu beantworten: *Wer arbeitet woran? Wohin fließt die Zeit? Lohnt sich das Projekt?*
+
+Flexible Berechtigungsmatrix, eigene Felder und konfigurierbare Sichtbarkeit der Oberfläche passen Done an Ihre Struktur an – nicht umgekehrt.
+
+## Loslegen
+
+1. Klicken Sie in den Nextcloud-Apps auf **Aktivieren**.
+2. Öffnen Sie **Done** – Ihre Nextcloud-Benutzer können direkt als Mitarbeiter angelegt werden.
+3. Legen Sie ein Projekt an und erfassen Sie Ihre erste Stunde.
+
+🌐 [the-done.app](https://the-done.app) · 💳 [Preise](https://the-done.app/de/pricing/) · 📖 [Support](https://the-done.app/de/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
+
+    <!-- ===================== DESCRIPTION: ES ===================== -->
+
+    <description lang="es"><![CDATA[**Deja de adivinar en qué se va el tiempo de tu equipo.** Done convierte el registro diario de horas en una visión clara de tus proyectos, tu gente y tu rentabilidad, directamente en tu Nextcloud.
+
+Sin nuevas cuentas SaaS y sin que los datos salgan de tu servidor. Los perfiles de empleados se crean a partir de los usuarios de Nextcloud, así que tu equipo empieza a registrar horas en minutos.
+
+## Por qué los equipos eligen Done
+
+- 🔒 **Tus datos siguen siendo tuyos.** Todo vive en tu propio Nextcloud, no en la nube de otro.
+- ⏱️ **Registrar tiempo lleva segundos.** Entrada rápida, selector de tiempo ágil, repetición de registros y proyectos recientes a mano: así la gente mantiene sus partes de horas al día.
+- 📊 **Informes sin hojas de cálculo.** Esfuerzo por proyecto, empleado o periodo, desde la visión general hasta cada registro.
+- 💰 **De las horas al margen.** Vincula el esfuerzo real con el coste laboral, el precio al cliente y los gastos adicionales, y descubre qué proyectos son realmente rentables.
+- 🧩 **Paga solo por lo que usas.** Empieza gratis y añade módulos a medida que crecen tus procesos.
+
+## Gratis: todo lo necesario para empezar
+
+- **Registro de tiempo** por proyecto y tarea, con comentarios y estadísticas personales
+- **Proyectos** con equipo, roles, etapas y campos personalizados
+- **Empleados** en una tabla inteligente (columnas arrastrables, ordenación y filtros multinivel) o en tarjetas
+- **Informes**: general, por proyecto y por empleado
+
+## Profesional: gestiona todo el equipo
+
+- 👩‍💻 **Equipos**: agrupa a las personas y ve la carga y la utilización de un vistazo
+- 💼 **Finanzas**: pagos, contratos y parámetros de contrato con fórmulas de cálculo
+- 🌴 **Vacaciones**: saldos, solicitudes, calendario de disponibilidad del equipo e informes de vacaciones
+- ✅ **Aprobaciones**: las solicitudes de los empleados en un solo lugar, en vez de perderse entre correos y chats
+
+## IA: pregunta a tus datos en lenguaje natural
+
+- 💬 **Chat con IA**: *«¿En qué trabajó Anna este mes en el proyecto X?»* La respuesta sale de tus datos de Done.
+- 📅 **Mi día**: sugerencias de registros de tiempo a partir de los eventos de tu calendario
+
+## Para equipos que trabajan por proyectos
+
+Agencias, estudios de desarrollo, consultoras y oficinas de proyectos internas usan Done para responder a las tres preguntas de cualquier responsable: *¿Quién trabaja en qué? ¿Adónde va el tiempo? ¿Es rentable el proyecto?*
+
+Una matriz de permisos flexible, campos personalizados y la visibilidad configurable de la interfaz adaptan Done a tu estructura, y no al revés.
+
+## Cómo empezar
+
+1. Pulsa **Activar** en Aplicaciones de Nextcloud.
+2. Abre **Done**: tus usuarios de Nextcloud ya pueden convertirse en empleados.
+3. Crea un proyecto y registra tu primera hora.
+
+🌐 [the-done.app](https://the-done.app) · 💳 [Precios](https://the-done.app/es/pricing/) · 📖 [Soporte](https://the-done.app/es/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
+
+    <!-- ===================== DESCRIPTION: FR ===================== -->
+
+    <description lang="fr"><![CDATA[**Arrêtez de deviner où passe le temps de votre équipe.** Done transforme le suivi du temps quotidien en une vision claire de vos projets, de vos équipes et de votre rentabilité, directement dans votre Nextcloud.
+
+Pas de nouveau compte SaaS, et aucune donnée ne quitte votre serveur. Les profils des employés sont créés à partir de vos utilisateurs Nextcloud : votre équipe saisit ses premières heures en quelques minutes.
+
+## Pourquoi les équipes choisissent Done
+
+- 🔒 **Vos données restent chez vous.** Tout est stocké dans votre propre Nextcloud, pas dans le cloud d’un autre.
+- ⏱️ **Saisir son temps prend quelques secondes.** Saisie rapide, sélecteur de durée pratique, répétition des saisies et projets récents mémorisés : les feuilles de temps restent vraiment à jour.
+- 📊 **Des rapports sans tableur.** L’effort par projet, par employé ou par période, de la vue d’ensemble jusqu’à chaque saisie.
+- 💰 **Des heures à la marge.** Reliez l’effort réel au coût du travail, au prix client et aux frais annexes, et identifiez les projets vraiment rentables.
+- 🧩 **Ne payez que ce que vous utilisez.** Commencez gratuitement et ajoutez des modules au rythme de vos processus.
+
+## Gratuit : tout pour démarrer
+
+- **Suivi du temps** par projet et par tâche, avec commentaires et statistiques personnelles
+- **Projets** avec équipe, rôles, étapes et champs personnalisés
+- **Employés** dans un tableau intelligent (colonnes en glisser-déposer, tri et filtres multi-niveaux) ou en cartes
+- **Rapports** : global, par projet et par employé
+
+## Professionnel : pilotez toute l’équipe
+
+- 👩‍💻 **Équipes** : regroupez les personnes et visualisez la charge et le taux d’occupation en un coup d’œil
+- 💼 **Finances** : paiements, contrats et paramètres de contrat avec formules de calcul
+- 🌴 **Congés** : soldes, demandes, planning de disponibilité de l’équipe et rapports de congés
+- ✅ **Validations** : les demandes des employés au même endroit, au lieu de se perdre entre e-mails et messageries
+
+## IA : interrogez vos données en langage naturel
+
+- 💬 **Chat IA** : *« Sur quoi Anna a-t-elle travaillé ce mois-ci dans le projet X ? »* La réponse s’appuie sur vos données Done.
+- 📅 **Ma journée** : des saisies de temps suggérées à partir de vos événements d’agenda
+
+## Pour les équipes qui travaillent en mode projet
+
+Agences, studios de développement, cabinets de conseil et PMO internes utilisent Done pour répondre aux trois questions de tout manager : *Qui travaille sur quoi ? Où passe le temps ? Ce projet est-il rentable ?*
+
+Une matrice de droits flexible, des champs personnalisés et une visibilité configurable de l’interface adaptent Done à votre organisation, et non l’inverse.
+
+## Démarrer
+
+1. Cliquez sur **Activer** dans les Applications de Nextcloud.
+2. Ouvrez **Done** : vos utilisateurs Nextcloud sont prêts à devenir des employés.
+3. Créez un projet et saisissez votre première heure.
+
+🌐 [the-done.app](https://the-done.app) · 💳 [Tarifs](https://the-done.app/fr/pricing/) · 📖 [Support](https://the-done.app/fr/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
+
     <version>1.9.0</version>
     <screenshot small-thumbnail="https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-001-Add_Record.png">https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-001-Add_Record.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-002-User_Settings.png</screenshot>
