@@ -14,6 +14,7 @@ use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\UnknownNotificationException;
 
 class Notifier implements INotifier
 {
@@ -41,7 +42,7 @@ class Notifier implements INotifier
     public function prepare(INotification $notification, string $languageCode): INotification
     {
         if ($notification->getApp() !== Application::APP_ID) {
-            throw new \InvalidArgumentException();
+            throw new UnknownNotificationException();
         }
 
         $l = $this->l10nFactory->get(Application::APP_ID, $languageCode);
@@ -78,7 +79,7 @@ class Notifier implements INotifier
                 return $notification;
 
             default:
-                throw new \InvalidArgumentException();
+                throw new UnknownNotificationException();
         }
     }
 }
