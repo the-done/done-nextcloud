@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Added
+- Table report with employee/project hierarchies, year/month/week views, optional
+  daily month columns, surname and hour sorting, and project/employee filters.
+- Time-entry details with comments, progressive loading and links to employee,
+  project and task pages; Excel/PDF/HTML exports of the selected report view.
+- Fullscreen report controls, an initial mobile layout, and interface translations
+  in English, German, Spanish, French and Russian.
+
 ## 1.0.0 – 2025-10-21
 
 ### Added
