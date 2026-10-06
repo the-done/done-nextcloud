@@ -16,7 +16,7 @@ module.exports = {
     appName: true,
     appVersion: true,
   },
-  extends: ["plugin:vue/vue2-essential" /* "plugin:vue/recommended" */],
+  extends: ["plugin:vue/essential" /* "plugin:vue/recommended" */],
   rules: {
     indent: ["warn", 2],
     "linebreak-style": ["warn", "unix"],

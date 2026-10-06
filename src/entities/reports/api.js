@@ -4,6 +4,25 @@
  */
 
 import axios from "@nextcloud/axios";
+import { generateUrl } from "@nextcloud/router";
+
+export const fetchMatrix = (params, signal) => axios.post(
+  "/module/reports", { ...params, method: "getMatrix" }, { signal }
+);
+
+export const fetchMatrixEntries = (params, signal) => axios.post(
+  "/module/reports", { ...params, method: "getMatrixEntries" }, { signal }
+);
+
+export const fetchMatrixFilters = (signal) => axios.post(
+  "/module/reports", { method: "getMatrixFilters" }, { signal }
+);
+
+export const matrixExportUrl = (params, expanded) => {
+  const query = new URLSearchParams(params);
+  expanded.forEach((id) => query.append("expanded[]", id));
+  return `${generateUrl("/apps/done/reports/table/export")}?${query}`;
+};
 
 export const fetchCommonStatistics = async ({
   date_from,
