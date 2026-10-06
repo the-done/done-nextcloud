@@ -186,4 +186,81 @@ class ReportsController extends BaseModuleController
             Http::STATUS_OK
         );
     }
+    /** All matrix endpoints enforce both company and employee report permissions. */
+    private function matrixAccess(): bool
+    {
+        return $this->userService->canDoAction(GlobalRolesModel::CAN_READ_COMMON_REPORT)
+            && $this->userService->canDoAction(GlobalRolesModel::CAN_READ_STAFF_REPORT);
+    }
+
+    #[NoAdminRequired]
+    #[RequireRole([GlobalRolesModel::OFFICER])]
+    public function getMatrix(IRequest $request): JSONResponse
+    {
+        return $this->matrixResponse($request, 'matrix');
+    }
+
+    #[NoAdminRequired]
+    #[RequireRole([GlobalRolesModel::OFFICER])]
+    public function getMatrixEntries(IRequest $request): JSONResponse
+    {
+        return $this->matrixResponse($request, 'entries');
+    }
+
+    #[NoAdminRequired]
+    #[RequireRole([GlobalRolesModel::OFFICER])]
+    public function getMatrixFilters(IRequest $request): JSONResponse
+    {
+        return $this->matrixResponse($request, 'filters');
+    }
+
+    #[NoAdminRequired]
+    #[RequireRole([GlobalRolesModel::OFFICER])]
+    public function exportMatrix(IRequest $request): JSONResponse
+    {
+        return $this->matrixResponse($request, 'export');
+    }
+
+    private function matrixResponse(IRequest $request, string $action): JSONResponse
+    {
+        if (!$this->matrixAccess()) {
+            return new JSONResponse(['error' => 'Access denied'], Http::STATUS_FORBIDDEN);
+        }
+        try {
+            $service = new \OCA\Done\Modules\Reports\Service\MatrixReportService();
+            if ($action === 'filters') return new JSONResponse($service->filterOptions());
+            $projects = $service::selection($request->getParam('project_ids'));
+            $users = $service::selection($request->getParam('user_ids'));
+            if ($action === 'entries') {
+                return new JSONResponse($service->entries(
+                    (string)$request->getParam('start', ''), (string)$request->getParam('end', ''),
+                    (string)$request->getParam('user_id', ''), (string)$request->getParam('project_id', ''),
+                    (int)$request->getParam('offset', 0), $projects, $users
+                ));
+            }
+            $period = (string)$request->getParam('period', 'month');
+            $matrix = $service->matrix(
+                (string)$request->getParam('date', date('Y-m-d')), $period,
+                filter_var($request->getParam('by_dates', false), FILTER_VALIDATE_BOOLEAN),
+                (string)$request->getParam('mode', 'employees'), $projects, $users
+            );
+            $matrix = \OCA\Done\Modules\Reports\Service\MatrixReportBuilder::sorted(
+                $matrix, (string)$request->getParam('sort', 'name'),
+                (string)$request->getParam('direction', 'asc')
+            );
+            if ($action === 'export') {
+                $expanded = $request->getParam('expanded', []);
+                if (!is_array($expanded) || count($expanded) > 5000) {
+                    throw new \InvalidArgumentException('Invalid expanded rows');
+                }
+                return new JSONResponse(\OCA\Done\Modules\Reports\Service\MatrixReportExport::create(
+                    $matrix, $expanded, $period, (string)$request->getParam('format', '')
+                ));
+            }
+            return new JSONResponse($matrix);
+        } catch (\InvalidArgumentException $e) {
+            return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+        }
+    }
+
 }

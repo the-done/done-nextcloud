@@ -35,6 +35,21 @@ use OCP\Server;
 
 class CommonController extends BaseController
 {
+    /** Stream a report attachment through the same authorization as the module API. */
+    #[NoCSRFRequired]
+    #[NoAdminRequired]
+    public function downloadMatrix(IRequest $request): \OCP\AppFramework\Http\DataDownloadResponse | JSONResponse
+    {
+        $response = Server::get(ModulesController::class)->handleModuleRequest('reports', 'exportMatrix', $request);
+        if ($response->getStatus() !== Http::STATUS_OK) {
+            return $response;
+        }
+        $data = $response->getData();
+        return new \OCP\AppFramework\Http\DataDownloadResponse(
+            base64_decode($data['content']), $data['filename'], $data['mime']
+        );
+    }
+
     #[NoCSRFRequired]
     #[NoAdminRequired]
     #[FrontpageRoute(verb: 'GET', url: '/')]
