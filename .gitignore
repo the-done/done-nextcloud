@@ -24,3 +24,6 @@ Thumbs.db
 
 # Superpowers working files (specs, plans, runbooks)
 docs/superpowers/
+
+# PHPUnit result cache
+tests/.phpunit.cache/

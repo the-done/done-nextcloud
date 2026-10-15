@@ -10,6 +10,7 @@ namespace OCA\Done\Modules;
 use OCA\Done\Modules\Agreement\Controller\AgreementController;
 use OCA\Done\Modules\DoneAI\Controller\DoneAIController;
 use OCA\Done\Modules\Finances\Controller\FinancesController;
+use OCA\Done\Modules\HulyIntegration\Controller\HulyAdminController;
 use OCA\Done\Modules\IntegrationWithExtApps\Controller\IntegrationWithExtAppsController;
 use OCA\Done\Modules\Projects\Controller\ProjectsController;
 use OCA\Done\Modules\Reports\Controller\ReportsController;
@@ -28,6 +29,7 @@ class BaseModuleService
         'doneai'                 => DoneAIController::class,
         'vacations'              => VacationsController::class,
         'integrationwithextapps' => IntegrationWithExtAppsController::class,
+        'huly'                   => HulyAdminController::class,
     ];
 
     public static function moduleExists(string $module = ''): bool

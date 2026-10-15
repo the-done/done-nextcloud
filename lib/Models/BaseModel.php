@@ -291,6 +291,92 @@ abstract class BaseModel
         array $additionalOrderBy = [],
         bool $needDeleted = false,
     ): array {
+        $qb = $this->buildFilteredQuery($filter, $fields, $needDeleted);
+
+        if (!empty($orderBy)) {
+            $qb->orderBy($orderBy[0], $orderBy[1]);
+        }
+
+        if (!empty($orderBy) && !empty($additionalOrderBy)) {
+            $qb->addOrderBy($additionalOrderBy[0], $additionalOrderBy[1]);
+        }
+
+        $items = $qb->executeQuery()->fetchAll();
+
+        return $this->compareDataWithCustomFields($this->prepareItems($items));
+    }
+
+    /**
+     * Get one page of records sorted by any number of fields.
+     * Model-specific getListByFilter() overrides are not applied here.
+     *
+     * @param array<string, mixed>              $filter
+     * @param string[]                          $fields
+     * @param array<int, array{string, string}> $orderBy     List of [field, 'ASC'|'DESC'] pairs, applied in order
+     * @param null|int                          $limit       Maximum number of records, null for all
+     * @param int                               $offset      Number of records to skip
+     * @param bool                              $needDeleted
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws Exception
+     */
+    public function getPagedListByFilter(
+        array $filter = [],
+        array $fields = ['*'],
+        array $orderBy = [],
+        ?int $limit = null,
+        int $offset = 0,
+        bool $needDeleted = false,
+    ): array {
+        foreach ($orderBy as $order) {
+            if (
+                !\is_array($order)
+                || !isset($order[0], $order[1])
+                || !\is_string($order[0])
+                || !\is_string($order[1])
+                || !isset($this->fields[$order[0]])
+                || !\in_array(strtoupper($order[1]), ['ASC', 'DESC'], true)
+            ) {
+                throw new \InvalidArgumentException('Invalid sort order');
+            }
+        }
+
+        if (($limit !== null && $limit < 1) || $offset < 0) {
+            throw new \InvalidArgumentException('Invalid page bounds');
+        }
+
+        $qb = $this->buildFilteredQuery($filter, $fields, $needDeleted);
+
+        foreach ($orderBy as [$field, $direction]) {
+            $qb->addOrderBy($field, strtoupper($direction));
+        }
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        if ($offset > 0) {
+            $qb->setFirstResult($offset);
+        }
+
+        $items = $qb->executeQuery()->fetchAll();
+
+        return $this->compareDataWithCustomFields($this->prepareItems($items));
+    }
+
+    /**
+     * Select query with field list, soft-delete condition and filter applied
+     *
+     * @param array<string, mixed> $filter
+     * @param string[]             $fields
+     * @param bool                 $needDeleted
+     *
+     * @return IQueryBuilder
+     */
+    protected function buildFilteredQuery(array $filter, array $fields, bool $needDeleted): IQueryBuilder
+    {
         // Custom fields are not required for selecting from a table.
         if (!empty($this->customFields) && $fields !== ['*']) {
             foreach ($this->customFields as $fieldName => $params) {
@@ -316,17 +402,7 @@ abstract class BaseModel
             $qb = $this->makeFilter($qb, $filter);
         }
 
-        if (!empty($orderBy)) {
-            $qb->orderBy($orderBy[0], $orderBy[1]);
-        }
-
-        if (!empty($orderBy) && !empty($additionalOrderBy)) {
-            $qb->addOrderBy($additionalOrderBy[0], $additionalOrderBy[1]);
-        }
-
-        $items = $qb->executeQuery()->fetchAll();
-
-        return $this->compareDataWithCustomFields($this->prepareItems($items));
+        return $qb;
     }
 
     /**

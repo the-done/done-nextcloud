@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT */
         : 'shadow-none transform-[translateX(100%)]',
     ]"
   >
+    <slot v-if="showHeader" name="header">
     <div
       class="flex items-center justify-center min-h-[52px] gap-4 px-4 py-2 md:justify-start"
     >
@@ -28,7 +29,8 @@ SPDX-License-Identifier: MIT */
         <slot name="title" />
       </span>
     </div>
-    <div class="overflow-auto flex-[1_1_auto] border-t border-(--color-border)">
+    </slot>
+    <div :class="bodyClass || 'overflow-auto flex-[1_1_auto] border-t border-(--color-border)'">
       <slot />
     </div>
   </div>
@@ -49,6 +51,8 @@ export default {
   },
   mixins: [contextualTranslationsMixin],
   props: {
+    showHeader: { type: Boolean, default: true },
+    bodyClass: { type: String, default: "" },
     value: {
       type: Boolean,
       default: false,

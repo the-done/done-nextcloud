@@ -14,6 +14,7 @@ import Flag from "vue-material-design-icons/Flag.vue";
 import CheckDecagram from "vue-material-design-icons/CheckDecagram.vue";
 import PalmTree from "vue-material-design-icons/PalmTree.vue";
 import ArrowUpBold from "vue-material-design-icons/ArrowUpBold.vue";
+import LinkVariant from "vue-material-design-icons/LinkVariant.vue";
 
 import { usePermissionStore } from "@/app/store/permission";
 import { useModulesStore } from "@/app/store/modules";
@@ -258,6 +259,16 @@ export const settingsNavigationMixin = {
           exact: true,
           visible: this.isAdmin === true,
           icon: ArrowUpBold,
+        },
+        {
+          key: "settings-huly",
+          label: this.contextTranslate("Huly integration", this.context),
+          to: {
+            name: "settings-huly",
+          },
+          exact: true,
+          visible: this.isAdmin === true,
+          icon: LinkVariant,
         },
       ];
     },

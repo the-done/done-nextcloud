@@ -35,6 +35,32 @@ use OCP\Server;
 
 class CommonController extends BaseController
 {
+    /**
+     * Return a report attachment through the same authorization as the module API.
+     */
+    #[NoAdminRequired]
+    public function downloadMatrix(IRequest $request): Http\DataDownloadResponse | JSONResponse
+    {
+        $response = Server::get(ModulesController::class)->handleModuleRequest('reports', 'exportMatrix', $request);
+
+        if ($response->getStatus() !== Http::STATUS_OK) {
+            return $response;
+        }
+        $data = $response->getData();
+
+        if (!\is_array($data) || !isset($data['content'], $data['filename'], $data['mime'])
+            || !\is_string($data['content']) || !\is_string($data['filename']) || !\is_string($data['mime'])
+            || ($content = base64_decode($data['content'], true)) === false) {
+            return new JSONResponse(['error' => 'Invalid report attachment'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }
+
+        return new Http\DataDownloadResponse(
+            $content,
+            $data['filename'],
+            $data['mime']
+        );
+    }
+
     #[NoCSRFRequired]
     #[NoAdminRequired]
     #[FrontpageRoute(verb: 'GET', url: '/')]
@@ -142,6 +168,7 @@ class CommonController extends BaseController
         IRequest $request
     ): JSONResponse {
         $data = $request->getParam('data');
+        $syncExternal = \is_array($data) && !empty($data['sync_external']);
         $currentUserObj = $this->userSession->getUser();
         $currentUserUid = $currentUserObj?->getUID();
         $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
@@ -178,6 +205,11 @@ class CommonController extends BaseController
         $slug = $timesModel->addData($data);
 
         if ($slug) {
+            if (class_exists(\OCA\Done\Modules\HulyIntegration\Service\HulyService::class)) {
+                \OCA\Done\Modules\HulyIntegration\Service\HulyService::getInstance()
+                    ->onTimeCreated($slug, $data + ['sync_external' => $syncExternal]);
+            }
+
             return new JSONResponse(
                 [
                     'message' => $this->translateService->getTranslate('Report added successfully'),
@@ -221,6 +253,11 @@ class CommonController extends BaseController
         }
 
         $timesModel->update($data, $slug);
+
+        if (class_exists(\OCA\Done\Modules\HulyIntegration\Service\HulyService::class)) {
+            \OCA\Done\Modules\HulyIntegration\Service\HulyService::getInstance()
+                ->onTimeUpdated($slug, $data);
+        }
 
         return new JSONResponse(
             [
@@ -323,7 +360,14 @@ class CommonController extends BaseController
             );
         }
 
-        (new TimesModel())->delete($slug);
+        $timesModel = new TimesModel();
+        $record = $timesModel->getItemByFilter(['id' => $slug]);
+        $timesModel->delete($slug);
+
+        if (\is_array($record) && class_exists(\OCA\Done\Modules\HulyIntegration\Service\HulyService::class)) {
+            \OCA\Done\Modules\HulyIntegration\Service\HulyService::getInstance()
+                ->onTimeDeleted($record);
+        }
 
         return new JSONResponse(
             [

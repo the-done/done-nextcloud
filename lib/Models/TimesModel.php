@@ -65,6 +65,24 @@ class TimesModel extends BaseModel
             ],
             'db_comment' => 'URL to a task in an external system (e.g., Yandex Tracker)',
         ],
+        'external_report_id' => [
+            'type'             => IQueryBuilder::PARAM_STR,
+            'title'            => 'External report ID',
+            'required'         => false,
+            'validation_rules' => [
+                'trim' => true,
+            ],
+            'db_comment' => 'ID of the mirrored record in an external system (set by an integration module). Depersonalized; no vendor name in core.',
+        ],
+        'external_source' => [
+            'type'             => IQueryBuilder::PARAM_STR,
+            'title'            => 'External source',
+            'required'         => false,
+            'validation_rules' => [
+                'trim' => true,
+            ],
+            'db_comment' => 'Integration key that owns external_report_id (e.g. the integration module name).',
+        ],
         'description' => [
             'type'             => IQueryBuilder::PARAM_LOB,
             'title'            => 'Description',
