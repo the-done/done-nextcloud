@@ -119,6 +119,29 @@ SPDX-License-Identifier: MIT */
         @input="(value) => handleUpdateQuickValue('minutes', value)"
       />
     </div>
+
+    <NcModal
+      v-if="isHulyModalOpen"
+      name="huly-send-modal"
+      @close="handleHulyChoice(false)"
+    >
+      <div class="p-4">
+        <div class="text-xl font-semibold mb-4">
+          {{ contextTranslate("Send to Huly?", context) }}
+        </div>
+        <div class="mb-4">
+          {{ contextTranslate("Send this time entry to Huly?", context) }}
+        </div>
+        <div class="flex justify-end gap-4">
+          <NcButton @click="handleHulyChoice(false)">
+            {{ contextTranslate("No", context) }}
+          </NcButton>
+          <NcButton type="primary" @click="handleHulyChoice(true)">
+            {{ contextTranslate("Yes", context) }}
+          </NcButton>
+        </div>
+      </div>
+    </NcModal>
   </div>
 </template>
 
@@ -126,9 +149,12 @@ SPDX-License-Identifier: MIT */
 import { t, n } from "@nextcloud/l10n";
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 
-import { NcButton } from "@nextcloud/vue";
+import { NcButton, NcModal } from "@nextcloud/vue";
+import { mapState } from "pinia";
 import { required, minValue, helpers } from "vuelidate/lib/validators";
 import { format } from "date-fns";
+
+import { useModulesStore } from "@/app/store/modules";
 
 import { TimeTrackingHoursPicker } from "@/features/TimeTrackingHoursPicker";
 import { TimeTrackingMinutesPicker } from "@/features/TimeTrackingMinutesPicker";
@@ -191,6 +217,7 @@ export default {
   mixins: [customTranslationsMixin, contextualTranslationsMixin],
   components: {
     NcButton,
+    NcModal,
     TimeTrackingHoursPicker,
     TimeTrackingMinutesPicker,
     VDatePicker,
@@ -215,6 +242,8 @@ export default {
   },
   data: () => ({
     context: "user/time-tracking",
+    isHulyModalOpen: false,
+    pendingSubmit: null,
   }),
   validations() {
     const time = {
@@ -256,6 +285,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useModulesStore, ["moduleExist"]),
     errors() {
       const getTimeError = () => {
         const { $invalid, $dirty, $params, validateHours, validateMinutes } =
@@ -392,6 +422,21 @@ export default {
 
       const payload = this.transformSubmitData(this.value);
 
+      if (
+        this.isEdit === false &&
+        this.moduleExist("huly") === true &&
+        payload.is_downtime !== true &&
+        Boolean(payload.task_link) === true
+      ) {
+        this.pendingSubmit = { payload, isContinue };
+        this.isHulyModalOpen = true;
+
+        return;
+      }
+
+      this.emitSubmit(payload, isContinue);
+    },
+    emitSubmit(payload, isContinue) {
       if (isContinue === true) {
         this.$emit("onSubmitAndContinue", { payload, $v: this.$v });
 
@@ -399,6 +444,21 @@ export default {
       }
 
       this.$emit("onSubmit", { payload, $v: this.$v });
+    },
+    handleHulyChoice(sendToHuly) {
+      const pending = this.pendingSubmit;
+
+      this.isHulyModalOpen = false;
+      this.pendingSubmit = null;
+
+      if (pending === null) {
+        return;
+      }
+
+      this.emitSubmit(
+        { ...pending.payload, sync_external: sendToHuly },
+        pending.isContinue,
+      );
     },
     handleSubmitAndContinue() {
       this.handleSubmit(true);

@@ -46,6 +46,7 @@ import TeamsEditDirectionsPage from "@/pages/TeamsEditDirectionsPage.vue";
 import TeamsEditProjectsPage from "@/pages/TeamsEditProjectsPage.vue";
 import TeamsEditUsersPage from "@/pages/TeamsEditUsersPage.vue";
 
+import ReportsMatrixPage from "@/pages/ReportsMatrixPage.vue";
 import ReportsCommonPage from "@/pages/ReportsCommonPage.vue";
 import VacationsReportPage from "@/pages/VacationsReportPage.vue";
 import ReportsProjectPage from "@/pages/ReportsProjectPage.vue";
@@ -120,6 +121,14 @@ export const defaultLayoutRoutes = [
                   },
                 ],
               },
+            },
+          },
+          {
+            name: "report-matrix",
+            path: "table",
+            component: ReportsMatrixPage,
+            meta: {
+              permissions: { list: ["canReadCommonReport", "canReadStaffReport"], operator: "AND" },
             },
           },
           {

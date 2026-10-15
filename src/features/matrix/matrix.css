@@ -1,0 +1,301 @@
+.matrix-page { position: relative; display: flex; flex-direction: column; height: 100%; overflow: hidden;
+  background: var(--color-main-background); color: var(--color-main-text); container-type: inline-size; }
+.matrix-page .matrix-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-export { flex-shrink: 0; }
+.matrix-page .matrix-controls button,
+.matrix-page .matrix-table button,
+.matrix-page .matrix-details button,
+.matrix-page .matrix-error button { min-height: 34px; margin: 0; font-size: 13px; }
+.matrix-page button { cursor: pointer; }
+.matrix-page .matrix-controls-bar,
+.matrix-page .matrix-table { user-select: none; }
+.matrix-page .matrix-export .button-vue__wrapper::after { content: ""; width: 6px; height: 6px;
+  margin: -3px 2px 0 10px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); flex-shrink: 0; }
+.matrix-page .matrix-controls-bar { display: flex; flex: 0 0 auto; align-items: flex-start;
+  border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+.matrix-page .matrix-controls-bar .matrix-fullscreen-exit { display: flex; align-items: center; justify-content: center;
+  flex: 0 0 40px; width: 40px; height: 40px; padding: 0; margin: 10px 24px 10px 0; }
+.matrix-page .matrix-controls { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;
+  flex-wrap: wrap; padding: 10px 24px; }
+.matrix-page .matrix-segment { display: flex; flex-shrink: 0; padding: 3px; border-radius: 8px;
+  background: var(--color-background-dark); }
+.matrix-page .matrix-segment button { display: inline-flex; align-items: center; justify-content: center; line-height: 1.5;
+  border: 0; border-radius: 6px; background: transparent; padding: 0 14px; }
+.matrix-page .matrix-segment button[aria-pressed="true"] { background: var(--color-primary-element);
+  color: var(--color-primary-element-text); }
+.matrix-page .matrix-period { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; }
+.matrix-page .matrix-period button { display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; padding: 0; line-height: 1; }
+.matrix-page .matrix-period .material-design-icon { display: flex; align-items: center; justify-content: center; }
+.matrix-page .matrix-period .material-design-icon__svg { position: static; display: block; }
+.matrix-page .matrix-period strong { display: inline-flex; align-items: center; justify-content: center; min-height: 34px;
+  text-align: center; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+.matrix-page .matrix-checkbox { display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; }
+.matrix-page .matrix-checkbox input { appearance: auto; width: 16px; height: 16px; }
+.matrix-page .matrix-meta-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  margin-left: auto; flex-shrink: 0; }
+.matrix-page .matrix-meta-actions button { display: inline-flex; align-items: center; gap: 5px;
+  border: 0; background: transparent; color: var(--color-primary-element); }
+.matrix-page .matrix-filter-badge { padding: 0 5px; border-radius: 8px; background: var(--color-primary-element);
+  color: var(--color-primary-element-text); font-size: 10px; }
+.matrix-page .matrix-scroll { flex: 1; min-height: 0; overflow: auto; margin: 8px 24px; border: 0;
+  border-radius: 8px 8px 0 0; }
+.matrix-page .matrix-table { width: 100%; border-spacing: 0; border-collapse: separate; font-size: 13px;
+  font-variant-numeric: tabular-nums; }
+.matrix-page .matrix-table th,
+.matrix-page .matrix-table td { padding: 8px 14px; min-width: 105px; height: 42px; text-align: right;
+  border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.matrix-page .matrix-table .matrix-name { position: sticky; left: 0; z-index: 2; min-width: 250px; max-width: 330px;
+  text-align: left; background: var(--color-main-background); }
+.matrix-page .matrix-profile-link { color: var(--color-primary-element); text-decoration: none; cursor: pointer; }
+.matrix-page .matrix-profile-link:hover { text-decoration: underline; }
+.matrix-page .matrix-link-arrow { display: inline; font-size: .8em; font-weight: 400; opacity: .75; }
+.matrix-page .matrix-name .matrix-name-button,
+.matrix-page .matrix-name .matrix-profile-link,
+.matrix-page .matrix-name .matrix-sort {
+  position: static; }
+.matrix-page .matrix-name .matrix-name-button::after,
+.matrix-page .matrix-name .matrix-profile-link::after,
+.matrix-page .matrix-name .matrix-sort::after { content: ""; position: absolute; inset: 0; cursor: pointer; }
+.matrix-page .matrix-name-content { display: flex; align-items: center; gap: 12px; }
+.matrix-page .matrix-table .matrix-name-button { display: inline-flex; align-items: center; gap: 8px;
+  min-height: 0; min-width: 0; max-width: 100%; padding: 0;
+  text-align: left; border: 0; border-radius: 0; background: transparent; font-weight: 600; white-space: normal; }
+.matrix-page .matrix-row-name { min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.4; }
+.matrix-page .matrix-name-content small { flex-shrink: 0; margin-left: auto; color: var(--color-text-maxcontrast); font-size: 10px; }
+.matrix-page .matrix-chevron { display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; flex: 0 0 18px; transform-origin: center; }
+.matrix-page .matrix-chevron.is-expanded { transform: rotate(90deg); }
+.matrix-page .matrix-name-static { display: block; white-space: normal; overflow-wrap: anywhere; }
+.matrix-page .matrix-child .matrix-name-static { padding-left: 26px; color: var(--color-text-maxcontrast); font-weight: 400; }
+.matrix-page .matrix-table .matrix-hours,
+.matrix-page .matrix-table .matrix-sort { display: inline-flex; align-items: center; gap: 5px;
+  min-height: 0; min-width: 0; width: auto; height: auto; padding: 0; text-align: right;
+  border: 0; border-radius: 0; background: transparent; color: inherit; font-weight: inherit; }
+.matrix-page .matrix-table .matrix-hours:hover,
+.matrix-page .matrix-table .matrix-hours.selected {
+  color: var(--color-primary-element); background: transparent;
+  text-decoration: underline; }
+.matrix-page .matrix-table .matrix-name-button,
+.matrix-page .matrix-table .matrix-name-button:hover {
+  color: var(--color-main-text); }
+.matrix-page .matrix-table .matrix-name-button:hover { text-decoration: underline; }
+.matrix-page .matrix-sort-icon { display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px; flex: 0 0 14px; line-height: 1; color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-table th[aria-sort="ascending"] .matrix-sort-icon,
+.matrix-page .matrix-table th[aria-sort="descending"] .matrix-sort-icon { color: #000; }
+.matrix-page .matrix-table .matrix-total { position: sticky; right: 0; z-index: 2;
+  background: var(--color-main-background); font-weight: 700;
+  box-shadow: -1px 0 0 var(--color-border); }
+.matrix-page .matrix-company td,
+.matrix-page .matrix-company .matrix-name { background: var(--color-primary-element-light); font-weight: 700; }
+.matrix-page .matrix-company .matrix-total { background: var(--color-primary-element-light); }
+.matrix-page .matrix-company { color: var(--color-main-text); }
+.matrix-page .matrix-table .matrix-zero { color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-table .weekend { background: var(--color-background-hover); }
+.matrix-page .matrix-loading,
+.matrix-page .matrix-empty { padding: 60px 24px; text-align: center; }
+.matrix-page .matrix-empty h2 { font-size: 18px; font-weight: 600; }
+.matrix-page .matrix-error { margin: 8px 24px; padding: 12px; border: 1px solid var(--color-error); border-radius: 6px; }
+.matrix-page .matrix-details { position: absolute; right: 0; top: 0; bottom: 0; width: min(480px, 100%); z-index: 10;
+  display: flex; flex-direction: column; background: var(--color-main-background);
+  border-left: 1px solid var(--color-border); box-shadow: -10px 0 30px #0002; overflow: hidden; }
+.matrix-page .matrix-details header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 22px; }
+.matrix-page .matrix-details header > div { min-width: 0; }
+.matrix-page .matrix-details h2 { overflow-wrap: anywhere; margin: 4px 0; font-size: 20px; font-weight: 600; }
+.matrix-page .matrix-details .matrix-close { display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; min-width: 36px; padding: 0; flex-shrink: 0; }
+.matrix-page .matrix-close .material-design-icon { display: flex; align-items: center; justify-content: center; }
+.matrix-page .matrix-details-summary { display: flex; flex-direction: column; gap: 6px; padding: 16px 22px;
+  background: var(--color-primary-element-light); }
+.matrix-page .matrix-details-summary strong { font-size: 26px; }
+.matrix-page .matrix-details-summary small { color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-detail-list { padding: 0 22px 22px; overflow: auto; flex: 1; user-select: text; }
+.matrix-page .matrix-entry { padding: 20px 0; border-bottom: 1px solid var(--color-border); }
+.matrix-page .matrix-entry-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 7px; }
+.matrix-page .matrix-entry-top time { color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-entry h3 { overflow-wrap: anywhere; margin: 0; font-size: 17px; font-weight: 650; line-height: 1.4; }
+.matrix-page .matrix-entry-secondary { font-size: 13px; margin: 4px 0 10px; }
+.matrix-page .matrix-entry p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; margin: 6px 0; }
+.matrix-page .matrix-entry-comment { font-size: 12px; color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-entry-task { display: inline-block; margin-top: 8px; color: var(--color-primary-element); }
+.matrix-page .matrix-details h2 .matrix-profile-link,
+.matrix-page .matrix-entry h3 .matrix-profile-link {
+  color: var(--color-main-text); }
+.matrix-page .matrix-load-more { width: 100%; margin-top: 16px !important; }
+.matrix-page .matrix-drawer-enter-active,
+.matrix-page .matrix-drawer-leave-active { transition: transform .2s ease; }
+.matrix-page .matrix-drawer-enter,
+.matrix-page .matrix-drawer-leave-to { transform: translateX(100%); }
+.matrix-page .matrix-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.matrix-page .matrix-details > header,
+.matrix-page .matrix-filter-summary { flex-shrink: 0; }
+.matrix-page .matrix-filter-summary { padding: 0 22px 14px; font-size: 13px; }
+.matrix-page .matrix-filter-groups { display: flex; flex-direction: column; gap: 20px; padding: 0 22px 18px;
+  flex: 0 1 auto; min-height: 0; overflow: hidden; }
+.matrix-page .has-filter-picker .matrix-filter-groups { max-height: 45%; }
+.matrix-page .matrix-filter-group { display: flex; flex-direction: column; flex: 0 1 auto; min-height: 74px; }
+.matrix-page .matrix-filter-group.has-many-chips { min-height: 106px; }
+.matrix-page .matrix-filter-group-heading,
+.matrix-page .matrix-filter-reset { flex-shrink: 0; }
+.matrix-page .matrix-filter-group-heading,
+.matrix-page .matrix-filter-picker-heading { display: flex; align-items: center;
+  justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.matrix-page .matrix-filter-group h3 small { margin-left: 5px; color: var(--color-text-maxcontrast); font-size: 12px; }
+.matrix-page .matrix-filter-group h3,
+.matrix-page .matrix-filter-picker h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.matrix-page .matrix-filters .matrix-filter-add { display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; min-height: 30px; padding: 0; }
+.matrix-page .matrix-filter-chips { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px;
+  overflow: auto; min-height: 32px; overscroll-behavior: contain; padding-right: 4px; }
+.matrix-page .matrix-filter-chip { display: inline-flex; flex-shrink: 0; align-items: center; gap: 6px;
+  max-width: 100%; padding: 5px 10px;
+  border-radius: 16px; background: var(--color-primary-element-light); color: var(--color-main-text);
+  font-size: 12px; line-height: 20px; }
+.matrix-page .matrix-filters .matrix-filter-plus { width: 32px; height: 32px; min-height: 32px; flex: 0 0 32px;
+  border-radius: 50%; align-self: flex-start; }
+.matrix-page .matrix-filters .matrix-filter-all { min-height: 32px; border: 0; font-weight: 400; margin: 0; }
+.matrix-page .matrix-filter-chip > span { overflow-wrap: anywhere; min-width: 0; }
+.matrix-page .matrix-filter-chip button { display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 22px; width: 22px; height: 22px; min-height: 22px; padding: 0; border: 0; background: transparent; }
+.matrix-page .matrix-filter-group .matrix-filter-reset { padding: 0; min-height: 30px;
+  background: transparent; border: 0; color: var(--color-primary-element); font-size: 12px; }
+.matrix-page .matrix-filter-picker { display: flex; flex-direction: column; flex: 1; min-height: 180px;
+  border-top: 1px solid var(--color-border); }
+.matrix-page .matrix-filter-picker-heading { padding: 14px 22px 0; }
+.matrix-page .matrix-filter-search { padding: 0 22px 10px; border-bottom: 1px solid var(--color-border); }
+.matrix-page .matrix-filter-search input[type="search"] { width: 100%; margin: 0; }
+.matrix-page .matrix-filter-list { overflow: auto; flex: 1; min-height: 0; padding: 8px 22px 22px; }
+.matrix-page .matrix-filter-picker-heading,
+.matrix-page .matrix-filter-search { flex-shrink: 0; }
+.matrix-page .matrix-filters .matrix-filter-option { display: flex; align-items: center; justify-content: space-between;
+  width: 100%; min-height: 42px; gap: 9px; padding: 8px 4px; text-align: left; font-weight: 400;
+  border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0; background: transparent; }
+.matrix-page .matrix-filters .matrix-filter-option:hover { background: var(--color-background-hover); }
+.matrix-page .matrix-filter-option > span:first-child { flex: 1; }
+.matrix-page .matrix-filters .matrix-filter-option > .material-design-icon { flex-shrink: 0; color: var(--color-text-maxcontrast); }
+.matrix-page button:disabled { opacity: .45; cursor: default; }
+.matrix-page button:focus-visible,
+.matrix-page .matrix-scroll:focus-visible { outline: 2px solid var(--color-primary-element);
+  outline-offset: -2px; }
+.matrix-page .matrix-table thead th { position: sticky; top: 0; z-index: 3; height: 52px; padding: 8px 14px;
+  background: var(--color-background-dark); font-weight: 600; }
+.matrix-page .matrix-table thead .matrix-sort { line-height: 1.1; }
+.matrix-page .matrix-table thead small { display: block; margin-top: 2px; font-size: 11px; line-height: 1.1;
+  color: var(--color-text-maxcontrast); }
+.matrix-page .matrix-table thead .matrix-name { z-index: 5; background: var(--color-background-dark); }
+.matrix-page .matrix-table thead .matrix-total { z-index: 5; background: var(--color-background-dark); }
+.matrix-page .matrix-scroll.has-hidden-left .matrix-name::before,
+.matrix-page .matrix-scroll.has-hidden-right .matrix-total::before { content: ""; position: absolute;
+  top: 0; bottom: 0; width: 12px; pointer-events: none; }
+.matrix-page .matrix-scroll.has-hidden-left .matrix-name::before { right: -12px;
+  background: linear-gradient(to right, #0003, transparent); }
+.matrix-page .matrix-scroll.has-hidden-right .matrix-total::before { left: -12px;
+  background: linear-gradient(to left, #0003, transparent); }
+.matrix-page .matrix-scroll.is-scrollable th,
+.matrix-page .matrix-scroll.is-scrollable td { cursor: grab; }
+.matrix-page .matrix-scroll.is-dragging,
+.matrix-page .matrix-scroll.is-dragging * { cursor: grabbing !important; user-select: none; }
+.matrix-page .matrix-table tbody tr:hover > th,
+.matrix-page .matrix-table tbody tr:hover > td,
+.matrix-page .matrix-table tbody tr:focus-within > th,
+.matrix-page .matrix-table tbody tr:focus-within > td,
+.matrix-page .matrix-table tbody tr.matrix-selected > th,
+.matrix-page .matrix-table tbody tr.matrix-selected > td {
+  background: var(--color-primary-element-light); }
+@container (max-width: 1180px) {
+.matrix-page .matrix-today { order: 1; margin-left: auto !important; }
+.matrix-page .matrix-meta-actions { order: 2; flex-basis: 100%; }
+}
+@container (max-width: 900px) {
+.matrix-page .matrix-controls::before { content: ""; order: 5; flex-basis: 100%; }
+.matrix-page .matrix-controls .matrix-today { order: 6; margin-left: 0 !important; }
+.matrix-page .matrix-meta-actions { order: 7; flex: 1 1 auto; }
+}
+@media (max-width: 800px) {
+.matrix-page .matrix-controls { padding: 8px 16px; gap: 8px; }
+.matrix-page .matrix-controls-bar .matrix-fullscreen-exit { margin: 8px 16px 8px 0; }
+.matrix-page .matrix-segment button { padding: 0 8px; font-size: 12px; }
+.matrix-page .matrix-period strong { font-size: 12px; }
+.matrix-page .matrix-scroll { margin: 8px; }
+.matrix-page .matrix-table .matrix-name { min-width: 190px; max-width: 220px; }
+}
+@media (max-width: 600px) {
+.matrix-page .matrix-toolbar { flex-wrap: nowrap; gap: 4px; padding-right: 8px; }
+.matrix-page .matrix-toolbar .breadcrumb__crumbs > li:first-child { display: none; }
+.matrix-page .matrix-toolbar .breadcrumb__crumbs > li:last-child::before { display: none; }
+.matrix-page .matrix-toolbar .button-vue { min-width: 44px; min-height: 44px; }
+.matrix-page .matrix-export .button-vue__text { position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.matrix-page .matrix-export .button-vue__wrapper::after { display: none; }
+.matrix-page .matrix-controls { padding: 6px 8px; gap: 4px 8px; }
+.matrix-page .matrix-controls-bar .matrix-fullscreen-exit { flex-basis: 44px; width: 44px; height: 44px;
+    margin: 6px 8px 6px 0; }
+.matrix-page .matrix-controls button { min-height: 44px; }
+.matrix-page .matrix-period { order: 3; flex: 1; min-width: 0; }
+.matrix-page .matrix-period button { width: 44px; height: 44px; flex: 0 0 44px; }
+.matrix-page .matrix-period strong { white-space: normal; line-height: 1.2; font-size: 13px; }
+.matrix-page .matrix-today { width: 72px; padding: 0; }
+.matrix-page .matrix-segment { order: 2; flex: 1 0 calc(50% - 4px); min-width: 0; }
+.matrix-page .matrix-segment button { padding: 0 8px; flex: 1; font-size: 12px; }
+.matrix-page .matrix-checkbox { order: 4; min-height: 44px; }
+.matrix-page .matrix-meta-actions { gap: 4px; }
+.matrix-page .matrix-meta-actions button { padding: 0 4px; font-size: 12px; gap: 3px; }
+.matrix-page .matrix-table th,
+.matrix-page .matrix-table td { min-width: 96px; padding: 6px 10px; }
+.matrix-page .matrix-table .matrix-name { min-width: 148px; max-width: 148px; width: 148px; padding: 8px; }
+.matrix-page .matrix-table .matrix-total { display: none; }
+.matrix-page .matrix-table thead th { padding: 8px; }
+.matrix-page .matrix-table thead .matrix-name > .matrix-sort:first-child::after { display: none; }
+.matrix-page .matrix-table .matrix-mobile-total { position: relative; z-index: 1; display: block;
+    margin-top: 4px; color: var(--color-text-maxcontrast); font-size: 12px; }
+.matrix-page .matrix-table .matrix-mobile-total::after { display: none; }
+.matrix-page .matrix-table button.matrix-mobile-total { display: flex; min-height: 30px; }
+.matrix-page .matrix-mobile-total .matrix-hours { min-height: 30px; }
+.matrix-page .matrix-name-content { gap: 4px; }
+.matrix-page .matrix-name-content small { display: none; }
+.matrix-page .matrix-table .matrix-name-button { gap: 4px; }
+.matrix-page .matrix-child .matrix-name-static { padding-left: 12px; }
+.matrix-page .matrix-details { width: 100%; border-left: 0; }
+.matrix-page .matrix-details header { padding: 10px 12px 10px 52px; }
+.matrix-page .matrix-details h2 { font-size: 18px; line-height: 1.3; }
+.matrix-page .matrix-details .matrix-close { width: 44px; height: 44px; min-width: 44px; }
+.matrix-page .matrix-details-summary { padding: 12px 16px; }
+.matrix-page .matrix-detail-list { padding: 0 16px 16px; }
+.matrix-page .matrix-entry-comment,
+.matrix-page .matrix-entry-secondary { font-size: 14px; }
+.matrix-page .matrix-entry-task { min-height: 44px; padding-top: 8px; }
+.matrix-page .matrix-filter-groups { padding: 0 16px 12px; gap: 12px; }
+.matrix-page .matrix-filter-chips { min-height: 44px; }
+.matrix-page .matrix-filter-chip { font-size: 13px; }
+.matrix-page .matrix-filters .matrix-filter-add,
+.matrix-page .matrix-filters .matrix-filter-all,
+.matrix-page .matrix-filter-group .matrix-filter-reset { min-height: 44px; }
+.matrix-page .matrix-filters .matrix-filter-plus { flex-basis: 44px; width: 44px; height: 44px; }
+.matrix-page .matrix-filter-chip button { flex-basis: 32px; width: 32px; height: 32px; }
+.matrix-page .matrix-filter-picker-heading { padding: 8px 16px 0; }
+.matrix-page .matrix-filter-search { padding: 0 16px 8px; }
+.matrix-page .matrix-filter-search input[type="search"] { min-height: 44px; font-size: 16px; }
+.matrix-page .matrix-filter-list { padding: 4px 16px 16px; }
+.matrix-page .matrix-filters .matrix-filter-option { min-height: 48px; }
+
+}
+@media (prefers-reduced-motion: reduce) {
+.matrix-page .matrix-drawer-enter-active,
+.matrix-page .matrix-drawer-leave-active { transition: none; }
+}
+.matrix-page.is-fullscreen { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 10000; }
+.matrix-page.is-fullscreen .matrix-toolbar { display: none; }
+.matrix-page.is-fullscreen .matrix-scroll { margin: 0; border: 0; border-radius: 0; }
+
+.matrix-page .matrix-drawer-body, .matrix-page .matrix-drawer-content {
+  display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
+}
+.matrix-page .matrix-details { max-width: 100%; }
+.matrix-page .matrix-filter-chip.v-chip { height: auto !important; min-height: 32px; line-height: 20px !important; }
+.matrix-page .matrix-loading .v-loader-dots { justify-content: center; margin-bottom: 12px; }
+/* The shared scroll surface fills the available height, not width plus its margins. */
+.matrix-page .matrix-scroll { width: auto; }

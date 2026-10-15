@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT */
           :variant="chipVariant"
           :square="true"
           class="inline-block"
+          :class="{ 'huly-badge': isHuly }"
         >
           {{ modelData.type_title }}
         </VChip>
@@ -160,6 +161,9 @@ export default {
     chipVariant() {
       return VARIANT_MAP[this.modelData.type_key] || "";
     },
+    isHuly() {
+      return this.modelData.type_key === "huly";
+    },
     errors() {
       const requiredFields = REQUIRED_FIELDS.reduce((accum, key) => {
         const field = this.$v.modelData[key];
@@ -203,16 +207,51 @@ export default {
         project_id: this.modelData.project_id.slug,
       });
     },
+    resolveMappedProject() {
+      const doneProjectId = this.item && this.item.done_project_id;
+
+      if (!doneProjectId || !Array.isArray(this.projectOptions)) {
+        return null;
+      }
+
+      return (
+        this.projectOptions.find(
+          (opt) => !opt.is_separator && String(opt.id) === String(doneProjectId),
+        ) || null
+      );
+    },
+    applyMappedProject() {
+      if (this.modelData.project_id) {
+        return false;
+      }
+
+      const mapped = this.resolveMappedProject();
+
+      if (mapped) {
+        this.modelData.project_id = mapped;
+        return true;
+      }
+
+      return false;
+    },
     handleDecline() {
       this.$emit("on-decline", this.modelData.uuid);
     },
   },
   mounted() {
+    this.applyMappedProject();
+
+    // A project already selected (mapped or preset on the item) must not be
+    // replaced by the last-used project from localStorage.
+    if (this.modelData.project_id) {
+      return;
+    }
+
     const localProjectId = localStorage.getItem(
       LOCALSTORAGE_LAST_REPORT_PROJECT_ID,
     );
 
-    const projectOption = this.projectOptions.find(
+    const projectOption = (this.projectOptions || []).find(
       (item) => item.id === localProjectId,
     );
 
@@ -228,8 +267,13 @@ export default {
         }
 
         this.modelData = { ...this.modelData, ...value };
+        this.applyMappedProject();
       },
       immediate: true,
+    },
+    projectOptions() {
+      // Options may load after mount; pre-select the mapped project once available.
+      this.applyMappedProject();
     },
   },
 };

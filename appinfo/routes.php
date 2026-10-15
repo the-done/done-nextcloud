@@ -7,6 +7,11 @@
 
 return [
     'routes' => [
+        [
+            'name' => 'common#downloadMatrix',
+            'url'  => '/reports/table/export',
+            'verb' => 'POST',
+        ],
         // ////// USERS ////////
         [
             'name' => 'users#getUsersData',
@@ -432,6 +437,12 @@ return [
         ],
         [
             'name'    => 'common#index',
+            'url'     => '/reports/table/',
+            'verb'    => 'GET',
+            'postfix' => 'reports.table',
+        ],
+        [
+            'name'    => 'common#index',
             'url'     => '/reports/common/',
             'verb'    => 'GET',
             'postfix' => 'reports.common',
@@ -707,6 +718,12 @@ return [
             'url'     => '/settings/',
             'verb'    => 'GET',
             'postfix' => 'userSettings',
+        ],
+        [
+            'name'    => 'common#index',
+            'url'     => '/settings/huly/',
+            'verb'    => 'GET',
+            'postfix' => 'hulySettings',
         ],
         [
             'name'    => 'common#index',

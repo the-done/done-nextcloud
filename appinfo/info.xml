@@ -251,7 +251,7 @@ Une matrice de droits flexible, des champs personnalisés et une visibilité con
 
 🌐 [the-done.app](https://the-done.app) · 💳 [Tarifs](https://the-done.app/fr/pricing/) · 📖 [Support](https://the-done.app/fr/support/) · 🐞 [GitHub](https://github.com/the-done)]]></description>
 
-    <version>1.9.0</version>
+    <version>1.10.0</version>
     <screenshot small-thumbnail="https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-001-Add_Record.png">https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-001-Add_Record.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-002-User_Settings.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/the-done/done-nextcloud/master/docs/Done-Nextcloud-003-Employees.png</screenshot>

@@ -127,3 +127,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Localized the demo table column titles.
 - The Pro version screen now survives a page reload.
 - The installed pro-package version is reported correctly for update checks.
+
+## 1.10.0 – 2026-10-15
+
+### Added
+- Table report with employee/project hierarchies, year/month/week views, optional
+  daily month columns, surname and hour sorting, and project/employee filters.
+- Time-entry details with comments, progressive loading and links to employee,
+  project and task pages; Excel/PDF/HTML exports of the selected report view.
+- Fullscreen report controls, an initial mobile layout, and interface translations
+  in English, German, Spanish, French and Russian.
