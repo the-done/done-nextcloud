@@ -17,6 +17,7 @@ import SettingsLayout from "@/layouts/SettingsLayout.vue";
 import AgreementSchemesPage from "@/pages/AgreementSchemesPage.vue";
 import VacationsSettingsPage from "@/pages/VacationsSettingsPage.vue";
 import ProVersionSettingsPage from "@/pages/ProVersionSettingsPage.vue";
+import HulyIntegrationSettingsPage from "@/pages/HulyIntegrationSettingsPage.vue";
 
 import SimpleRouterPage from "@/pages/SimpleRouterPage.vue";
 import SectionNavigationPage from "@/pages/SectionNavigationPage.vue";
@@ -460,6 +461,30 @@ export const settingsLayoutRoutes = [
                   {
                     path: { name: "settings-pro" },
                     title: "Pro version",
+                    icon: ArrowUpBold,
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "huly",
+        component: SimpleRouterPage,
+        children: [
+          {
+            name: "settings-huly",
+            path: "",
+            component: HulyIntegrationSettingsPage,
+            // Admin-only screen (no navigation entry): non-admins get the 404 view.
+            meta: { requiresAdmin: true },
+            props: {
+              additionalProps: {
+                breadcrumbs: [
+                  {
+                    path: { name: "settings-huly" },
+                    title: "Huly integration",
                     icon: ArrowUpBold,
                   },
                 ],

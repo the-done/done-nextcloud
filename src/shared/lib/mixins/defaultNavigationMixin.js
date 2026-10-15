@@ -43,6 +43,16 @@ export const defaultNavigationMixin = {
             this.moduleExist("reports") === true,
           children: [
             {
+              key: "report-matrix",
+              label: "Table view",
+              to: { name: "report-matrix" },
+              exact: false,
+              visible:
+                this.getCommonPermission("canReadCommonReport") === true &&
+                this.getCommonPermission("canReadStaffReport") === true &&
+                this.moduleExist("reports") === true,
+            },
+            {
               key: "report-common",
               label: "Common",
               to: {

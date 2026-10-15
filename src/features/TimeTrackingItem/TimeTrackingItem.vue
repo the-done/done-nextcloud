@@ -22,7 +22,7 @@ SPDX-License-Identifier: MIT */
       >
         <div class="flex flex-col pl-2">
           <div
-            v-if="modelData.is_downtime === true || modelData.time"
+            v-if="modelData.is_downtime === true || modelData.time || externalSourceLabel"
             class="flex gap-2 mt-2 mb-1"
           >
             <VChip
@@ -40,6 +40,15 @@ SPDX-License-Identifier: MIT */
               class="nowrap"
             >
               {{ contextTranslate("Downtime", context) }}
+            </VChip>
+            <VChip
+              v-if="externalSourceLabel"
+              :square="true"
+              variant="primary"
+              class="nowrap"
+              :title="contextTranslate('Synced', context)"
+            >
+              {{ externalSourceLabel }}
             </VChip>
           </div>
           <div v-if="name" class="font-medium">
@@ -164,6 +173,15 @@ export default {
       }
 
       return "";
+    },
+    externalSourceLabel() {
+      const source = this.modelData.external_source;
+
+      if (!source) {
+        return "";
+      }
+
+      return String(source).charAt(0).toUpperCase() + String(source).slice(1);
     },
   },
   methods: {
