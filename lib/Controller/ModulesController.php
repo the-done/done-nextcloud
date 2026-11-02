@@ -65,6 +65,28 @@ class ModulesController extends OCSController
     }
 
     /**
+     * Keys of installed integration modules that are usable right now (switched on and
+     * configured). Only the keys are exposed, never their configuration; every signed-in user
+     * receives them so the UI offers to push records only when that can succeed.
+     *
+     * @return string[]
+     */
+    private function activeIntegrations(): array
+    {
+        $active = [];
+
+        // Private module: guarded so the public build degrades gracefully.
+        if (
+            class_exists(\OCA\Done\Modules\HulyIntegration\Service\HulyConfigService::class)
+            && \OCA\Done\Modules\HulyIntegration\Service\HulyConfigService::getInstance()->isActive()
+        ) {
+            $active[] = 'huly';
+        }
+
+        return $active;
+    }
+
+    /**
      * Universal method for handling all module requests
      *
      * @param string   $module  Module name
@@ -200,7 +222,13 @@ class ModulesController extends OCSController
         }
 
         return new JSONResponse(
-            ['modules' => $modules, 'demo' => $demo, 'demoHidden' => $demoHidden, 'isAdmin' => $isNcAdmin],
+            [
+                'modules'            => $modules,
+                'demo'               => $demo,
+                'demoHidden'         => $demoHidden,
+                'isAdmin'            => $isNcAdmin,
+                'activeIntegrations' => $this->activeIntegrations(),
+            ],
             Http::STATUS_OK
         );
     }

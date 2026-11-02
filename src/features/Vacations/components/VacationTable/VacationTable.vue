@@ -211,6 +211,7 @@ import {
   canBeProcessed,
   VACATION_STATUS,
 } from "@/entities/vacations/constants";
+import { canChangeVacation } from "../../vacationRights";
 
 export default {
   name: "VacationTable",
@@ -239,6 +240,11 @@ export default {
     currentUserId: {
       type: String,
       default: null,
+    },
+    // Common permission canManageVacations: may edit / cancel any vacation.
+    canManage: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["view", "history", "edit", "cancel"],
@@ -287,11 +293,8 @@ export default {
       return project?.name || projectId;
     },
     canEdit(vacation) {
-      // Owner is either the absent employee or the user who submitted the request.
-      const isOwner = vacation.user_id === this.currentUserId
-        || vacation.created_by === this.currentUserId;
-
-      if (!isOwner) {
+      // The absent employee, the user who submitted the request, or a vacations manager.
+      if (!canChangeVacation(vacation, this.currentUserId, this.canManage)) {
         return false;
       }
 
@@ -300,15 +303,12 @@ export default {
       return canBeProcessed(vacation.status_id) || this.isApproved(vacation.status_id);
     },
     canCancel(vacation) {
-      const isOwner = vacation.user_id === this.currentUserId
-        || vacation.created_by === this.currentUserId;
-
-      if (!isOwner) {
+      if (!canChangeVacation(vacation, this.currentUserId, this.canManage)) {
         return false;
       }
 
       // Cancel makes sense only for in-flight requests. Already-final statuses
-      // (approved/rejected/canceled) cannot be canceled by the owner.
+      // (approved/rejected/canceled) cannot be canceled.
       return canBeProcessed(vacation.status_id);
     },
     getActionLabel(vacation) {

@@ -723,6 +723,9 @@ export const defaultLayoutRoutes = [
             name: "agreement-home",
             path: "",
             component: SectionNavigationPage,
+            meta: {
+              permissions: { list: ["canReadAgreement"], operator: "AND" },
+            },
             props: {
               additionalProps: {
                 navigationName: "agreementNavigation",
@@ -740,6 +743,9 @@ export const defaultLayoutRoutes = [
             name: "agreement-requests",
             path: "requests",
             component: AgreementRequestsPage,
+            meta: {
+              permissions: { list: ["canReadAgreement"], operator: "AND" },
+            },
             props: {
               additionalProps: {
                 breadcrumbs: [

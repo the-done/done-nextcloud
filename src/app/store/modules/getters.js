@@ -24,6 +24,11 @@ export const getters = {
       return this.checkModule(key);
     };
   },
+  integrationActive() {
+    return (key) => {
+      return (this.activeIntegrations || []).includes(key);
+    };
+  },
   moduleIsDemo() {
     return (key) => {
       if (this.demoHidden === true) {

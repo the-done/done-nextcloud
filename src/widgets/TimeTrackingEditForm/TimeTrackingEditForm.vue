@@ -155,6 +155,7 @@ import { required, minValue, helpers } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 
 import { useModulesStore } from "@/app/store/modules";
+import { shouldAskToSendToHuly } from "./hulyPrompt";
 
 import { TimeTrackingHoursPicker } from "@/features/TimeTrackingHoursPicker";
 import { TimeTrackingMinutesPicker } from "@/features/TimeTrackingMinutesPicker";
@@ -285,7 +286,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useModulesStore, ["moduleExist"]),
+    ...mapState(useModulesStore, ["moduleExist", "integrationActive"]),
     errors() {
       const getTimeError = () => {
         const { $invalid, $dirty, $params, validateHours, validateMinutes } =
@@ -422,12 +423,9 @@ export default {
 
       const payload = this.transformSubmitData(this.value);
 
-      if (
-        this.isEdit === false &&
-        this.moduleExist("huly") === true &&
-        payload.is_downtime !== true &&
-        Boolean(payload.task_link) === true
-      ) {
+      const hulyActive = this.moduleExist("huly") === true && this.integrationActive("huly") === true;
+
+      if (shouldAskToSendToHuly({ isEdit: this.isEdit, hulyActive, payload })) {
         this.pendingSubmit = { payload, isContinue };
         this.isHulyModalOpen = true;
 

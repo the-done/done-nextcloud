@@ -142,6 +142,8 @@ export default {
         description: "",
         task_link: "",
         project_id: null,
+        external_report_id: "",
+        external_source: "",
       },
     };
   },
@@ -198,14 +200,21 @@ export default {
 
       const { uuid, date, description, minutes, task_link } = this.modelData;
 
-      this.$emit("on-accept", {
+      const payload = {
         uuid,
         date,
         description,
         minutes,
         task_link,
         project_id: this.modelData.project_id.slug,
-      });
+      };
+
+      if (this.modelData.external_report_id) {
+        payload.external_report_id = this.modelData.external_report_id;
+        payload.external_source = this.modelData.external_source;
+      }
+
+      this.$emit("on-accept", payload);
     },
     resolveMappedProject() {
       const doneProjectId = this.item && this.item.done_project_id;

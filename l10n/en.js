@@ -25,6 +25,7 @@ OC.L10N.register(
     "Added successfully": "Added successfully",
     "Additional information": "Additional information",
     Administrator: "Administrator",
+    "All requests": "All requests",
     "All settings have been saved successfully.":
       "All settings have been saved successfully.",
     "An error occurred while deleting": "An error occurred while deleting",
@@ -214,6 +215,7 @@ OC.L10N.register(
     Month: "Month",
     "Must be a number": "Must be a number",
     "Must be an integer": "Must be an integer",
+    "My requests": "My requests",
     Name: "Name",
     "Nextcloud user": "Nextcloud user",
     "Nextcloud user uuid": "Nextcloud user uuid",
@@ -239,6 +241,7 @@ OC.L10N.register(
     "No dynamic fields": "No dynamic fields",
     "No employees attached to team": "No employees attached to team",
     "No file to upload": "No file to upload",
+    "No pending requests": "No pending requests",
     "No projects attached to team": "No projects attached to team",
     "No project role": "No project role",
     "No results": "No results",
@@ -312,6 +315,7 @@ OC.L10N.register(
     "Reports saved successfully": "Reports saved successfully",
     Required: "Required",
     "Required field": "Required field",
+    "Resubmit for approval": "Resubmit for approval",
     "Rights matrix": "Rights matrix",
     Role: "Role",
     "Role deleted": "Role deleted",
@@ -447,6 +451,7 @@ OC.L10N.register(
     "View statistics for all employees": "View statistics for all employees",
     "View time": "View time",
     Visibility: "Visibility",
+    "Waiting for": "Waiting for",
     "We could not find any data for your projects.":
       "We could not find any data for your projects.",
     "We could not find data for your request.":
@@ -465,6 +470,8 @@ OC.L10N.register(
     "Without direction": "Without direction",
     "Without head": "Without head",
     "Without owner": "Without owner",
+    "You are not allowed to resubmit this request": "You are not allowed to resubmit this request",
+    "You cannot act on your own request": "You cannot act on your own request",
     "Without a project manager": "Without a project manager",
     "Without stage": "Without stage",
     "Yandex UUID": "Yandex UUID",

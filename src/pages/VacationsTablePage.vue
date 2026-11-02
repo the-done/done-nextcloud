@@ -61,7 +61,7 @@
               {{ contextTranslate("There is no suitable agreement scheme for vacations. Creating new vacation requests is disabled.", context) }}
               <RouterLink
                 :to="{ name: 'settings-agreement-schemes' }"
-                v-if="isApprover"
+                v-if="getCommonPermission('canManageAgreementSchemes') === true"
                 class="v-link v-link--underline"
               >
                 {{ contextTranslate("Configure in settings", context) }}
@@ -102,6 +102,7 @@
               :data="tableData"
               :projects="projects"
               :current-user-id="currentUserId"
+              :can-manage="getCommonPermission('canManageVacations') === true"
               class="m-4"
               @view="openDetailsDialog"
               @history="openHistoryDialog"
@@ -307,7 +308,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(usePermissionStore, ["isApprover", "currentUserId"]),
+    ...mapState(usePermissionStore, ["isApprover", "currentUserId", "getCommonPermission"]),
     hasData() {
       return Object.keys(this.tableData).length > 0;
     },
