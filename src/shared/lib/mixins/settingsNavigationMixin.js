@@ -171,8 +171,9 @@ export const settingsNavigationMixin = {
       ];
     },
     agreementSettingsNavigation() {
+      // Scheme management is not an approver right: login admin, Done ADMIN or "View settings".
       const schemesVisible =
-        this.getCommonPermission("canReadAgreement") === true &&
+        this.getCommonPermission("canManageAgreementSchemes") === true &&
         this.moduleExist("agreement") === true;
       const agreementDemo = this.moduleIsDemo("agreement") === true;
 
@@ -266,8 +267,9 @@ export const settingsNavigationMixin = {
           to: {
             name: "settings-huly",
           },
-          exact: true,
-          visible: this.isAdmin === true,
+          // Not exact: the item stays active on the "Project mapping" tab (/settings/huly/projects).
+          exact: false,
+          visible: this.isAdmin === true && this.moduleExist("huly") === true,
           icon: LinkVariant,
         },
       ];

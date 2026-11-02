@@ -16,7 +16,7 @@
     "eslint-fix": "eslint src --ext .js,.vue --fix",
     "stylelint": "stylelint src/**/*.vue src/**/*.scss src/**/*.css",
     "tailwind": "npx @tailwindcss/cli -i ./src/app/assets/styles/main.css -o ./css/main.css --watch",
-    "test:matrix": "node --test tests/frontend/matrix.test.cjs"
+    "test:matrix": "node --test tests/frontend/matrix.test.cjs tests/frontend/external-source-label.test.cjs tests/frontend/iso-date.test.cjs tests/frontend/request-date.test.cjs tests/frontend/huly-prompt.test.cjs tests/frontend/agreement-request-actions.test.cjs tests/frontend/vacation-change-rights.test.cjs"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"

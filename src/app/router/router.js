@@ -45,6 +45,7 @@ router.beforeEach(async (to, from, next) => {
     modulesStore.demoList = modulesData?.demo ?? [];
     modulesStore.demoHidden = modulesData?.demoHidden === true;
     modulesStore.isAdmin = modulesData?.isAdmin === true;
+    modulesStore.activeIntegrations = modulesData?.activeIntegrations ?? [];
     modulesStore.isFetched = true;
   }
 
@@ -60,6 +61,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.matched.some((record) => record.meta.requiresAdmin) && modulesStore.isAdmin !== true) {
+    goNext({ name: "error-404" });
+
+    return;
+  }
+
+  const missingModule = (record) =>
+    record.meta.requiresModule && modulesStore.moduleExist(record.meta.requiresModule) !== true;
+
+  if (to.matched.some(missingModule)) {
     goNext({ name: "error-404" });
 
     return;

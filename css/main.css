@@ -283,14 +283,17 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
     max-width: 96rem;
   }
 }
-.m-0 {
-  margin: calc(var(--spacing) * 0);
-}
 .m-0\! {
   margin: calc(var(--spacing) * 0) !important;
 }
+.m-4 {
+  margin: calc(var(--spacing) * 4);
+}
 .-mx-\(--app-navigation-padding\) {
   margin-inline: calc(var(--app-navigation-padding) * -1);
+}
+.mx-4 {
+  margin-inline: calc(var(--spacing) * 4);
 }
 .my-2 {
   margin-block: calc(var(--spacing) * 2);
@@ -343,6 +346,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .hidden {
   display: none;
 }
+.inline {
+  display: inline;
+}
 .inline-block {
   display: inline-block;
 }
@@ -381,9 +387,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .h-\[calc\(100\%-var\(--header-height\)-var\(--body-container-margin\)\)\] {
   height: calc(100% - var(--header-height) - var(--body-container-margin));
 }
-.h-auto {
-  height: auto;
-}
 .h-auto\! {
   height: auto !important;
 }
@@ -407,9 +410,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .min-h-\[128px\] {
   min-height: 128px;
-}
-.min-h-auto {
-  min-height: auto;
 }
 .min-h-auto\! {
   min-height: auto !important;
@@ -465,6 +465,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .max-w-full {
   max-width: 100%;
 }
+.min-w-0 {
+  min-width: calc(var(--spacing) * 0);
+}
 .min-w-\[320px\] {
   min-width: 320px;
 }
@@ -482,6 +485,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .flex-\[1_1_auto\] {
   flex: 1 1 auto;
+}
+.flex-shrink {
+  flex-shrink: 1;
 }
 .border-collapse {
   border-collapse: collapse;
@@ -720,6 +726,9 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .pr-4 {
   padding-right: calc(var(--spacing) * 4);
 }
+.pb-0 {
+  padding-bottom: calc(var(--spacing) * 0);
+}
 .pb-1 {
   padding-bottom: calc(var(--spacing) * 1);
 }
@@ -816,9 +825,6 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 .uppercase {
   text-transform: uppercase;
 }
-.underline {
-  text-decoration-line: underline;
-}
 .opacity-0 {
   opacity: 0%;
 }
@@ -830,6 +836,10 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .opacity-60 {
   opacity: 60%;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-lg {
   --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));

@@ -404,6 +404,47 @@ class CommonController extends BaseController
     }
 
     /**
+     * Who may manage approval schemes (schemes, lines, approvers, assignments): a login admin,
+     * the Done ADMIN role or the "View settings" right. Being an approver is not enough.
+     *
+     * @param array<string, bool> $rights the user's common rights (GlobalRolesModel::CAN_* => bool)
+     */
+    public static function canManageAgreementSchemes(bool $isNcAdmin, bool $isDoneAdmin, array $rights): bool
+    {
+        return self::isSettingsManager($isNcAdmin, $isDoneAdmin, $rights);
+    }
+
+    /**
+     * Who may open the approval requests pages: approvers, and managers (who see every request
+     * there). The returned isApprover flag (vacation form employee picker) is not affected.
+     *
+     * @param array<string, bool> $rights
+     */
+    public static function canReadAgreement(bool $isApprover, bool $isNcAdmin, bool $isDoneAdmin, array $rights): bool
+    {
+        return $isApprover || self::isSettingsManager($isNcAdmin, $isDoneAdmin, $rights);
+    }
+
+    /**
+     * Who may edit or cancel any vacation (HR), besides its employee and author: a login admin,
+     * the Done ADMIN role or the "View settings" right. Plain approvers may not.
+     *
+     * @param array<string, bool> $rights the user's common rights (GlobalRolesModel::CAN_* => bool)
+     */
+    public static function canManageVacations(bool $isNcAdmin, bool $isDoneAdmin, array $rights): bool
+    {
+        return self::isSettingsManager($isNcAdmin, $isDoneAdmin, $rights);
+    }
+
+    /**
+     * @param array<string, bool> $rights
+     */
+    private static function isSettingsManager(bool $isNcAdmin, bool $isDoneAdmin, array $rights): bool
+    {
+        return $isNcAdmin || $isDoneAdmin || ($rights[GlobalRolesModel::CAN_READ_SETTINGS] ?? false) === true;
+    }
+
+    /**
      * Get user permissions
      *
      * @return JSONResponse
@@ -456,6 +497,9 @@ class CommonController extends BaseController
             ['global_role_id' => ['IN', $globalRoles]]
         ) : [];
 
+        // Edit / cancel any vacation (HR); independent of the agreement module.
+        $commonPermissions['canManageVacations'] = self::canManageVacations($isAdmin, $isDoneAdmin, $commonPermissions);
+
         $isApprover = false;
 
         if (BaseModuleService::moduleExists('agreement')) {
@@ -463,7 +507,17 @@ class CommonController extends BaseController
             $isApprover = $isAdmin || $isDoneAdmin || $agreementSchemeApproversModel->isApprover(
                 $userId
             );
-            $commonPermissions['canReadAgreement'] = $isApprover;
+            $commonPermissions['canReadAgreement'] = self::canReadAgreement(
+                $isApprover,
+                $isAdmin,
+                $isDoneAdmin,
+                $commonPermissions
+            );
+            $commonPermissions['canManageAgreementSchemes'] = self::canManageAgreementSchemes(
+                $isAdmin,
+                $isDoneAdmin,
+                $commonPermissions
+            );
         }
 
         $isFinance = \in_array(GlobalRolesModel::FINANCE, $globalRoles);

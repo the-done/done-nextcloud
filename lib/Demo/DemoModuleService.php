@@ -72,7 +72,7 @@ class DemoModuleService
 
     /** Permissions/flags to inject per demo module so nav gates pass. */
     private const DEMO_PERMISSIONS = [
-        'agreement' => ['canReadAgreement' => true],
+        'agreement' => ['canReadAgreement' => true, 'canManageAgreementSchemes' => true],
         'vacations' => ['canReadVacationsReport' => true, 'isApprover' => true],
         'finances'  => ['canReadFinances' => true, 'isFinance' => true],
         'teams'     => ['canReadTeamsList' => true],

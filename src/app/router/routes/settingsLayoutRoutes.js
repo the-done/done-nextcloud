@@ -18,6 +18,8 @@ import AgreementSchemesPage from "@/pages/AgreementSchemesPage.vue";
 import VacationsSettingsPage from "@/pages/VacationsSettingsPage.vue";
 import ProVersionSettingsPage from "@/pages/ProVersionSettingsPage.vue";
 import HulyIntegrationSettingsPage from "@/pages/HulyIntegrationSettingsPage.vue";
+import HulyIntegrationConnectionPage from "@/pages/HulyIntegrationConnectionPage.vue";
+import HulyProjectMappingPage from "@/pages/HulyProjectMappingPage.vue";
 
 import SimpleRouterPage from "@/pages/SimpleRouterPage.vue";
 import SectionNavigationPage from "@/pages/SectionNavigationPage.vue";
@@ -387,6 +389,9 @@ export const settingsLayoutRoutes = [
             name: "settings-agreement",
             path: "",
             component: SectionNavigationPage,
+            meta: {
+              permissions: { list: ["canManageAgreementSchemes"], operator: "AND" },
+            },
             props: {
               additionalProps: {
                 navigationName: "agreementSettingsNavigation",
@@ -404,6 +409,9 @@ export const settingsLayoutRoutes = [
             name: "settings-agreement-schemes",
             path: "schemes",
             component: AgreementSchemesPage,
+            meta: {
+              permissions: { list: ["canManageAgreementSchemes"], operator: "AND" },
+            },
             props: {
               additionalProps: {
                 breadcrumbs: [
@@ -430,6 +438,9 @@ export const settingsLayoutRoutes = [
             name: "settings-vacations",
             path: "",
             component: VacationsSettingsPage,
+            meta: {
+              permissions: { list: ["canReadSettings"], operator: "AND" },
+            },
             props: {
               additionalProps: {
                 breadcrumbs: [
@@ -470,26 +481,34 @@ export const settingsLayoutRoutes = [
         ],
       },
       {
+        // Shell with the toolbar, title and tabs; each tab is a child route.
         path: "huly",
-        component: SimpleRouterPage,
+        component: HulyIntegrationSettingsPage,
+        props: {
+          additionalProps: {
+            breadcrumbs: [
+              {
+                path: { name: "settings-huly" },
+                title: "Huly integration",
+                icon: ArrowUpBold,
+              },
+            ],
+          },
+        },
         children: [
           {
             name: "settings-huly",
             path: "",
-            component: HulyIntegrationSettingsPage,
-            // Admin-only screen (no navigation entry): non-admins get the 404 view.
-            meta: { requiresAdmin: true },
-            props: {
-              additionalProps: {
-                breadcrumbs: [
-                  {
-                    path: { name: "settings-huly" },
-                    title: "Huly integration",
-                    icon: ArrowUpBold,
-                  },
-                ],
-              },
-            },
+            component: HulyIntegrationConnectionPage,
+            // Admin-only screen of the private Huly module: non-admins and installs
+            // without the module get the 404 view.
+            meta: { requiresAdmin: true, requiresModule: "huly" },
+          },
+          {
+            name: "settings-huly-projects",
+            path: "projects",
+            component: HulyProjectMappingPage,
+            meta: { requiresAdmin: true, requiresModule: "huly" },
           },
         ],
       },
