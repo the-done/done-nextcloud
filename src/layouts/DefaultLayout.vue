@@ -4,7 +4,7 @@ SPDX-License-Identifier: MIT */
 <template>
   <LayoutContainer>
     <AppNavigation :items="defaultNavigation">
-      <template #footer>
+      <template v-if="!isVacationViewer" #footer>
         <NcButton :to="{ name: 'settings-user' }" alignment="start" wide>
           <template #icon>
             <Cog />

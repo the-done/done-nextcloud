@@ -21,7 +21,7 @@
         </NcBreadcrumb>
       </NcBreadcrumbs>
       <div class="vacations-page__actions"
-           v-if="activeTab === 'requests'"
+           v-if="activeTab === 'requests' && !isVacationViewer"
       >
         <NcButton
             type="primary"
@@ -56,7 +56,7 @@
         <VLoader v-if="isLoading" absolute />
 
         <template v-if="isInitLoading === false">
-          <div v-if="!hasAgreementScheme" class="vacations-page__no-scheme-warning">
+          <div v-if="!isVacationViewer && !hasAgreementScheme" class="vacations-page__no-scheme-warning">
             <NcNoteCard type="warning">
               {{ contextTranslate("There is no suitable agreement scheme for vacations. Creating new vacation requests is disabled.", context) }}
               <RouterLink
@@ -100,6 +100,7 @@
             <VacationTable
               v-else
               :data="tableData"
+              :read-only="isVacationViewer"
               :projects="projects"
               :current-user-id="currentUserId"
               :can-manage="getCommonPermission('canManageVacations') === true"
@@ -148,6 +149,7 @@
 
     <!-- Add/Edit Dialog -->
     <VacationFormDialog
+      v-if="!isVacationViewer"
       :open="formDialogOpen"
       :vacation="selectedVacation"
       :vacation-types="vacationTypes"
@@ -169,6 +171,7 @@
 
     <!-- History Dialog -->
     <VacationHistoryDialog
+      v-if="!isVacationViewer"
       :open="historyDialogOpen"
       :vacation-id="selectedVacationId"
       @close="closeHistoryDialog"
@@ -308,7 +311,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(usePermissionStore, ["isApprover", "currentUserId", "getCommonPermission"]),
+    ...mapState(usePermissionStore, ["isApprover", "currentUserId", "getCommonPermission", "isVacationViewer"]),
     hasData() {
       return Object.keys(this.tableData).length > 0;
     },
@@ -321,7 +324,15 @@ export default {
       return labels[this.activeTab] || "";
     },
     breadcrumbs() {
-      return this.additionalProps.breadcrumbs;
+      const breadcrumbs = this.additionalProps.breadcrumbs;
+      if (!this.isVacationViewer) return breadcrumbs;
+
+      return breadcrumbs?.map((item) => ({
+        ...item,
+        path: item.path?.name === "vacations-balance"
+          ? { name: "vacations-requests" }
+          : item.path,
+      }));
     },
     currentYear() {
       return new Date().getFullYear();
@@ -433,7 +444,9 @@ export default {
 
         const { data } = await fetchVacationsTableData(params);
         this.tableData = data || {};
-        this.loadBalanceTab(new Date(date_from).getFullYear());
+        if (!this.isVacationViewer) {
+          this.loadBalanceTab(new Date(date_from).getFullYear());
+        }
 
         if (this.activeTab === "gantt") {
           this.loadGanttData(date_from, date_to, filters);
@@ -476,7 +489,7 @@ export default {
 
     async loadProjects() {
       try {
-        const { data } = this.isApprover
+        const { data } = this.isApprover || this.isVacationViewer
           ? await fetchProjectsOptionsForVacations()
           : await fetchUserProjectsForReport();
         this.projects = data || [];
@@ -497,6 +510,8 @@ export default {
     },
 
     async loadHasAgreementScheme() {
+      if (this.isVacationViewer) return;
+
       try {
         const { data } = await fetchHasActiveScheme("vacation");
         this.hasAgreementScheme = Boolean(data?.has_active_scheme);
@@ -507,6 +522,8 @@ export default {
     },
 
     async loadBalanceTab(year = new Date().getFullYear()) {
+      if (this.isVacationViewer) return;
+
       try {
         this.isLoadingBalance = true;
         const [balanceResult, upcomingResult] = await Promise.all([
@@ -542,11 +559,15 @@ export default {
 
     // Form dialog
     openAddDialog() {
+      if (this.isVacationViewer) return;
+
       this.selectedVacation = null;
       this.formDialogOpen = true;
     },
 
     openEditDialog(vacation) {
+      if (this.isVacationViewer) return;
+
       this.selectedVacation = vacation;
       this.formDialogOpen = true;
     },
@@ -564,6 +585,8 @@ export default {
     },
 
     async handleCancelVacation(vacation) {
+      if (this.isVacationViewer) return;
+
       const confirmed = window.confirm(
         this.contextTranslate("Cancel this vacation request? It will stay in history but no longer require approval.", this.context),
       );
@@ -593,6 +616,8 @@ export default {
 
     // History dialog
     openHistoryDialog(vacation) {
+      if (this.isVacationViewer) return;
+
       this.selectedVacationId = vacation.id;
       this.historyDialogOpen = true;
     },

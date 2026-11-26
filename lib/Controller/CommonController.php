@@ -21,6 +21,7 @@ use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Models\UsersRolesInProjectsModel;
 use OCA\Done\Modules\Agreement\Model\AgreementSchemeApproversModel;
 use OCA\Done\Modules\BaseModuleService;
+use OCA\Done\Service\VacationViewerAccess;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -87,7 +88,14 @@ class CommonController extends BaseController
         $currentUser = (new UserModel())->getUserByUuid($currentUserUid);
         $currentUserId = $currentUser['id'] ?? null;
 
-        if ($currentUserId) {
+        $vacationViewer = !$currentUserId && VacationViewerAccess::available()
+            && VacationViewerAccess::allowsPage($this->request->getPathInfo());
+
+        if ($vacationViewer && VacationViewerAccess::isEntryPage($this->request->getPathInfo())) {
+            return new RedirectResponse(rtrim($this->url->linkToRoute('done.common.index'), '/') . '/vacations/requests');
+        }
+
+        if ($currentUserId || $vacationViewer) {
             \OCP\Util::addScript($appId, 'main');
             \OCP\Util::addTranslations($appId);
         } else {
@@ -473,6 +481,23 @@ class CommonController extends BaseController
         $currentUserUid = $currentUserObj->getUID();
         $isAdmin = $this->groupManager->isAdmin($currentUserUid);
         $userModel = new UserModel();
+        $viewer = $userModel->getUserByUuid($currentUserUid);
+
+        // Derive viewer status from the session, never from a requested employee slug.
+        if (empty($viewer['id']) && VacationViewerAccess::available()) {
+            return new JSONResponse([
+                'common' => array_merge($defaultRights, [
+                    'isVacationViewer'   => true,
+                    'canManageVacations' => false,
+                    'isApprover'         => false,
+                ]),
+                'fields'        => [],
+                'isOfficer'     => false,
+                'isFinance'     => false,
+                'isApprover'    => false,
+                'currentUserId' => null,
+            ]);
+        }
 
         if (!empty($userSlug)) {
             $userId = $userModel->getItemIdBySlug($userSlug);
@@ -687,6 +712,10 @@ class CommonController extends BaseController
     {
         $userId = $this->userService->getCurrentUserId();
         $source = PermissionsEntitiesModel::USER_ENTITY;
+
+        if (empty($userId) && $this->userSession->getUser() instanceof IUser && VacationViewerAccess::available()) {
+            return new JSONResponse(['data' => [], 'slug' => null]);
+        }
 
         if (empty($userId)) {
             return new JSONResponse(

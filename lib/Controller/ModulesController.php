@@ -13,6 +13,7 @@ use OCA\Done\Demo\DemoModuleService;
 use OCA\Done\Modules\BaseModuleService;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
+use OCA\Done\Service\VacationViewerAccess;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -100,6 +101,14 @@ class ModulesController extends OCSController
     public function handleModuleRequest(string $module, string $method, IRequest $request): JSONResponse
     {
         try {
+            $vacationViewer = !$this->userService->getCurrentUserId();
+
+            if ($vacationViewer && (!($this->userSession->getUser() instanceof IUser)
+                || !VacationViewerAccess::available()
+                || !VacationViewerAccess::allowsMethod($module, $method))) {
+                return new JSONResponse(['error' => 'Access denied', 'message' => 'Access denied'], Http::STATUS_FORBIDDEN);
+            }
+
             // Resolve the user roles (a DB lookup) only when the module could
             // actually be demo-active, so the common installed-module path stays cheap.
             $simulated = DemoModuleService::simulatedDemoModules($request);
@@ -148,7 +157,7 @@ class ModulesController extends OCSController
             $moduleController->logModuleAction($method, $request->getParams());
 
             // Additional access check through checkModuleAccess (for backward compatibility)
-            if (!$moduleController->checkModuleAccess()) {
+            if (!$vacationViewer && !$moduleController->checkModuleAccess()) {
                 return new JSONResponse([
                     'error'   => $this->translateService->getTranslate('Access denied'),
                     'message' => $this->translateService->getTranslate('Access to module denied'),
@@ -156,7 +165,7 @@ class ModulesController extends OCSController
             }
 
             // Check access based on RequireRole attribute
-            if (!$moduleController->checkMethodAccess($controllerClass, $method)) {
+            if (!$vacationViewer && !$moduleController->checkMethodAccess($controllerClass, $method)) {
                 return new JSONResponse([
                     'error'   => $this->translateService->getTranslate('Access denied'),
                     'message' => $this->translateService->getTranslate('Insufficient permissions to perform the operation'),
@@ -203,6 +212,16 @@ class ModulesController extends OCSController
     #[NoCSRFRequired]
     public function getAvailableModules(): JSONResponse
     {
+        if (!$this->userService->getCurrentUserId()) {
+            return new JSONResponse([
+                'modules'            => $this->userSession->getUser() instanceof IUser && VacationViewerAccess::available() ? ['vacations'] : [],
+                'demo'               => [],
+                'demoHidden'         => true,
+                'isAdmin'            => false,
+                'activeIntegrations' => [],
+            ]);
+        }
+
         $modules = [];
 
         foreach (BaseModuleService::MODULES as $module => $controller) {

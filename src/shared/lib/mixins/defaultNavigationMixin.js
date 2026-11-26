@@ -25,7 +25,7 @@ export const defaultNavigationMixin = {
   mixins: [contextualTranslationsMixin],
   components: {},
   computed: {
-    ...mapState(usePermissionStore, ["getCommonPermission", "isApprover"]),
+    ...mapState(usePermissionStore, ["getCommonPermission", "isApprover", "isVacationViewer"]),
     ...mapState(useModulesStore, ["moduleExist", "moduleIsDemo"]),
     reportsNavigation() {
       return [
@@ -236,6 +236,12 @@ export const defaultNavigationMixin = {
       ];
     },
     defaultNavigation() {
+      if (this.isVacationViewer) {
+        return this.vacationsNavigation[0].children.filter((item) =>
+          ["vacations-requests", "vacations-schedule"].includes(item.key),
+        );
+      }
+
       return [
         {
           key: "time-tracking-new",
