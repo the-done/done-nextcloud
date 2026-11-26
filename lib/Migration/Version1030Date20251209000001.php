@@ -54,7 +54,7 @@ class Version1030Date20251209000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('AI Chat', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(7, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
         }
 
         if (

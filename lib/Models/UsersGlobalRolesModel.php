@@ -87,12 +87,13 @@ class UsersGlobalRolesModel extends BaseModel
      */
     public function getRights(array $globalRoles): array
     {
-        $rightsMap = (new GlobalRoleActionRightsModel())->getUsersRightsMap();
+        $rightsMap = $this->createGlobalRoleActionRightsModel()->getUsersRightsMap();
         $defaultRights = GlobalRolesModel::getUsersDefaultRights();
         $rights = $result = [];
 
         foreach ($globalRoles as $role) {
-            $rights = array_merge($rights, $rightsMap[$role]);
+            // Roles with no allowed actions are absent from the map; fail closed.
+            $rights = array_merge($rights, $rightsMap[$role] ?? []);
         }
 
         $rights = array_unique($rights);
@@ -102,5 +103,10 @@ class UsersGlobalRolesModel extends BaseModel
         }
 
         return $result;
+    }
+
+    protected function createGlobalRoleActionRightsModel(): GlobalRoleActionRightsModel
+    {
+        return new GlobalRoleActionRightsModel();
     }
 }

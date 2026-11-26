@@ -121,6 +121,8 @@ import DragVertical from "vue-material-design-icons/DragVertical.vue";
 
 import { VChip } from "@/shared/components";
 
+import { externalSourceLabel as sourceLabel } from "./externalSourceLabel";
+
 export default {
   name: "TimeTrackingItem",
   emits: ["onCopy", "onDelete", "onClearHighlight"],
@@ -175,13 +177,7 @@ export default {
       return "";
     },
     externalSourceLabel() {
-      const source = this.modelData.external_source;
-
-      if (!source) {
-        return "";
-      }
-
-      return String(source).charAt(0).toUpperCase() + String(source).slice(1);
+      return sourceLabel(this.modelData.external_source);
     },
   },
   methods: {

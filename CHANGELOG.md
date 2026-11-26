@@ -137,3 +137,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   project and task pages; Excel/PDF/HTML exports of the selected report view.
 - Fullscreen report controls, an initial mobile layout, and interface translations
   in English, German, Spanish, French and Russian.
+
+## 1.11.0 – 2026-11-26
+
+### Fixed
+- Fixed an app startup failure reported on Nextcloud 34 and 35 when a user's role
+  had no allowed actions or its permission records were missing.
+- Fixed missing default roles, permissions and dictionaries on fresh installations.
+  Initial data is now populated automatically through Nextcloud's installation process.
+- Added automatic recovery during updates for installations with both empty global
+  role and permission tables, without resetting existing permission settings.
+- Replaced removed database query methods in older migrations with supported APIs
+  for compatibility with newer Nextcloud versions.
+
+### Changed
+- Moved initial data setup out of application startup into Nextcloud's standard
+  installation and post-migration repair steps.

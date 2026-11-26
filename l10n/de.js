@@ -25,6 +25,7 @@ OC.L10N.register(
     "Added successfully": "Erfolgreich hinzugefügt",
     "Additional information": "Zusätzliche Informationen",
     Administrator: "Administrator",
+    "All requests": "Alle Anträge",
     "All settings have been saved successfully.":
       "Alle Einstellungen wurden erfolgreich gespeichert.",
     "An error occurred while deleting":
@@ -216,6 +217,7 @@ OC.L10N.register(
     Month: "Monat",
     "Must be a number": "Muss eine Zahl sein",
     "Must be an integer": "Muss eine ganze Zahl sein",
+    "My requests": "Meine Anträge",
     Name: "Name",
     "Nextcloud user": "Nextcloud Benutzer",
     "Nextcloud user uuid": "Nextcloud Benutzer-UUID",
@@ -243,6 +245,7 @@ OC.L10N.register(
     "No dynamic fields": "Keine dynamischen Felder",
     "No employees attached to team": "Keine Mitarbeiter dem Team zugeordnet",
     "No file to upload": "Keine Datei zum Hochladen",
+    "No pending requests": "Keine offenen Anträge",
     "No projects attached to team": "Keine Projekte dem Team zugeordnet",
     "No project role": "Keine Projektrolle",
     "No results": "Keine Ergebnisse",
@@ -324,6 +327,7 @@ OC.L10N.register(
     "Reports saved successfully": "Bericht erfolgreich gespeichert",
     Required: "Erforderlich",
     "Required field": "Erforderliches Feld",
+    "Resubmit for approval": "Erneut zur Genehmigung einreichen",
     "Rights matrix": "Rechtematrix",
     Role: "Rolle",
     "Role deleted": "Rolle gelöscht",
@@ -455,6 +459,7 @@ OC.L10N.register(
       "Statistiken für alle Mitarbeiter anzeigen",
     "View time": "Zeit anzeigen",
     Visibility: "Sichtbarkeit",
+    "Waiting for": "Wartet auf",
     "We could not find any data for your projects.":
       "Wir konnten keine Daten für Ihre Projekte finden.",
     "We could not find data for your request.":
@@ -474,6 +479,8 @@ OC.L10N.register(
     "Without direction": "Ohne Richtung",
     "Without head": "Ohne Leiter",
     "Without owner": "Ohne Besitzer",
+    "You are not allowed to resubmit this request": "Sie dürfen diesen Antrag nicht erneut einreichen",
+    "You cannot act on your own request": "Sie können nicht über Ihren eigenen Antrag entscheiden",
     "Without a project manager": "Ohne Projektmanager",
     "Without stage": "Ohne Phase",
     Finance: "Finanzen",

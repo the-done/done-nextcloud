@@ -727,6 +727,12 @@ return [
         ],
         [
             'name'    => 'common#index',
+            'url'     => '/settings/huly/projects/',
+            'verb'    => 'GET',
+            'postfix' => 'hulySettings.projects',
+        ],
+        [
+            'name'    => 'common#index',
             'url'     => '/settings/staff/',
             'verb'    => 'GET',
             'postfix' => 'staffSettings.main',

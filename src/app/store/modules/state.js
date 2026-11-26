@@ -12,6 +12,8 @@ export const state = () => {
     // updates the navigation live.
     demoHidden: false,
     isAdmin: false,
+    // Integration module keys that are usable right now (switched on and configured).
+    activeIntegrations: [],
     isFetched: false
   };
 };

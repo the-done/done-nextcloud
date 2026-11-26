@@ -22,6 +22,7 @@ export { EntityPreview } from "./EntityPreview";
 export { ExportButton } from "./ExportButton";
 export { FinancesContractBreadcrumbs } from "./FinancesContractBreadcrumbs";
 export { FormCreator } from "./FormCreator";
+export { FormMyDay } from "./FormMyDay";
 export { GeneratedReportsAside } from "./GeneratedReportsAside";
 export { PagePlaceholderWidget } from "./PagePlaceholderWidget";
 export { ReportProjectView } from "./ReportProjectView";

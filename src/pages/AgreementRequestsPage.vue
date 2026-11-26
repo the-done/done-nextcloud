@@ -73,6 +73,24 @@
           >
             {{ contextTranslate("History", context) }}
           </button>
+
+          <!-- Scope: managers may switch between their own approval work and every request -->
+          <div v-if="canSeeAllRequests" class="agreement-requests__scope">
+            <button
+              class="agreement-requests__tab"
+              :class="{ 'agreement-requests__tab--active': scope !== 'all' }"
+              @click="switchScope('mine')"
+            >
+              {{ contextTranslate("My requests", context) }}
+            </button>
+            <button
+              class="agreement-requests__tab"
+              :class="{ 'agreement-requests__tab--active': scope === 'all' }"
+              @click="switchScope('all')"
+            >
+              {{ contextTranslate("All requests", context) }}
+            </button>
+          </div>
         </div>
 
         <!-- Active tab -->
@@ -81,7 +99,7 @@
           <div v-if="requests.length === 0" class="agreement-requests__empty">
             <CheckCircleOutline :size="48" class="agreement-requests__empty-icon" />
             <p class="agreement-requests__empty-text">
-              {{ contextTranslate("No pending requests for your approval", context) }}
+              {{ contextTranslate(activeEmptyStateText(scope), context) }}
             </p>
           </div>
 
@@ -151,8 +169,8 @@
               </div>
             </div>
 
-            <!-- Quick actions -->
-            <div class="agreement-requests__quick-actions">
+            <!-- Quick actions (hidden for the user's own requests) -->
+            <div v-if="canShowListActions(request, scope)" class="agreement-requests__quick-actions">
               <VButton
                 variant="success"
                 size="small"
@@ -363,6 +381,15 @@
               {{ contextTranslate("One is enough", context) }}
             </span>
           </div>
+          <div
+            v-if="currentLineApproverNames(selectedRequestDetails).length > 0"
+            class="agreement-requests__details-item"
+          >
+            <span class="agreement-requests__details-label">{{ contextTranslate("Waiting for", context) }}</span>
+            <span class="agreement-requests__details-value">
+              {{ currentLineApproverNames(selectedRequestDetails).join(", ") }}
+            </span>
+          </div>
         </div>
 
         <!-- Approval progress -->
@@ -448,7 +475,13 @@
           <NcButton type="tertiary" @click="closeDetailsModal">
             {{ contextTranslate("Close", context) }}
           </NcButton>
-          <template v-if="selectedRequest?.status === 'pending'">
+          <NcButton v-if="canShowResubmit(selectedRequestDetails)" type="secondary" @click="handleResubmit">
+            <template #icon>
+              <Refresh :size="20" />
+            </template>
+            {{ contextTranslate("Resubmit for approval", context) }}
+          </NcButton>
+          <template v-if="canShowCardActions(selectedRequest, selectedRequestDetails)">
             <NcButton type="error" @click="handleReject">
               <template #icon>
                 <Close :size="20" />
@@ -574,10 +607,23 @@ import {
   approveRequest,
   rejectRequest,
   returnRequest,
+  resubmitRequest,
   fetchOptions,
   fetchUsersForApprover,
   fetchProjectsForFilter,
 } from "@/entities/agreement/api";
+import {
+  activeEmptyStateText,
+  canShowCardActions,
+  canShowListActions,
+  canShowResubmit,
+  currentLineApproverNames,
+  requestsScope,
+  SCOPE_ALL,
+  SCOPE_MINE,
+} from "@/features/Agreement/requestActions";
+import { mapState } from "pinia";
+import { usePermissionStore } from "@/app/store/permission";
 
 import { REQUEST_STATUS } from "@/entities/agreement/constants";
 
@@ -585,6 +631,7 @@ import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTrans
 import { timeTrackingPageMixin } from "@/shared/lib/mixins/timeTrackingPageMixin";
 import { initFilterDescriptor } from "@/shared/lib/helpers/filter";
 import { redirectNotFoundPage } from "@/shared/lib/helpers/navigation";
+import { handleRestErrors } from "@/shared/lib/helpers/errors";
 
 export default {
   name: "AgreementRequestsPage",
@@ -630,6 +677,8 @@ export default {
 
     // Tabs
     activeTab: "active",
+    // Scope: "mine" (requests I approve) or "all" (every request; managers only)
+    scope: SCOPE_MINE,
     historyRequests: [],
 
     // Filter
@@ -661,6 +710,10 @@ export default {
     returnComment: "",
   }),
   computed: {
+    ...mapState(usePermissionStore, ["getCommonPermission"]),
+    canSeeAllRequests() {
+      return this.getCommonPermission("canManageAgreementSchemes") === true;
+    },
     breadcrumbs() {
       return this.additionalProps.breadcrumbs;
     },
@@ -669,11 +722,16 @@ export default {
     },
   },
   methods: {
+    canShowListActions,
+    canShowCardActions,
+    canShowResubmit,
+    currentLineApproverNames,
+    activeEmptyStateText,
     async handleFetchData({ date_from, date_to, filters = {} }) {
       try {
         this.isLoading = true;
 
-        const params = { date_from, date_to, ...filters };
+        const params = { date_from, date_to, ...filters, scope: requestsScope(this.scope, this.canSeeAllRequests) };
 
         const [requestsResponse, historyResponse] = await Promise.all([
           fetchMyRequests(params),
@@ -692,6 +750,30 @@ export default {
 
     switchTab(tab) {
       this.activeTab = tab;
+    },
+
+    async switchScope(scope) {
+      const next = scope === SCOPE_ALL ? SCOPE_ALL : SCOPE_MINE;
+
+      if (this.scope === next) {
+        return;
+      }
+
+      this.scope = next;
+      await this.fetchDataWithFilters();
+    },
+
+    async handleResubmit() {
+      if (!this.selectedRequest) return;
+
+      try {
+        await resubmitRequest(this.selectedRequest.id);
+        this.closeDetailsModal();
+        await this.fetchDataWithFilters();
+      } catch (e) {
+        // Shows the server's reason (e.g. "You are not allowed to resubmit this request") as an error toast.
+        handleRestErrors(e);
+      }
     },
 
     initFilterDescriptor() {
@@ -1122,6 +1204,11 @@ export default {
 .agreement-requests__tab--active {
   color: var(--color-primary-element);
   border-bottom-color: var(--color-primary-element);
+}
+
+.agreement-requests__scope {
+  display: flex;
+  margin-left: auto;
 }
 
 .agreement-requests__tab-count {

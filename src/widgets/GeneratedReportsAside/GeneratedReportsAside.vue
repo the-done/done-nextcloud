@@ -4,7 +4,7 @@ SPDX-License-Identifier: MIT */
 <template>
   <VAside :value="active" :width="768" @input="handleClose">
     <template #title>
-      {{ contextTranslate("Form my day", context) }}
+      {{ title }}
     </template>
 
     <div class="relative h-full flex flex-col">
@@ -52,10 +52,13 @@ SPDX-License-Identifier: MIT */
 </template>
 
 <script>
+import { format } from "date-fns";
+
 import { VAside, VLoader } from "@/shared/components";
 
 import { GeneratedReportsItem } from "./components/GeneratedReportsItem";
 
+import { fromIsoDate } from "@/shared/lib/isoDate";
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 
 export default {
@@ -87,6 +90,11 @@ export default {
       type: Array,
       default: () => [],
     },
+    // Day the suggestions are formed for, yyyy-mm-dd; empty keeps the plain title.
+    date: {
+      type: String,
+      default: "",
+    },
   },
   emits: ["on-close"],
   data: () => ({
@@ -94,6 +102,20 @@ export default {
     activeSource: "all",
   }),
   computed: {
+    displayDate() {
+      const date = fromIsoDate(this.date);
+
+      return date ? format(date, "dd.MM.yyyy") : "";
+    },
+    title() {
+      if (!this.displayDate) {
+        return this.contextTranslate("Form my day", this.context);
+      }
+
+      return this.contextTranslate("Form my day for {date}", this.context, {
+        date: this.displayDate,
+      });
+    },
     sourceTabs() {
       // Stable source order; unknown keys fall after and keep first-seen order.
       const order = { calendar: 0, deck: 1, huly: 2 };
