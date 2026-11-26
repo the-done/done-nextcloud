@@ -128,8 +128,6 @@
             :style="{ left: todayLeftPx + 'px' }"
           ></div>
 
-          <!-- Vacation bars are real links to the vacation card so they can be
-               opened in a new tab (router-link → <a href>). -->
           <router-link
             v-for="vacation in employee.vacations"
             :key="vacation.id"

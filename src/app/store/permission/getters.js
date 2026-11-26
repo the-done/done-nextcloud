@@ -4,6 +4,7 @@
  */
 
 export const getters = {
+  isVacationViewer: (state) => state.list?.common?.isVacationViewer === true,
   getPermission: (state) => (path) => {
     const { list } = state;
 

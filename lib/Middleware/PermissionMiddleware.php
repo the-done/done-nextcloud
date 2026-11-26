@@ -9,12 +9,15 @@ namespace OCA\Done\Middleware;
 
 use OC\Group\Manager;
 use OCA\Done\Controller\AdminController;
+use OCA\Done\Controller\CommonController;
 use OCA\Done\Controller\DictionariesController;
+use OCA\Done\Controller\ModulesController;
 use OCA\Done\Exception\PermissionDeniedException;
 use OCA\Done\Models\Dictionaries\GlobalRolesModel;
 use OCA\Done\Models\UserModel;
 use OCA\Done\Models\UsersGlobalRolesModel;
 use OCA\Done\Service\UserService;
+use OCA\Done\Service\VacationViewerAccess;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -69,8 +72,14 @@ class PermissionMiddleware extends Middleware
         $isAdmin = $this->groupManager->isAdmin($currentUserUid);
         $adminOrDictInstance = $controller instanceof AdminController || $controller instanceof DictionariesController;
 
+        // A calendar viewer never needs a Done profile, including a Nextcloud admin.
+        if (!$currentUserId && VacationViewerAccess::available()
+            && $this->allowsVacationViewerRequest($controller, $methodName)) {
+            return;
+        }
+
         // Automatically create user for admin on first login
-        if ($isAdmin && !$currentUserId) {
+        if ($isAdmin && !$currentUserId && $controller instanceof CommonController && $methodName === 'index') {
             $currentUserId = $userModel->addData([
                 'user_id'           => $currentUserUid,
                 'user_display_name' => $currentUserUid,
@@ -87,6 +96,10 @@ class PermissionMiddleware extends Middleware
                 'user_id' => $currentUserId,
                 'role_id' => GlobalRolesModel::OFFICER,
             ]);
+        }
+
+        if (!$currentUserId) {
+            throw new PermissionDeniedException('Access denied');
         }
 
         // Check access permissions for AdminController and DictionariesController
@@ -107,6 +120,29 @@ class PermissionMiddleware extends Middleware
         }
 
         // If all checks passed successfully, simply return (middleware should return nothing)
+    }
+
+    private function allowsVacationViewerRequest($controller, string $method): bool
+    {
+        $request = Server::get(IRequest::class);
+
+        if ($controller instanceof CommonController) {
+            return \in_array($method, ['getPermissions', 'getMy'], true)
+                || ($method === 'index' && VacationViewerAccess::allowsPage($request->getPathInfo()));
+        }
+
+        if ($controller instanceof ModulesController) {
+            return $method === 'getAvailableModules'
+                || (\in_array($method, ['module', 'handleModuleRequest'], true)
+                    && VacationViewerAccess::allowsMethod(
+                        (string)$request->getParam('module', ''),
+                        (string)$request->getParam('method', 'index')
+                    ));
+        }
+
+        // Attribute routes can invoke the module controller without the dispatcher.
+        return \get_class($controller) === \OCA\Done\Modules\BaseModuleService::MODULES['vacations']
+            && VacationViewerAccess::allowsMethod('vacations', $method);
     }
 
     /**
@@ -134,7 +170,7 @@ class PermissionMiddleware extends Middleware
                 // For AJAX/API requests return JSON
 
                 return new JSONResponse(
-                    ['error' => $exception->getMessage()],
+                    ['error' => $exception->getMessage(), 'message' => $exception->getMessage()],
                     Http::STATUS_FORBIDDEN
                 );
             }

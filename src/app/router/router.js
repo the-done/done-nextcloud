@@ -13,6 +13,7 @@ import { fetchUserPermissions } from "@/entities/users/api";
 import { fetchAvailableModules } from "@/entities/users/api";
 
 import { routes } from "./routes";
+import { isVacationViewerRoute } from "@/shared/lib/helpers/vacationViewer";
 
 export const router = new VueRouter({
   mode: "history",
@@ -56,8 +57,13 @@ router.beforeEach(async (to, from, next) => {
     permissionStore.isOfficer = isOfficer;
     permissionStore.isFinance = isFinance;
     permissionStore.isApprover = isApprover;
-    permissionStore.currentUserId = currentUserId;
+    permissionStore.currentUserId = currentUserId ?? null;
     permissionStore.isFetched = true;
+  }
+
+  if (permissionStore.isVacationViewer && !isVacationViewerRoute(to.name)) {
+    goNext({ name: "error-404" });
+    return;
   }
 
   if (to.matched.some((record) => record.meta.requiresAdmin) && modulesStore.isAdmin !== true) {

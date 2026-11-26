@@ -21,7 +21,7 @@ use OCA\Done\Service\TableService;
 use OCA\Done\Service\TranslateService;
 use OCA\Done\Service\UserService;
 use OCP\App\IAppManager;
-use OCP\AppFramework\OCSController;
+use OCP\AppFramework\Controller;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -31,7 +31,8 @@ use OCP\IUserSession;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager;
 
-abstract class BaseController extends OCSController
+// These are regular app routes returning HTML/JSON, not OCS protocol endpoints.
+abstract class BaseController extends Controller
 {
     protected IUserSession $userSession;
     protected BaseService $baseService;

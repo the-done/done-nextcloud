@@ -173,6 +173,7 @@
                       </template>
                     </NcButton>
                     <NcButton
+                      v-if="!readOnly"
                       type="tertiary"
                       @click="$emit('history', vacation)"
                       :aria-label="contextTranslate('View history', context)"
@@ -229,6 +230,10 @@ export default {
   },
   mixins: [contextualTranslationsMixin],
   props: {
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
     data: {
       type: Object,
       default: () => ({}),
@@ -294,7 +299,7 @@ export default {
     },
     canEdit(vacation) {
       // The absent employee, the user who submitted the request, or a vacations manager.
-      if (!canChangeVacation(vacation, this.currentUserId, this.canManage)) {
+      if (this.readOnly || !canChangeVacation(vacation, this.currentUserId, this.canManage)) {
         return false;
       }
 
@@ -303,7 +308,7 @@ export default {
       return canBeProcessed(vacation.status_id) || this.isApproved(vacation.status_id);
     },
     canCancel(vacation) {
-      if (!canChangeVacation(vacation, this.currentUserId, this.canManage)) {
+      if (this.readOnly || !canChangeVacation(vacation, this.currentUserId, this.canManage)) {
         return false;
       }
 
