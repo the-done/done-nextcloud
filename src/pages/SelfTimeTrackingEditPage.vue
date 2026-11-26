@@ -15,16 +15,11 @@ SPDX-License-Identifier: MIT */
         </NcBreadcrumb>
       </NcBreadcrumbs>
       <template #actions>
-        <NcButton
-          v-if="moduleExist('integrationwithextapps') === true"
-          :aria-label="contextTranslate('Form my day', context)"
-          @click="handleOpenGeneratedReports"
-        >
-          <template #icon>
-            <CalendarToday />
-          </template>
-          {{ contextTranslate("Form my day", context) }}
-        </NcButton>
+        <FormMyDay
+          :date="formValues.date"
+          :project-options="projectOptions"
+          @on-accepted="handleFetchStatistics"
+        />
       </template>
     </VToolbar>
     <VPageLayout>
@@ -50,23 +45,11 @@ SPDX-License-Identifier: MIT */
         </div>
       </VPageContent>
     </VPageLayout>
-    <GeneratedReportsAside
-      :active="isGeneratedReportsActive"
-      :loading="isGeneratedReportsLoading"
-      :reports="generatedReports"
-      :loaders="generatedReportsLoaders"
-      :project-options="projectOptions"
-      @on-close="handleCloseGeneratedReports"
-      @on-decline="handleDeclineGeneratedReport"
-      @on-accept="handleAcceptGeneratedReport"
-    />
   </VPage>
 </template>
 
 <script>
-import { mapState } from "pinia";
-
-import { NcBreadcrumbs, NcBreadcrumb, NcButton } from "@nextcloud/vue";
+import { NcBreadcrumbs, NcBreadcrumb } from "@nextcloud/vue";
 import {
   format,
   isMonday,
@@ -76,7 +59,6 @@ import {
 } from "date-fns";
 
 import Plus from "vue-material-design-icons/Plus.vue";
-import CalendarToday from "vue-material-design-icons/CalendarToday.vue";
 
 import {
   VPage,
@@ -85,7 +67,7 @@ import {
   VPagePadding,
   TimeTrackingEditForm,
   TimeTrackingView,
-  GeneratedReportsAside,
+  FormMyDay,
 } from "@/widgets";
 
 import { VToolbar, VForm, VDatePicker } from "@/shared/components";
@@ -96,33 +78,27 @@ import {
   updateUserTimeInfo,
 } from "@/entities/timeInfo/api";
 import { fetchUserStatistics } from "@/entities/statistics/api";
-import { getGeneratedReports } from "@/entities/externalApps/api";
 
 import { contextualTranslationsMixin } from "@/shared/lib/mixins/contextualTranslationsMixin";
 import { timeTrackingFormMixin } from "@/shared/lib/mixins/timeTrackingFormMixin";
 
 import { handleRestErrors } from "@/shared/lib/helpers/errors";
-import { generateUUID } from "@/shared/lib/helpers/hash";
 
 import { SUBMIT_DATE_FORMAT } from "@/shared/lib/constants/date";
-
-import { useModulesStore } from "@/app/store/modules";
 
 export default {
   name: "DictionaryPositionsPage",
   components: {
     NcBreadcrumbs,
     NcBreadcrumb,
-    NcButton,
     Plus,
-    CalendarToday,
     VPage,
     VPageLayout,
     VPageContent,
     VPagePadding,
     TimeTrackingEditForm,
     TimeTrackingView,
-    GeneratedReportsAside,
+    FormMyDay,
     VToolbar,
     VForm,
     VDatePicker,
@@ -136,10 +112,6 @@ export default {
      */
     statisticsData: [],
     statisticsTotals: {},
-    isGeneratedReportsActive: false,
-    isGeneratedReportsLoading: false,
-    generatedReports: [],
-    generatedReportsLoaders: [],
   }),
   computed: {
     slug() {
@@ -153,7 +125,6 @@ export default {
         ? this.contextTranslate("Edit record")
         : this.contextTranslate("Add record");
     },
-    ...mapState(useModulesStore, ["moduleExist"]),
   },
   methods: {
     redirectToStatistics(response) {
@@ -241,60 +212,6 @@ export default {
         this.handleShowSuccess();
         this.handleFetchStatistics();
       });
-    },
-
-    async handleOpenGeneratedReports() {
-      this.isGeneratedReportsActive = true;
-      this.isGeneratedReportsLoading = true;
-
-      try {
-        const { reports } = await getGeneratedReports({
-          date: format(new Date(), SUBMIT_DATE_FORMAT),
-        });
-
-        this.generatedReports = reports.map((item) => ({
-          ...item,
-          uuid: generateUUID(),
-        }));
-      } catch (e) {
-        handleRestErrors(e);
-      } finally {
-        this.isGeneratedReportsLoading = false;
-      }
-    },
-    handleCloseGeneratedReports() {
-      this.isGeneratedReportsActive = false;
-    },
-    handleRemoveGeneratedReportById(uuid) {
-      const result = this.generatedReports.filter((item) => item.uuid !== uuid);
-
-      this.generatedReports = result;
-
-      if (result.length === 0) {
-        this.isGeneratedReportsActive = false;
-      }
-    },
-    handleDeclineGeneratedReport(uuid) {
-      this.handleRemoveGeneratedReportById(uuid);
-    },
-    async handleAcceptGeneratedReport(payload) {
-      try {
-        this.generatedReportsLoaders.push(payload.uuid);
-
-        await createUserTimeInfo(payload);
-
-        await this.handleFetchStatistics();
-
-        this.handleShowSuccess();
-      } catch (e) {
-        handleRestErrors(e);
-      } finally {
-        this.handleRemoveGeneratedReportById(payload.uuid);
-
-        this.generatedReportsLoaders = this.generatedReportsLoaders.filter(
-          (uuid) => uuid !== payload.uuid,
-        );
-      }
     },
     async handleFetchData() {
       try {

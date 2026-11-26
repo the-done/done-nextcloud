@@ -9,18 +9,14 @@ declare(strict_types=1);
 
 namespace OCA\Done\AppInfo;
 
-use OC\DB\Connection;
-use OC\DB\MigrationService;
 use OCA\Done\Middleware\PermissionMiddleware;
 use OCA\Done\Notification\Notifier;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\L10N\IFactory as L10NFactory;
-use OCP\Server;
 
 class Application extends App implements IBootstrap
 {
@@ -40,29 +36,12 @@ class Application extends App implements IBootstrap
 
             return $l10nFactory->get(self::APP_ID);
         });
-
-        if ($this->isFirstEnable()) {
-            $this->runPreMigrationTasks();
-        }
     }
 
     public function register(IRegistrationContext $context): void
     {
         $context->registerMiddleware(PermissionMiddleware::class);
         $context->registerNotifierService(Notifier::class);
-    }
-
-    private function isFirstEnable(): bool
-    {
-        $config = Server::get(IConfig::class);
-
-        return $config->getAppValue(self::APP_ID, 'installed_version', '') === '';
-    }
-
-    private function runPreMigrationTasks(): void
-    {
-        $ms = new MigrationService(self::APP_ID, Server::get(Connection::class));
-        $ms->migrate('latest', false);
     }
 
     public function boot(IBootContext $context): void {}

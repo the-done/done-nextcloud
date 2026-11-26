@@ -1551,7 +1551,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Administrator', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(1, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
 
             $query->insert('done_global_roles');
             $query->values([
@@ -1559,7 +1559,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Director', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(2, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
 
             $query->insert('done_global_roles');
             $query->values([
@@ -1567,7 +1567,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Manager', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(3, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
 
             $query->insert('done_global_roles');
             $query->values([
@@ -1575,7 +1575,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Curator', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(4, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
 
             $query->insert('done_global_roles');
             $query->values([
@@ -1583,7 +1583,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Employee', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(5, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
 
             $query->insert('done_global_roles');
             $query->values([
@@ -1591,7 +1591,7 @@ class Version1000Date20251017000001 extends SimpleMigrationStep
                 'name' => $query->createNamedParameter('Finance', IQueryBuilder::PARAM_STR),
                 'sort' => $query->createNamedParameter(6, IQueryBuilder::PARAM_INT),
             ]);
-            $query->execute();
+            $query->executeStatement();
         }
 
         if (
